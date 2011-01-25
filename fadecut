@@ -29,6 +29,9 @@ ORIGDIR=orig
 # here are the already fadecut'ted files, which are tested and we listened to already
 DONEDIR=done
 
+# here we put songs which we don't like
+DONTLIKEDIR=dontlike
+
 # here are the files, with which we got an error
 # in same folder i put files, which i was listening to and found advertisement or bad cutting
 ERRORDIR=error
@@ -127,6 +130,10 @@ if [ ! -d "$DONEDIR" ]; then
   mkdir -p "$DONEDIR"
 fi
 
+if [ ! -d "$DONTLIKEDIR" ]; then
+  mkdir -p "$DONTLIKEDIR"
+fi
+
 if [ ! -d "$ERRORDIR" ]; then
   mkdir -p "$ERRORDIR"
 fi
@@ -138,16 +145,20 @@ fi
 for F in $FILES
 do
   logging -i "Processing $F ..."
-  ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
 
-  if [ "$ARTIST" == "Radio Swiss Pop" ]
-  then
-    logging -w "Moving advertisement: $F to $ERRORDIR ..."
-    mv "$F" "$ERRORDIR"
-    # continue with next iteration:
+  if [ -f "$DONEDIR"/"$F" ]; then
+    logging -i "$F already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
+    mv "$F" "$DOUBLEDIR"
     continue
-  fi
+  fi 
 
+  if [ -f "$DONTLIKEDIR"/"$F" ]; then
+    logging -i "$F already exists in $DONTLIKEDIR -> deleting ..."
+    rm "$F"
+    continue
+  fi 
+
+  ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
   TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
   LENGTH=`soxi -D "$F" | sed -e 's/\..*//'` 
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
