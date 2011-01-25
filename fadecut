@@ -94,29 +94,13 @@ then
   # Returns 65 as exit status of script (error code).
 fi  
 
-if [ "$1" == "pop" ] 
-then
-  GENRE="Pop"
-  COMMENT="Radio Swiss Pop"
-
-  #all values in seconds:
-  TRIM_BEGIN=0
-  TRIM_END=0
-  FADE_IN=1
-  FADE_OUT=4
+if [ ! -r ./${1}.pro ]; then
+  logging -e "Ooops! Can not load profile ${1}"
+  exit 1
 fi
 
-if [ "$1" == "chillout" ] 
-then
-  GENRE="Chillout"
-  COMMENT="ANTENNE BAYERN Chillout"
-
-  #all values in seconds:
-  TRIM_BEGIN=5
-  TRIM_END=7
-  FADE_IN=2
-  FADE_OUT=5
-fi
+logging -i "Loading profile ${1}"
+. ./${1}.pro || logging -e "Ooops!"
 
 if [ ! -d "$OUTPUTDIR" ]; then
   mkdir -p "$OUTPUTDIR"
