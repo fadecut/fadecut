@@ -31,7 +31,7 @@ DONEDIR=done
 
 # here are the files, with which we got an error
 # in same folder i put files, which i was listening to and found advertisement or bad cutting
-ERRORDIR=error
+ERRORDIR=error2
 
 # here will be the files which we have already downloaded and which we got again
 DOUBLEDIR=double
@@ -43,7 +43,9 @@ ENQUEUE=0
 E_NOARGS=65
 
 # Variables --------------------------------------------------------------------
+
 # Functions --------------------------------------------------------------------
+
 logging()
 #
 # Description:  It writes messages to logfile or standard output.
@@ -69,6 +71,16 @@ logging()
  shift
  echo "${time} ${prefix}" ${1}
 }
+
+control_c()
+# run if user hits control-c
+{
+  logging -e "CTRL-C catched. Exiting..." >&2
+  exit $?
+}
+# trap keyboard interrupt (control-c)
+trap control_c SIGINT
+
 # Main  ------------------------------------------------------------------------
 
 if [ $# -eq 0 ] 
@@ -127,25 +139,29 @@ for F in $FILES
 do
   logging -i "Processing $F ..."
   ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
+
   if [ "$ARTIST" == "Radio Swiss Pop" ]
   then
-    logging -w "Deleting advertisement: $F ..."
-    #rm "$F"
+    logging -w "Moving advertisement: $F to $ERRORDIR ..."
     mv "$F" "$ERRORDIR"
+    # continue with next iteration:
+    continue
+  fi
+
+  TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
+  LENGTH=`soxi -D "$F" | sed -e 's/\..*//'` 
+  let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
+  let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
+
+  nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH fade t $FADE_IN $FADE_OUT_START $FADE_OUT | nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$F" 
+  if [ "$?" -eq "0" ]; then
+    mv "$F" "$ORIGDIR"
   else
-    TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
-    LENGTH=`soxi -D "$F" | sed -e 's/\..*//'` 
-    let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
-    let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
-    nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH fade t $FADE_IN $FADE_OUT_START $FADE_OUT | nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$F" 
-    if [ "$?" -eq "0" ]; then
-      mv "$F" "$ORIGDIR"
-    else
-      mv "$F" "$ERRORDIR"
-    fi
-    if [ $ENQUEUE -eq "1" ]; then
-      rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
-    fi
+    mv "$F" "$ERRORDIR"
+  fi
+
+  if [ $ENQUEUE -eq "1" ]; then
+    rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
   fi
 done
 
