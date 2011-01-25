@@ -47,8 +47,11 @@ ENQUEUE=0
 # standard errorlevel definitions
 E_NOARGS=65
 
-# Variables --------------------------------------------------------------------
+# stream ripper binary
+BIN_STREAMRIPPER=`which streamripper`
 
+# Variables --------------------------------------------------------------------
+PidStreamripper=""
 # Functions --------------------------------------------------------------------
 
 logging()
@@ -107,11 +110,34 @@ fi
 return 0
 }
 
+startStream()
+# fork a stream process
+{
+if [ ! -x ${BIN_STREAMRIPPER} ]; then
+  logging -e "Ooops! No streamripper found"
+  return 1
+fi
+
+streamripper ${STREAM_URL} -d . -s & 2>/dev/null
+PidStreamripper=$!
+logging -i "stramripper running pid=${PidStreamripper}"
+
+return 0
+}
+
+shutdown_fadecut()
+# shutting down fadecut
+{
+  logging -e "Stopping streamripper" >&2
+  kill ${PidStreamripper}
+  exit $?
+}
+
 control_c()
 # run if user hits control-c
 {
   logging -e "CTRL-C catched. Exiting..." >&2
-  exit $?
+  shutdown_fadecut
 }
 # trap keyboard interrupt (control-c)
 trap control_c SIGINT
@@ -135,6 +161,7 @@ logging -i "Loading profile ${1}"
 . ./${1}.pro || logging -e "Ooops!"
 
 createDirs
+startStream
 
 for F in $FILES
 do
@@ -166,7 +193,7 @@ do
     # when sox or lame are receiving SIGINT they exit with return-code > 0
     # the ctrl_c function does not catch this case, so we have to break here
     logging -e "Error $? catched, exiting..." 
-    break
+    shutdown_fadecut
   fi
 
   if [ $ENQUEUE -eq "1" ]; then
