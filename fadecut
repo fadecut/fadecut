@@ -47,6 +47,10 @@ DOUBLEDIR=double
 # enqueue to rhythmbox player (0=false, 1=true)
 ENQUEUE=0
 
+# enqueue to vlc player (0=false, 1=true)
+# when in one instance mode (default disabled)
+VLCENQUEUE=0
+
 # standard errorlevel definitions
 E_NOARGS=65
 
@@ -202,6 +206,11 @@ do
   if [ $ENQUEUE -eq "1" ]; then
     rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
   fi
+
+  if [ $VLCENQUEUE -eq "1" ]; then
+    vlc --playlist-enqueue "$OUTPUTDIR"/"$F"
+  fi
+
 done
 }
 
