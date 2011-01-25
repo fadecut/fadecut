@@ -31,7 +31,7 @@ DONEDIR=done
 
 # here are the files, with which we got an error
 # in same folder i put files, which i was listening to and found advertisement or bad cutting
-ERRORDIR=error2
+ERRORDIR=error
 
 # here will be the files which we have already downloaded and which we got again
 DOUBLEDIR=double
@@ -158,6 +158,8 @@ do
     mv "$F" "$ORIGDIR"
   else
     mv "$F" "$ERRORDIR"
+    logging -e "Error $? catched, exiting..." 
+    break
   fi
 
   if [ $ENQUEUE -eq "1" ]; then
