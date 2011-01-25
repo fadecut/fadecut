@@ -26,14 +26,16 @@ OUTPUTDIR=new
 # where to put the uncutted original files
 ORIGDIR=orig
 
-# here are the already fadecut'ted files, which are tested and we listened to already
+# here are the already fadecut'ted files, which are tested and we listened to 
+# already
 DONEDIR=done
 
 # here we put songs which we don't like
 DONTLIKEDIR=dontlike
 
 # here are the files, with which we got an error
-# in same folder i put files, which i was listening to and found advertisement or bad cutting
+# in same folder i put files, which i was listening to and found advertisement 
+# or bad cutting
 ERRORDIR=error
 
 # here will be the files which we have already downloaded and which we got again
