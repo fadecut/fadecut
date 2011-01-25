@@ -75,6 +75,36 @@ logging()
  echo "${time} ${prefix}" ${1}
 }
 
+createDirs()
+# create necessary directories
+{
+if [ ! -d "$OUTPUTDIR" ]; then
+  mkdir -p "$OUTPUTDIR"
+fi
+
+if [ ! -d "$ORIGDIR" ]; then
+  mkdir -p "$ORIGDIR"
+fi
+
+if [ ! -d "$DONEDIR" ]; then
+  mkdir -p "$DONEDIR"
+fi
+
+if [ ! -d "$DONTLIKEDIR" ]; then
+  mkdir -p "$DONTLIKEDIR"
+fi
+
+if [ ! -d "$ERRORDIR" ]; then
+  mkdir -p "$ERRORDIR"
+fi
+
+if [ ! -d "$DOUBLEDIR" ]; then
+  mkdir -p "$DOUBLEDIR"
+fi
+
+return 0
+}
+
 control_c()
 # run if user hits control-c
 {
@@ -102,29 +132,7 @@ fi
 logging -i "Loading profile ${1}"
 . ./${1}.pro || logging -e "Ooops!"
 
-if [ ! -d "$OUTPUTDIR" ]; then
-  mkdir -p "$OUTPUTDIR"
-fi
-
-if [ ! -d "$ORIGDIR" ]; then
-  mkdir -p "$ORIGDIR"
-fi
-
-if [ ! -d "$DONEDIR" ]; then
-  mkdir -p "$DONEDIR"
-fi
-
-if [ ! -d "$DONTLIKEDIR" ]; then
-  mkdir -p "$DONTLIKEDIR"
-fi
-
-if [ ! -d "$ERRORDIR" ]; then
-  mkdir -p "$ERRORDIR"
-fi
-
-if [ ! -d "$DOUBLEDIR" ]; then
-  mkdir -p "$DOUBLEDIR"
-fi
+createDirs
 
 for F in $FILES
 do
