@@ -146,6 +146,11 @@ loop_fadecut()
 {
 for F in $FILES
 do
+  if [ "$F" == "$FILES" ]; then
+    logging -i "no files to process ..."
+    break
+  fi
+
   logging -i "Processing $F ..."
 
   if [ -f "$DONEDIR"/"$F" ]; then
