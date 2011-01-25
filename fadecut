@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
+# Constants --------------------------------------------------------------------
 FILES=*.mp3
 OUTPUTDIR=new
 ORIGDIR=orig
@@ -23,8 +24,10 @@ DONEDIR=done
 ERRORDIR=error
 DOUBLEDIR=double
 ENQUEUE=0
-
 E_NOARGS=65
+# Variables --------------------------------------------------------------------
+# Functions --------------------------------------------------------------------
+# Main  ------------------------------------------------------------------------
 
 if [ $# -eq 0 ] 
 then
