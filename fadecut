@@ -44,11 +44,36 @@ E_NOARGS=65
 
 # Variables --------------------------------------------------------------------
 # Functions --------------------------------------------------------------------
+logging()
+#
+# Description:  It writes messages to logfile or standard output.
+#
+# Parameter  :  $1 - the level of message
+#               $2 - the message
+#
+# Std. Output:  Logging messages.
+#
+{
+ time="$(date +%H):$(date +%M):$(date +%S)"
+ prefix=""
+
+ case $1 in
+   -e)     prefix="Error:   ";;
+   -i)     prefix="Info:    ";;
+   -n)     prefix="Notice:  ";;
+   -s)     prefix="Success: ";;
+   -w)     prefix="Warning: ";;
+   -d)     prefix="Debug:   ";;
+   -a)     prefix="         ";;
+ esac
+ shift
+ echo "${time} ${prefix}" ${1}
+}
 # Main  ------------------------------------------------------------------------
 
 if [ $# -eq 0 ] 
 then
-  echo "Usage: `basename $0` pop|chillout" >&2
+  logging -i "Usage: `basename $0` pop|chillout" >&2
   # Error message to stderr.
   exit $E_NOARGS
   # Returns 65 as exit status of script (error code).
@@ -100,11 +125,11 @@ fi
 
 for F in $FILES
 do
-  echo "Processing $F ..."
+  logging -i "Processing $F ..."
   ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
   if [ "$ARTIST" == "Radio Swiss Pop" ]
   then
-    echo "Deleting advertisement: $F ..."
+    logging -w "Deleting advertisement: $F ..."
     #rm "$F"
     mv "$F" "$ERRORDIR"
   else
