@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 #
 # This file is part of fadecut
 # http://url
@@ -18,6 +17,9 @@ set -x
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 # Constants --------------------------------------------------------------------
+# Debug level 1-3
+DEBUG=0
+
 # which files to work on
 FILES=*.mp3
 
@@ -84,6 +86,9 @@ logging()
 createDirs()
 # create necessary directories
 {
+if [ ${DEBUG} -ge 2 ]; then set -x
+fi
+
 if [ ! -d "$OUTPUTDIR" ]; then
   mkdir -p "$OUTPUTDIR"
 fi
@@ -114,6 +119,9 @@ return 0
 startStream()
 # fork a stream process
 {
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+
 if [ ! -x ${BIN_STREAMRIPPER} ]; then
   logging -e "Ooops! No streamripper found"
   shutdown_fadecut
@@ -129,14 +137,19 @@ return 0
 shutdown_fadecut()
 # shutting down fadecut
 {
-  logging -e "Stopping streamripper" >&2
-  kill ${PidStreamripper}
-  exit $?
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+
+logging -e "Stopping streamripper" >&2
+kill ${PidStreamripper}
+exit $?
 }
 
 control_c()
 # run if user hits control-c
 {
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
   logging -e "CTRL-C catched. Exiting..." >&2
   shutdown_fadecut
 }
@@ -145,6 +158,9 @@ trap control_c SIGINT
 
 loop_fadecut()
 {
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+
 for F in $FILES
 do
   if [ "$F" == "$FILES" ]; then
