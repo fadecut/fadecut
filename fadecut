@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 #
 # This file is part of fadecut
 # http://url
@@ -48,7 +49,7 @@ ENQUEUE=0
 E_NOARGS=65
 
 # stream ripper binary
-BIN_STREAMRIPPER=`which streamripper`
+BIN_STREAMRIPPER="/usr/bin/streamripper"
 
 # Variables --------------------------------------------------------------------
 PidStreamripper=""
@@ -115,7 +116,7 @@ startStream()
 {
 if [ ! -x ${BIN_STREAMRIPPER} ]; then
   logging -e "Ooops! No streamripper found"
-  return 1
+  shutdown_fadecut
 fi
 
 ${BIN_STREAMRIPPER} ${STREAM_URL} -d . -s & 2>/dev/null
