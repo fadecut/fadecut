@@ -54,13 +54,13 @@ do
   LENGTH=`soxi -D "$F" | sed -e 's/\..*//'` 
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
-  ARTIST=`echo $F | sed -e 's/ -.*//'`
-  TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//'`
+  ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
+  TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
   nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH fade t $FADE_IN $FADE_OUT_START $FADE_OUT | nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$F" 
   if [ "$?" -eq "0" ]; then
     rm "$F"
   else
-    mv "$F" "$ERORDIR"
+    mv "$F" "$ERRORDIR"
   fi
   if [ $ENQUEUE -eq "1" ]; then
     rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
