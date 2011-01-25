@@ -142,6 +142,47 @@ control_c()
 # trap keyboard interrupt (control-c)
 trap control_c SIGINT
 
+loop_fadecut()
+{
+for F in $FILES
+do
+  logging -i "Processing $F ..."
+
+  if [ -f "$DONEDIR"/"$F" ]; then
+    logging -i "$F already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
+    mv "$F" "$DOUBLEDIR"
+    continue
+  fi
+
+  if [ -f "$DONTLIKEDIR"/"$F" ]; then
+    logging -i "$F already exists in $DONTLIKEDIR -> deleting ..."
+    rm "$F"
+    continue
+  fi
+
+  ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
+  TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
+  LENGTH=`soxi -D "$F" | sed -e 's/\..*//'`
+  let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
+  let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
+
+  nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH fade t $FADE_IN $FADE_OUT_START $FADE_OUT | nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$F"
+  if [ "$?" -eq "0" ]; then
+    mv "$F" "$ORIGDIR"
+  else
+    mv "$F" "$ERRORDIR"
+    # when sox or lame are receiving SIGINT they exit with return-code > 0
+    # the ctrl_c function does not catch this case, so we have to break here
+    logging -e "Error $? catched, exiting..."
+    shutdown_fadecut
+  fi
+
+  if [ $ENQUEUE -eq "1" ]; then
+    rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
+  fi
+done
+}
+
 # Main  ------------------------------------------------------------------------
 
 if [ $# -eq 0 ] 
@@ -163,41 +204,10 @@ logging -i "Loading profile ${1}"
 createDirs
 startStream
 
-for F in $FILES
+while true
 do
-  logging -i "Processing $F ..."
-
-  if [ -f "$DONEDIR"/"$F" ]; then
-    logging -i "$F already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
-    mv "$F" "$DOUBLEDIR"
-    continue
-  fi 
-
-  if [ -f "$DONTLIKEDIR"/"$F" ]; then
-    logging -i "$F already exists in $DONTLIKEDIR -> deleting ..."
-    rm "$F"
-    continue
-  fi 
-
-  ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
-  TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
-  LENGTH=`soxi -D "$F" | sed -e 's/\..*//'` 
-  let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
-  let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
-
-  nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH fade t $FADE_IN $FADE_OUT_START $FADE_OUT | nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$F" 
-  if [ "$?" -eq "0" ]; then
-    mv "$F" "$ORIGDIR"
-  else
-    mv "$F" "$ERRORDIR"
-    # when sox or lame are receiving SIGINT they exit with return-code > 0
-    # the ctrl_c function does not catch this case, so we have to break here
-    logging -e "Error $? catched, exiting..." 
-    shutdown_fadecut
-  fi
-
-  if [ $ENQUEUE -eq "1" ]; then
-    rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
-  fi
+  logging -i "Scanning for new files..." >&2
+  loop_fadecut
+  sleep 60
 done
 
