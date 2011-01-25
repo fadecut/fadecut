@@ -23,6 +23,9 @@ DEBUG=0
 # which files to work on
 FILES=*.mp3
 
+# prefered destination fileformat. (ogg/mp3)
+ENCODING=mp3
+
 # where to put fadecut'ted files
 OUTPUTDIR=new
 
@@ -192,7 +195,22 @@ do
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
-  nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH fade t $FADE_IN $FADE_OUT_START $FADE_OUT | nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$F"
+if [ "${ENCODING}" == "mp3" ]; then
+  FDST=${F}
+  nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
+	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
+	nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
+	--tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$FDST"
+fi
+
+if [ "${ENCODING}" == "ogg" ]; then
+  FDST=$(echo $F | sed 's/.mp3/.ogg/g')
+  nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
+	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
+	nice -15 oggenc - -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
+              -c "comment=$COMMENT" -o "$OUTPUTDIR"/"$FDST"
+fi
+
   if [ "$?" -eq "0" ]; then
     mv "$F" "$ORIGDIR"
   else
@@ -204,11 +222,11 @@ do
   fi
 
   if [ $ENQUEUE -eq "1" ]; then
-    rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
+    rhythmbox-client --enqueue "$OUTPUTDIR"/"$FDST"
   fi
 
   if [ $VLCENQUEUE -eq "1" ]; then
-    vlc --playlist-enqueue "$OUTPUTDIR"/"$F"
+    vlc --playlist-enqueue "$OUTPUTDIR"/"$FDST"
   fi
 
 done
