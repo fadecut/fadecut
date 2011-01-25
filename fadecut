@@ -1,0 +1,38 @@
+#!/bin/bash
+FILES=*.mp3
+OUTPUTDIR=new
+ERRORDIR=error
+ENQUEUE=0
+GENRE="Chillout"
+COMMENT="ANTENNE BAYERN Chillout"
+
+if [ ! -d "$OUTPUTDIR" ]; then
+  mkdir -p "$OUTPUTDIR"
+fi
+
+if [ ! -d "$ERRORDIR" ]; then
+  mkdir -p "$ERRORDIR"
+fi
+
+for F in $FILES
+do
+  echo "Processing $F ..."
+  LENGTH=`soxi -D "$F" | sed -e 's/\..*//'` 
+  let TRIMLENGTH=$((LENGTH-10))
+  let FADESTART=$((LENGTH-15))
+  ARTIST=`echo $F | sed -e 's/ -.*//'`
+  TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//'`
+  nice -15 sox -V1 "$F" -t wav - trim 5 $TRIMLENGTH fade t 2 $FADESTART 5 | nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$F" 
+  #                                   |      |             |            |
+  # cut 5 secs at beginning and end <-+------+             |            |
+  # fade 2 secs in and 5 secs out   <----------------------+------------+
+  if [ "$?" -eq "0" ]; then
+    rm "$F"
+  else
+    mv "$F" "$ERORDIR"
+  fi
+  if [ $ENQUEUE -eq "1" ]; then
+    rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
+  fi
+done
+
