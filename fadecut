@@ -1,7 +1,11 @@
 #!/bin/bash
+
 FILES=*.mp3
 OUTPUTDIR=new
+ORIGDIR=orig
+DONEDIR=done
 ERRORDIR=error
+DOUBLEDIR=double
 ENQUEUE=0
 
 E_NOARGS=65
@@ -20,10 +24,10 @@ then
   COMMENT="Radio Swiss Pop"
 
   #all values in seconds:
-  TRIM_BEGIN=7
-  TRIM_END=6
+  TRIM_BEGIN=0
+  TRIM_END=0
   FADE_IN=1
-  FADE_OUT=2
+  FADE_OUT=4
 fi
 
 if [ "$1" == "chillout" ] 
@@ -44,6 +48,10 @@ if [ ! -d "$OUTPUTDIR" ]; then
   mkdir -p "$OUTPUTDIR"
 fi
 
+if [ ! -d "$ORIGDIR" ]; then
+  mkdir -p "$ORIGDIR"
+fi
+
 if [ ! -d "$ERRORDIR" ]; then
   mkdir -p "$ERRORDIR"
 fi
@@ -51,19 +59,26 @@ fi
 for F in $FILES
 do
   echo "Processing $F ..."
-  LENGTH=`soxi -D "$F" | sed -e 's/\..*//'` 
-  let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
-  let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
   ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
-  TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
-  nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH fade t $FADE_IN $FADE_OUT_START $FADE_OUT | nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$F" 
-  if [ "$?" -eq "0" ]; then
-    rm "$F"
-  else
+  if [ "$ARTIST" == "Radio Swiss Pop" ]
+  then
+    echo "Deleting advertisement: $F ..."
+    #rm "$F"
     mv "$F" "$ERRORDIR"
-  fi
-  if [ $ENQUEUE -eq "1" ]; then
-    rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
+  else
+    TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
+    LENGTH=`soxi -D "$F" | sed -e 's/\..*//'` 
+    let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
+    let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
+    nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH fade t $FADE_IN $FADE_OUT_START $FADE_OUT | nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$F" 
+    if [ "$?" -eq "0" ]; then
+      mv "$F" "$ORIGDIR"
+    else
+      mv "$F" "$ERRORDIR"
+    fi
+    if [ $ENQUEUE -eq "1" ]; then
+      rhythmbox-client --enqueue "$OUTPUTDIR"/"$F"
+    fi
   fi
 done
 
