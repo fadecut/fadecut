@@ -158,6 +158,8 @@ do
     mv "$F" "$ORIGDIR"
   else
     mv "$F" "$ERRORDIR"
+    # when sox or lame are receiving SIGINT they exit with return-code > 0
+    # the ctrl_c function does not catch this case, so we have to break here
     logging -e "Error $? catched, exiting..." 
     break
   fi
