@@ -17,14 +17,31 @@
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 # Constants --------------------------------------------------------------------
+# which files to work on
 FILES=*.mp3
+
+# where to put fadecut'ted files
 OUTPUTDIR=new
+
+# where to put the uncutted original files
 ORIGDIR=orig
+
+# here are the already fadecut'ted files, which are tested and we listened to already
 DONEDIR=done
+
+# here are the files, with which we got an error
+# in same folder i put files, which i was listening to and found advertisement or bad cutting
 ERRORDIR=error
+
+# here will be the files which we have already downloaded and which we got again
 DOUBLEDIR=double
+
+# enqueue to rhythmbox player (0=false, 1=true)
 ENQUEUE=0
+
+# standard errorlevel definitions
 E_NOARGS=65
+
 # Variables --------------------------------------------------------------------
 # Functions --------------------------------------------------------------------
 # Main  ------------------------------------------------------------------------
@@ -61,8 +78,6 @@ then
   FADE_OUT=5
 fi
 
-
-
 if [ ! -d "$OUTPUTDIR" ]; then
   mkdir -p "$OUTPUTDIR"
 fi
@@ -71,8 +86,16 @@ if [ ! -d "$ORIGDIR" ]; then
   mkdir -p "$ORIGDIR"
 fi
 
+if [ ! -d "$DONEDIR" ]; then
+  mkdir -p "$DONEDIR"
+fi
+
 if [ ! -d "$ERRORDIR" ]; then
   mkdir -p "$ERRORDIR"
+fi
+
+if [ ! -d "$DOUBLEDIR" ]; then
+  mkdir -p "$DOUBLEDIR"
 fi
 
 for F in $FILES
