@@ -1,3 +1,4 @@
+export STREAM_URL="http://mp3channels.webradio.antenne.de/chillout"
 export GENRE="Chillout"
 export COMMENT="ANTENNE BAYERN Chillout"
 #all values in seconds:
