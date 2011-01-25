@@ -8,3 +8,10 @@ blabla :-)
 
 
 und nochmals ein bla von mir. /bam
+
+
+REQUIREMENTS
+* bash, The GNU Bourne Again SHell
+* lame, An MP3 encoding library (frontend)
+* sox, the Swiss army knife of sound processing
+ 
