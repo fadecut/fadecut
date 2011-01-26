@@ -22,9 +22,15 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * vorbis-tools, several Ogg Vorbis tools
 
 
+--- Ubuntu ---------------------------------------------------------------------
+apt-get install ...
+
+
 --- Debian ---------------------------------------------------------------------
-We need soxi, so on debian you need sox package from testing
-repository.
+* We need soxi from debian testing repository
+* lame is official not available in debian.
+
+apt-get -t testing install sox libsox-fmt-mp3 vorbis-tools
 
 
 --- Usage ----------------------------------------------------------------------
