@@ -134,9 +134,13 @@ if [ ! -x ${BIN_STREAMRIPPER} ]; then
   shutdown_fadecut
 fi
 
-${BIN_STREAMRIPPER} ${STREAM_URL} -d . -s & 2>/dev/null
-PidStreamripper=$!
-logging -i "stramripper running pid=${PidStreamripper}"
+if ! pidof streamripper; then
+  ${BIN_STREAMRIPPER} ${STREAM_URL} -d . -s & 2>/dev/null
+  PidStreamripper=$!
+  logging -s "stramripper started pid=${PidStreamripper}"
+else
+  logging -i "stramripper running pid=${PidStreamripper}"
+fi
 
 return 0
 }
@@ -195,6 +199,7 @@ do
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
+logging -i "Encoding to ${ENCODING} format..."
 if [ "${ENCODING}" == "mp3" ]; then
   FDST=${F}
   nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
@@ -207,11 +212,13 @@ if [ "${ENCODING}" == "ogg" ]; then
   FDST=$(echo $F | sed 's/.mp3/.ogg/g')
   nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
-	nice -15 oggenc - -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
+	oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
               -c "comment=$COMMENT" -o "$OUTPUTDIR"/"$FDST"
+  ogginfo "$OUTPUTDIR"/"$FDST"
 fi
 
   if [ "$?" -eq "0" ]; then
+    logging -s "Is ready for listening $FDST"
     mv "$F" "$ORIGDIR"
   else
     mv "$F" "$ERRORDIR"
@@ -228,7 +235,6 @@ fi
   if [ $VLCENQUEUE -eq "1" ]; then
     vlc --playlist-enqueue "$OUTPUTDIR"/"$FDST"
   fi
-
 done
 }
 
@@ -251,11 +257,11 @@ logging -i "Loading profile ${1}"
 . ./${1}.pro || logging -e "Ooops!"
 
 createDirs
-startStream
 
 while true
 do
   logging -i "Scanning for new files..." >&2
+  startStream
   loop_fadecut
   sleep 60
 done
