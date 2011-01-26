@@ -242,7 +242,7 @@ do
   ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
   TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
 
-  if [ "$METHOD"=="sox" ]; then
+  if [ "$METHOD" == "sox" ]; then
     LENGTH=`soxi -D "$F" | sed -e 's/\..*//'`
     let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
     let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
@@ -266,14 +266,14 @@ do
     fi
   fi
 
-  if [ "$METHOD"=="cutmp3" ]; then
+  if [ "$METHOD" == "cutmp3" ]; then
     if [ "${ENCODING}" == "mp3" ]; then
       logging -i "cutting with cutmp3 ..."
       #quiet:
       #echo nnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c &> /dev/null
       
       #verbose:
-      echo nnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c 
+      echo nnnnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c 
     else
       logging -e "This method works only for mp3 encoding"
     fi
@@ -307,7 +307,7 @@ load_profile()
 
 # Main  ------------------------------------------------------------------------
 
-while getopts "d:hm:p:q:s:v" OPTION
+while getopts "d:hm:p:q:sv" OPTION
 do
 # When you need an argument that needs a value, you put the ":" right after the argument in the optstring. If your var is just a flag, withou any additional argument, just leave the var, without the ":" following it.
   case $OPTION in
@@ -347,13 +347,15 @@ fi
 
 createDirs
 
-while true
-do
-  logging -i "Scanning for new files..." >&2
-  if [ ${STREAMRIPPER_START}==1 ]; then
+if [ $STREAMRIPPER_START -eq "1" ]; then
+  while true
+  do
+    logging -i "Scanning for new files..." >&2
     startStream
-  fi
+    loop_fadecut
+    sleep 120
+  done
+else
   loop_fadecut
-  sleep 120
-done
+fi
 
