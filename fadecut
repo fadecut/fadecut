@@ -143,7 +143,7 @@ if ! pidof streamripper; then
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
 else
-  logging -i "${BIN_STREAMRIPPER} running pid=${PidStreamripper}"
+  logging -n "${BIN_STREAMRIPPER} running pid=${PidStreamripper}"
 fi
 
 return 0
@@ -179,7 +179,7 @@ fi
 for F in $FILES
 do
   if [ "$F" == "$FILES" ]; then
-    logging -i "no files to process ..."
+    logging -n "no files to process ..."
     break
   fi
 
