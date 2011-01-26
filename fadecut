@@ -155,8 +155,11 @@ shutdown_fadecut()
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 
-logging -e "Stopping streamripper" >&2
-kill ${PidStreamripper}
+if [ "$(pidof streamripper)" ];
+then 
+  logging -i "Stopping streamripper" >&2
+  kill ${PidStreamripper}
+fi
 exit $?
 }
 
