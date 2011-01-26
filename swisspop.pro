@@ -1,5 +1,5 @@
 export STREAM_URL="http://livestream.srg-ssr.ch/1/rsp/mp3_128"
-export ENCODING=ogg
+#export ENCODING=ogg
 export GENRE="Pop"
 export COMMENT="Radio Swiss Pop"
 #all values in seconds:
