@@ -138,7 +138,7 @@ if [ ! -x ${BIN_STREAMRIPPER} ]; then
   shutdown_fadecut
 fi
 
-if ! pidof streamripper; then
+if [ ! "$(pidof streamripper)" ] ; then
   ${BIN_STREAMRIPPER} ${STREAM_URL} -d . -s ${STREAMRIPPER_OPTS} & 2>/dev/null
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
