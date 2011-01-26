@@ -159,8 +159,9 @@ if [ ! -x ${BIN_STREAMRIPPER} ]; then
   shutdown_fadecut
 fi
 
-if [ ! "$(pidof streamripper)" ] ; then
-  ${BIN_STREAMRIPPER} ${STREAM_URL} -d . -s ${STREAMRIPPER_OPTS} & 2>/dev/null
+if [ ! "$(pidof streamripper)" ] && [ "$STREAMRIPPER_START" == "1" ];
+then
+  ${BIN_STREAMRIPPER} ${STREAM_URL} -d . -s ${STREAMRIPPER_OPTS} & 
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
 else
@@ -176,6 +177,7 @@ shutdown_fadecut()
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 
+logging -i "Shutting down fadecut..."
 if [ "$(pidof streamripper)" ];
 then 
   logging -i "Stopping streamripper" >&2
@@ -207,7 +209,7 @@ control_c()
 {
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
-  logging -e "CTRL-C catched. Exiting..." >&2
+  logging -n "CTRL-C catched" >&2
   shutdown_fadecut
 }
 # trap keyboard interrupt (control-c)
@@ -222,6 +224,8 @@ for F in $FILES
 do
   if [ "$F" == "$FILES" ]; then
     logging -n "no files to process ..."
+    if [ $STREAMRIPPER_START == "0" ]; then shutdown_fadecut
+    fi
     break
   fi
 
@@ -347,15 +351,10 @@ fi
 
 createDirs
 
-if [ $STREAMRIPPER_START -eq "1" ]; then
-  while true
-  do
-    logging -i "Scanning for new files..." >&2
-    startStream
-    loop_fadecut
-    sleep 120
-  done
-else
+while true
+do
+  logging -i "Scanning for new files..." >&2
+  startStream
   loop_fadecut
-fi
-
+  sleep 120
+done
