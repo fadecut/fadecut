@@ -20,11 +20,17 @@
 # Debug level 1-3
 DEBUG=0
 
+# Verbosity level
+VERBOSE=1
+
 # which files to work on
 FILES=*.mp3
 
 # prefered destination fileformat. (ogg/mp3)
 ENCODING=mp3
+
+# preferred fadecut method. <sox|cutmp3>
+METHOD=sox
 
 # where to put fadecut'ted files
 OUTPUTDIR=new
@@ -57,6 +63,9 @@ VLCENQUEUE=0
 # standard errorlevel definitions
 E_NOARGS=65
 
+# start streamripper
+STREAMRIPPER_START=0 
+
 # stream ripper binary
 BIN_STREAMRIPPER="/usr/bin/streamripper"
 
@@ -67,6 +76,22 @@ STREAMRIPPER_OPTS="--quiet -o always -T"
 # Variables --------------------------------------------------------------------
 PidStreamripper=""
 # Functions --------------------------------------------------------------------
+
+usage()
+{
+cat << EOF
+usage: $0 -p <pop|chillout> [other options]
+
+OPTIONS:
+  -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
+  -h	Show this message
+  -m    Method <sox|cutmp3>
+  -p    Profile <pop|chillout>
+  -q	Quiet
+  -s    Stream (and rip), start streamripper
+  -v	Verbose
+EOF
+}
 
 logging()
 #
@@ -202,35 +227,51 @@ do
 
   ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
   TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
-  LENGTH=`soxi -D "$F" | sed -e 's/\..*//'`
-  let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
-  let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
-logging -i "Encoding to ${ENCODING} format..."
-if [ "${ENCODING}" == "mp3" ]; then
-  FDST=${F}
-  nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
-	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
+  if [ "$METHOD"=="sox" ]; then
+    LENGTH=`soxi -D "$F" | sed -e 's/\..*//'`
+    let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
+    let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
+
+    logging -i "Encoding to ${ENCODING} format..."
+    if [ "${ENCODING}" == "mp3" ]; then
+      FDST=${F}
+      nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
+    	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
 	nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
 	--tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$FDST"
-fi
+    fi
 
-if [ "${ENCODING}" == "ogg" ]; then
-  FDST=$(echo $F | sed 's/.mp3/.ogg/g')
-  nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
+    if [ "${ENCODING}" == "ogg" ]; then
+      FDST=$(echo $F | sed 's/.mp3/.ogg/g')
+      nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
 	oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
               -c "comment=$COMMENT" -o "$OUTPUTDIR"/"$FDST"
-  ogginfo "$OUTPUTDIR"/"$FDST"
-fi
+      ogginfo "$OUTPUTDIR"/"$FDST"
+    fi
+  fi
 
+  if [ "$METHOD"=="cutmp3" ]; then
+    if [ "${ENCODING}" == "mp3" ]; then
+      logging -i "cutting with cutmp3 ..."
+      #quiet:
+      #echo nnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c &> /dev/null
+      
+      #verbose:
+      echo nnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c 
+    else
+      logging -e "This method works only for mp3 encoding"
+    fi
+  fi
+  
   if [ "$?" -eq "0" ]; then
     logging -s "Is ready for listening $FDST"
     mv "$F" "$ORIGDIR"
   else
     mv "$F" "$ERRORDIR"
-    # when sox or lame are receiving SIGINT they exit with return-code > 0
-    # the ctrl_c function does not catch this case, so we have to break here
+      # when sox or lame are receiving SIGINT they exit with return-code > 0
+      # the ctrl_c function does not catch this case, so we have to break here
     logging -e "Error $? catched, exiting..."
     shutdown_fadecut
   fi
@@ -245,30 +286,63 @@ fi
 done
 }
 
+load_profile()
+{
+  if [ ! -r ./${PROFILE}.pro ]; then
+    logging -e "Ooops! Can not load profile ${PROFILE}"
+    exit 1
+  fi
+  logging -i "Loading profile ${PROFILE}"
+  . ./${PROFILE}.pro || logging -e "Ooops!"
+}
+
 # Main  ------------------------------------------------------------------------
 
-if [ $# -eq 0 ] 
+while getopts "d:h:p:q:s:v" OPTION
+do
+  case $OPTION in
+    d)
+      DEBUG=$OPTARG
+      ;;
+    h)
+      usage
+      exit 1
+      ;;
+    m)
+      METHOD=$OPTARG
+      ;;
+    p)
+      PROFILE=$OPTARG
+      load_profile
+      ;;
+    q)
+      DEBUG=0
+      # add LOGGING variable and change logging function to be able to turn all output off
+      ;;
+    s)
+      STREAMRIPPER_START=1 
+      ;;
+    v)
+      # opposite of quiet
+      STREAMRIPPER_OPTS="-o always -T"
+      ;;
+  esac
+done
+
+if [[ -z $PROFILE ]] || [[ -z $METHOD ]] 
 then
-  logging -i "Usage: `basename $0` pop|chillout" >&2
-  # Error message to stderr.
-  exit $E_NOARGS
-  # Returns 65 as exit status of script (error code).
-fi  
-
-if [ ! -r ./${1}.pro ]; then
-  logging -e "Ooops! Can not load profile ${1}"
-  exit 1
+     usage
+     exit 1
 fi
-
-logging -i "Loading profile ${1}"
-. ./${1}.pro || logging -e "Ooops!"
 
 createDirs
 
 while true
 do
   logging -i "Scanning for new files..." >&2
-  startStream
+  if [ ${STREAMRIPPER_START}==1 ]; then
+    startStream
+  fi
   loop_fadecut
   sleep 120
 done
