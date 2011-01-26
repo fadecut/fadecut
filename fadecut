@@ -270,6 +270,6 @@ do
   logging -i "Scanning for new files..." >&2
   startStream
   loop_fadecut
-  sleep 60
+  sleep 120
 done
 
