@@ -60,6 +60,10 @@ E_NOARGS=65
 # stream ripper binary
 BIN_STREAMRIPPER="/usr/bin/streamripper"
 
+
+# streamripper options
+STREAMRIPPER_OPTS="--quiet -o always -T"
+
 # Variables --------------------------------------------------------------------
 PidStreamripper=""
 # Functions --------------------------------------------------------------------
@@ -135,7 +139,7 @@ if [ ! -x ${BIN_STREAMRIPPER} ]; then
 fi
 
 if ! pidof streamripper; then
-  ${BIN_STREAMRIPPER} ${STREAM_URL} -d . -s & 2>/dev/null
+  ${BIN_STREAMRIPPER} ${STREAM_URL} -d . -s ${STREAMRIPPER_OPTS} & 2>/dev/null
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
 else
