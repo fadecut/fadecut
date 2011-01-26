@@ -53,7 +53,7 @@ ERRORDIR=error
 # here will be the files which we have already downloaded and which we got again
 DOUBLEDIR=double
 
-# enqueue to rhythmbox player (0=false, 1=true)
+# enqueue to rhythmbox or vlc player (0=false, 1=true)
 ENQUEUE=0
 
 # standard errorlevel definitions
