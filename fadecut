@@ -219,6 +219,7 @@ loop_fadecut()
 {
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
+RetLoop=0
 
 for F in $FILES
 do
@@ -243,6 +244,7 @@ do
     continue
   fi
 
+  set -o pipefail
   ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
   TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
 
@@ -257,7 +259,7 @@ do
       nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
     	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
 	nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
-	--tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$FDST"
+	--tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$FDST" || RetLoop=3
     fi
 
     if [ "${ENCODING}" == "ogg" ]; then
@@ -265,8 +267,8 @@ do
       nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
 	oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
-              -c "comment=$COMMENT" -o "$OUTPUTDIR"/"$FDST"
-      ogginfo "$OUTPUTDIR"/"$FDST"
+              -c "comment=$COMMENT" -o "$OUTPUTDIR"/"$FDST" || RetLoop=3
+      ogginfo "$OUTPUTDIR"/"$FDST" || RetLoop=3
     fi
   fi
 
@@ -277,23 +279,24 @@ do
       #echo nnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c &> /dev/null
       
       #verbose:
-      echo nnnnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c 
+      echo nnnnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c || RetLoop=3
     else
       logging -e "This method works only for mp3 encoding"
     fi
   fi
   
-  if [ "$?" -eq "0" ]; then
+  if [ "${RetLoop}" -eq "0" ]; then
     logging -s "Is ready for listening $FDST"
     mv "$F" "$ORIGDIR"
   else
     mv "$F" "$ERRORDIR"
       # when sox or lame are receiving SIGINT they exit with return-code > 0
       # the ctrl_c function does not catch this case, so we have to break here
-    logging -e "Error $? catched, exiting..."
+    logging -n "loop_fadecut(): Oops! Something was wrong."
+    logging -e "loop_fadecut(): returnvalue=$RetLoop"
     shutdown_fadecut
   fi
-
+  set +o pipefail
 
 queueSong
 done
