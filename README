@@ -1,17 +1,46 @@
-Initial readme file.
-21.01.2011 M. Balmer
+This file is part of fadecut
+http://url
+
+fadecut is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+fadecut is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 
-yeah!
-
-blabla :-)
-
-
-und nochmals ein bla von mir. /bam
-
-
-REQUIREMENTS
+--- Requirements ---------------------------------------------------------------
 * bash, The GNU Bourne Again SHell
 * lame, An MP3 encoding library (frontend)
 * sox, the Swiss army knife of sound processing
- 
+* vorbis-tools, several Ogg Vorbis tools
+
+
+--- Debian ---------------------------------------------------------------------
+We need soxi, so on debian you need sox package from testing
+repository.
+
+
+--- Usage ----------------------------------------------------------------------
+1. Create a profile file
+vim swisspop.pro
+  export STREAM_URL="http://livestream.srg-ssr.ch/1/rsp/mp3_128"
+  export ENCODING=ogg
+  #export ENCODING=mp3
+  export GENRE="Pop"
+  export COMMENT="Radio Swiss Pop"
+  #all values in seconds:
+  export TRIM_BEGIN=0
+  export TRIM_END=0
+  export FADE_IN=1
+  export FADE_OUT=4
+:wq
+
+2. Let's rip now
+./fadecut swisspop
