@@ -137,9 +137,9 @@ fi
 if ! pidof streamripper; then
   ${BIN_STREAMRIPPER} ${STREAM_URL} -d . -s & 2>/dev/null
   PidStreamripper=$!
-  logging -s "stramripper started pid=${PidStreamripper}"
+  logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
 else
-  logging -i "stramripper running pid=${PidStreamripper}"
+  logging -i "${BIN_STREAMRIPPER} running pid=${PidStreamripper}"
 fi
 
 return 0
