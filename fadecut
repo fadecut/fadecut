@@ -23,6 +23,12 @@ DEBUG=0
 # Verbosity level
 VERBOSE=0
 
+# loop interval in seconds
+LOOP_INTERVAL=120
+
+# restart interval streamripper
+RESTART_STREAMRIPPER_INTERVAL=900
+
 # which files to work on
 FILES=*.mp3
 
@@ -77,6 +83,8 @@ STREAMRIPPER_OPTS="--quiet -o always -T"
 
 # Variables --------------------------------------------------------------------
 PidStreamripper=""
+IdleCounter=-1
+IdleSeconds=0
 # Functions --------------------------------------------------------------------
 
 usage()
@@ -191,18 +199,28 @@ cd ${PWD}
 return 0
 }
 
+shutdown_streamripper()
+# Shutting down streamripper
+{
+if [ "$(pidof streamripper)" ];
+then 
+  logging -i "Shutdown streamripper" 
+  kill ${PidStreamripper}
+  if [ "$(pidof streamripper)" ];
+  then
+    logging -w "Streamripper still here, killing it!"
+    kill -9 ${PidStreamripper}
+  fi
+fi
+}
+
 shutdown_fadecut()
 # shutting down fadecut
 {
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
-
+shutdown_streamripper
 logging -i "Shutting down fadecut..."
-if [ "$(pidof streamripper)" ];
-then 
-  logging -i "Stopping streamripper" >&2
-  kill ${PidStreamripper}
-fi
 exit $?
 }
 
@@ -245,14 +263,25 @@ cd ${WORKDIR}
 for F in $FILES
 do
   if [ "$F" == "$FILES" ]; then
-    logging -n "no files to process ..."
+    let IdleCounter=$((IdleCounter+1))
+    let IdleSeconds=$((IdleCounter*LOOP_INTERVAL))
+    logging -n "no files to process, idle for ${IdleSeconds} seconds"
     if [ $STREAMRIPPER_START == "0" ];
     then 
       showStats
       shutdown_fadecut
+    else
+      if [ ${IdleSeconds} -ge ${RESTART_STREAMRIPPER_INTERVAL} ];
+      then
+        logging -w "Oops! Seems to hang, restarting it"
+	shutdown_streamripper
+	startStream
+        IdleCounter=0
+      fi
     fi
     break
   fi
+  IdleCounter=0
 
   logging -i "Processing:"
   logging -a "$F"
@@ -403,5 +432,5 @@ do
   loop_fadecut
   showStats
   logging -n "Main(): Loop until we're finished" >&2
-  sleep 120
+  sleep ${LOOP_INTERVAL}
 done
