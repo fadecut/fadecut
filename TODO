@@ -1,9 +1,9 @@
 1st release
-* Check for necessary binaries
-* Renaming files without white-space
-* ogg default encoding?
-* auto-select ogg encoding if mp3 lame is not available
-* version numbering
+* Check for necessary binaries (marco)
+* Renaming files without white-space (tinu)
+* ogg default encoding? (marco)
+* auto-select ogg encoding if mp3 lame is not available (marco)
+* version numbering, may be usful information for debian packaging (tinu)
 
 later
 * debian packet
@@ -11,5 +11,3 @@ later
 * history/statistics
 * cross correlation with well known ad files
 * maybe we could use ffmpeg instead of sox/lame 
-
-
