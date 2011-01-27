@@ -21,10 +21,13 @@
 DEBUG=0
 
 # Verbosity level
-VERBOSE=1
+VERBOSE=0
 
 # which files to work on
 FILES=*.mp3
+
+# Main directory of fadecut
+PWD=`pwd`
 
 # prefered destination fileformat. (ogg/mp3)
 ENCODING=mp3
@@ -32,26 +35,29 @@ ENCODING=mp3
 # preferred fadecut method. <sox|cutmp3>
 METHOD=sox
 
+# fadcut's workdir
+WORKDIR=${PWD}/workdir
+
 # where to put fadecut'ted files
-OUTPUTDIR=new
+OUTPUTDIR=${PWD}/new
 
 # where to put the uncutted original files
-ORIGDIR=orig
+ORIGDIR=${PWD}/orig
 
 # here are the already fadecut'ted files, which are tested and we listened to 
 # already
-DONEDIR=done
+DONEDIR=${PWD}/done
 
 # here we put songs which we don't like
-DONTLIKEDIR=dontlike
+DONTLIKEDIR=${PWD}/dontlike
 
 # here are the files, with which we got an error
 # in same folder i put files, which i was listening to and found advertisement 
 # or bad cutting
-ERRORDIR=error
+ERRORDIR=${PWD}/error
 
 # here will be the files which we have already downloaded and which we got again
-DOUBLEDIR=double
+DOUBLEDIR=${PWD}/double
 
 # enqueue to rhythmbox or vlc player (0=false, 1=true)
 ENQUEUE=0
@@ -145,6 +151,10 @@ if [ ! -d "$DOUBLEDIR" ]; then
   mkdir -p "$DOUBLEDIR"
 fi
 
+if [ ! -d "$WORKDIR" ]; then
+  mkdir -p "$WORKDIR"
+fi
+
 return 0
 }
 
@@ -154,9 +164,17 @@ startStream()
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 
+cd ${WORKDIR}
+
 if [ ! -x ${BIN_STREAMRIPPER} ]; then
   logging -e "Ooops! No streamripper found"
   shutdown_fadecut
+fi
+
+if [ ${VERBOSE} -ge 1 ];
+then
+  # opposite of quiet
+  STREAMRIPPER_OPTS="-o always -T"
 fi
 
 if [ ! "$(pidof streamripper)" ] && [ "$STREAMRIPPER_START" == "1" ];
@@ -167,6 +185,8 @@ then
 else
   logging -n "${BIN_STREAMRIPPER} running pid=${PidStreamripper}"
 fi
+
+cd ${PWD}
 
 return 0
 }
@@ -221,16 +241,21 @@ if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 RetLoop=0
 
+cd ${WORKDIR}
 for F in $FILES
 do
   if [ "$F" == "$FILES" ]; then
     logging -n "no files to process ..."
-    if [ $STREAMRIPPER_START == "0" ]; then shutdown_fadecut
+    if [ $STREAMRIPPER_START == "0" ];
+    then 
+      showStats
+      shutdown_fadecut
     fi
     break
   fi
 
-  logging -i "Processing $F ..."
+  logging -i "Processing:"
+  logging -a "$F"
 
   if [ -f "$DONEDIR"/"$F" ]; then
     logging -i "$F already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
@@ -253,7 +278,7 @@ do
     let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
     let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
-    logging -i "Encoding to ${ENCODING} format..."
+    logging -i "Encoding to ${ENCODING}"
     if [ "${ENCODING}" == "mp3" ]; then
       FDST=${F}
       nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
@@ -268,7 +293,10 @@ do
 	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
 	oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
               -c "comment=$COMMENT" -o "$OUTPUTDIR"/"$FDST" || RetLoop=3
-      ogginfo "$OUTPUTDIR"/"$FDST" || RetLoop=3
+      if [ ${VERBOSE} -ge 1 ];
+      then
+        ogginfo "$OUTPUTDIR"/"$FDST" || RetLoop=3
+      fi
     fi
   fi
 
@@ -286,7 +314,8 @@ do
   fi
   
   if [ "${RetLoop}" -eq "0" ]; then
-    logging -s "Is ready for listening $FDST"
+    logging -s "Ready for listening:"
+    logging -a "$FDST"
     mv "$F" "$ORIGDIR"
   else
     mv "$F" "$ERRORDIR"
@@ -300,6 +329,7 @@ do
 
 queueSong
 done
+cd ${PWD}
 }
 
 load_profile()
@@ -346,14 +376,15 @@ do
       ;;
     q)
       DEBUG=0
-      # add LOGGING variable and change logging function to be able to turn all output off
+      VERBOSE=0
+      # add LOGGING variable and change logging function to be able to turn 
+      # all output off
       ;;
     s)
       STREAMRIPPER_START=1 
       ;;
     v)
-      # opposite of quiet
-      STREAMRIPPER_OPTS="-o always -T"
+      VERBOSE=1
       ;;
   esac
 done
@@ -368,9 +399,9 @@ createDirs
 
 while true
 do
-  logging -n "Main(): Loop until we're finished" >&2
   startStream
   loop_fadecut
   showStats
+  logging -n "Main(): Loop until we're finished" >&2
   sleep 120
 done
