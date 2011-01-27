@@ -1,0 +1,5 @@
+1st release
+* Check for necessary binaries
+* Renaming files without white-space
+* ogg default encoding?
+* auto-select ogg encoding if mp3 lame is not available
