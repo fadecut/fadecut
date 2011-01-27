@@ -312,6 +312,18 @@ load_profile()
   . ./${PROFILE}.pro || logging -e "Ooops!"
 }
 
+showStats()
+# Show file statistics
+{
+StatsNewDir=`find ${OUTPUTDIR} -type f | wc -l`
+StatsOrigDir=`find ${ORIGDIR} -type f | wc -l`
+StatsDoneDir=`find ${DONEDIR} -type f | wc -l`
+StatsDontlikeDir=`find ${DONTLIKEDIR} -type f | wc -l`
+StatsErrorDir=`find ${ERRORDIR} -type f | wc -l`
+StatsDoubleDir=`find ${DOUBLEDIR} -type f | wc -l`
+logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
+}
+
 # Main  ------------------------------------------------------------------------
 
 while getopts "d:hm:p:q:sv" OPTION
@@ -356,8 +368,9 @@ createDirs
 
 while true
 do
-  logging -i "Scanning for new files..." >&2
+  logging -n "Main(): Loop until we're finished" >&2
   startStream
   loop_fadecut
+  showStats
   sleep 120
 done
