@@ -1,15 +1,14 @@
 1st release
-* Check for necessary binaries
-* Renaming files without white-space
-* ogg default encoding?
-* auto-select ogg encoding if mp3 lame is not available
-* version numbering
+* tinu  Check for necessary binaries
+* tinu  Renaming files without white-space
+* marco ogg default encoding?
+* marco auto-select ogg encoding if mp3 lame is not available
+* ?     version numbering
 
 later
-* debian packet
-* think about where to save which configuration options (maybe ~/.fadecut/* ?)
-* history/statistics
-* cross correlation with well known ad files
-* maybe we could use ffmpeg instead of sox/lame 
-
+* ?     debian packet
+* ?     think about where to save which configuration options (maybe ~/.fadecut/* ?)
+* tinu  history/statistics
+* tinu  cross correlation with well known ad files
+* tinu  maybe we could use ffmpeg instead of sox/lame 
 
