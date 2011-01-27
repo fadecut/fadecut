@@ -1,4 +1,5 @@
 export STREAM_URL="http://mp3channels.webradio.antenne.de/80er-kulthits"
+export ENCODING=ogg
 export GENRE="80er"
 export COMMENT="ANTENNE BAYERN 80er Kulthits"
 #all values in seconds:
