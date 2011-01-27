@@ -115,18 +115,25 @@ logging()
 {
  time="$(date +%H):$(date +%M):$(date +%S)"
  prefix=""
+ stderr=-1
 
  case $1 in
-   -e)     prefix="Error:   ";;
-   -i)     prefix="Info:    ";;
-   -n)     prefix="Notice:  ";;
-   -s)     prefix="Success: ";;
-   -w)     prefix="Warning: ";;
-   -d)     prefix="Debug:   ";;
-   -a)     prefix="         ";;
+   -e)     prefix="Error:   " stderr=1;;
+   -i)     prefix="Info:    " stderr=0;;
+   -n)     prefix="Notice:  " stderr=0;;
+   -s)     prefix="Success: " stderr=0;;
+   -w)     prefix="Warning: " stderr=1;;
+   -d)     prefix="Debug:   " stderr=1;;
+   -a)     prefix="         " stderr=1;;
  esac
  shift
- echo "${time} ${prefix}" ${1}
+
+ if [ "${stderr}" -eq 1 ];
+ then
+   echo "${time} ${prefix}" ${1} >&2
+ else
+   echo "${time} ${prefix}" ${1}
+ fi
 }
 
 createDirs()
@@ -247,7 +254,7 @@ control_c()
 {
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
-  logging -n "CTRL-C catched" >&2
+  logging -n "CTRL-C catched"
   shutdown_fadecut
 }
 # trap keyboard interrupt (control-c)
@@ -431,6 +438,6 @@ while true
 do
   startStream
   loop_fadecut
-  logging -n "Main(): Loop until we're finished" >&2
+  logging -n "Main(): Loop until we're finished"
   sleep ${LOOP_INTERVAL}
 done
