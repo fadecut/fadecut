@@ -357,6 +357,7 @@ do
   set +o pipefail
 
 queueSong
+showStats
 done
 cd ${PWD}
 }
@@ -430,7 +431,6 @@ while true
 do
   startStream
   loop_fadecut
-  showStats
   logging -n "Main(): Loop until we're finished" >&2
   sleep ${LOOP_INTERVAL}
 done
