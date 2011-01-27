@@ -1,5 +1,5 @@
 export STREAM_URL="http://livestream.srg-ssr.ch/1/rsp/mp3_128"
-export GENRE="Pop"
+export GENRE="SwissPop"
 export COMMENT="Radio Swiss Pop"
 #all values in seconds:
 export TRIM_BEGIN=0
