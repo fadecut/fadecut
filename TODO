@@ -1,4 +1,20 @@
-1st release
+This file is part of fadecut                                                    
+https://github.com/micressor/fadecut                                            
+                                                                                
+fadecut is free software: you can redistribute it and/or modify                 
+it under the terms of the GNU General Public License as published by            
+the Free Software Foundation, either version 3 of the License, or               
+(at your option) any later version.                                             
+                                                                                
+fadecut is distributed in the hope that it will be useful,                      
+but WITHOUT ANY WARRANTY; without even the implied warranty of                  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                   
+GNU General Public License for more details.                                    
+                                                                                
+You should have received a copy of the GNU General Public License               
+along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
+
+# --- 1st release --------------------------------------------------------------
 * tinu  Check for necessary binaries
 * tinu  Renaming files without white-space
 * marco ogg default encoding?
@@ -6,7 +22,8 @@
 * team  to discuss, version numbering, may be usful information 
 	for debian packaging
 
-later
+
+# ---- later -------------------------------------------------------------------
 * ?     debian packet
 * tinu  history/statistics
 * tinu  cross correlation with well known ad files

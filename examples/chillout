@@ -1,8 +1,24 @@
-export STREAM_URL="http://mp3channels.webradio.antenne.de/chillout"
-export GENRE="Chillout"
-export COMMENT="ANTENNE BAYERN Chillout"
-#all values in seconds:
-export TRIM_BEGIN=5
-export TRIM_END=7
-export FADE_IN=2
-export FADE_OUT=5
+# This file is part of fadecut 
+# https://github.com/micressor/fadecut 
+#
+# fadecut is free software: you can redistribute it and/or modify 
+# it under the terms of the GNU General Public License as published by 
+# the Free Software Foundation, either version 3 of the License, or 
+# (at your option) any later version. 
+#  
+# fadecut is distributed in the hope that it will be useful, 
+# but WITHOUT ANY WARRANTY; without even the implied warranty of 
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+# GNU General Public License for more details. 
+# 
+# You should have received a copy of the GNU General Public License 
+# along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
+
+STREAM_URL="http://mp3channels.webradio.antenne.de/chillout"
+GENRE="Chillout"
+COMMENT="ANTENNE BAYERN Chillout"
+# all values in seconds:
+TRIM_BEGIN=5
+TRIM_END=7
+FADE_IN=2
+FADE_OUT=5
