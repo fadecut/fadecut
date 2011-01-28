@@ -41,6 +41,9 @@ ENCODING=mp3
 # preferred fadecut method. <sox|cutmp3>
 METHOD=sox
 
+# fadecut's profil dir
+PROFILDIR="${HOME}/.fadecut"
+
 # fadcut's workdir
 WORKDIR=${PWD}/workdir
 
@@ -85,6 +88,7 @@ STREAMRIPPER_OPTS="--quiet -o always -T"
 PidStreamripper=""
 IdleCounter=-1
 IdleSeconds=0
+MissingVar=""
 # Functions --------------------------------------------------------------------
 
 usage()
@@ -140,6 +144,10 @@ createDirs()
 # create necessary directories
 {
 if [ ${DEBUG} -ge 2 ]; then set -x
+fi
+
+if [ ! -d "${PROFILDIR}/profiles" ]; then
+  mkdir -p "${PROFILDIR}/profiles"
 fi
 
 if [ ! -d "$OUTPUTDIR" ]; then
@@ -371,12 +379,62 @@ cd ${PWD}
 
 load_profile()
 {
-  if [ ! -r ./${PROFILE}.pro ]; then
-    logging -e "Ooops! Can not load profile ${PROFILE}"
-    exit 1
-  fi
-  logging -i "Loading profile ${PROFILE}"
-  . ./${PROFILE}.pro || logging -e "Ooops!"
+createDirs
+logging -i "Loading profile file(s):"
+
+if [ -r ${PROFILDIR}/fadecutrc ]; then
+  logging -a "${PROFILDIR}/fadecutrc"
+  . ${PROFILDIR}/fadecutrc
+fi
+
+if [ ! -r ${PROFILDIR}/profiles/${PROFILE} ]; then
+  logging -e "Can't not load profile ${PROFILDIR}/profiles/${PROFILE}"
+  exit 1
+fi
+
+logging -a "${PROFILDIR}/profiles/${PROFILE}"
+. ${PROFILDIR}/profiles/${PROFILE}
+
+check_profile
+}
+
+check_profile()
+# Check profile, we need all variables to work
+{
+RetCheckProfile=0
+MissingVar=""
+
+if [ -z "$STREAM_URL" ]; then 
+  RetCheckProfile=1
+  MissingVar="STREAM_URL"
+fi
+if [ -z "$COMMENT" ]; then 
+  RetCheckProfile=1
+  MissingVar="COMMENT"
+fi
+if [ -z "$TRIM_BEGIN" ]; then 
+  RetCheckProfile=1
+  MissingVar="TRIM_BEGIN"
+fi
+if [ -z "$TRIM_END" ]; then 
+  RetCheckProfile=1
+  MissingVar="TRIM_END"
+fi
+if [ -z "$FADE_IN" ]; then 
+  RetCheckProfile=1
+  MissingVar="FADE_IN"
+fi
+if [ -z "$FADE_OUT" ]; then 
+  RetCheckProfile=1
+  MissingVar="FADE_OUT"
+fi
+
+if [ ${RetCheckProfile} -eq 1 ]; 
+then 
+  logging -e "${PROFILDIR}/profiles/${PROFILE}:"
+  logging -a "${MissingVar} not defined"
+  shutdown_fadecut
+fi
 }
 
 showStats()
@@ -431,8 +489,6 @@ then
      usage
      exit 1
 fi
-
-createDirs
 
 while true
 do
