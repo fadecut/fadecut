@@ -235,6 +235,7 @@ shutdown_fadecut()
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 shutdown_streamripper
+showStats
 logging -i "Shutting down fadecut..."
 exit $?
 }
@@ -283,7 +284,6 @@ do
     logging -n "no files to process, idle for ${IdleSeconds} seconds"
     if [ $STREAMRIPPER_START == "0" ];
     then 
-      showStats
       shutdown_fadecut
     else
       if [ ${IdleSeconds} -ge ${RESTART_STREAMRIPPER_INTERVAL} ];
