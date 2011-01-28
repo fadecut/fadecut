@@ -5,8 +5,6 @@
 * marco auto-select ogg encoding if mp3 lame is not available
 * team  to discuss, version numbering, may be usful information 
 	for debian packaging
-* marco think about where to save which configuration 
-	options (maybe ~/.fadecut/* ?)
 
 later
 * ?     debian packet
