@@ -45,28 +45,28 @@ METHOD=sox
 PROFILDIR="${HOME}/.fadecut"
 
 # fadcut's workdir
-WORKDIR=${PWD}/workdir
+WORKDIR="${PWD}/workdir"
 
 # where to put fadecut'ted files
-OUTPUTDIR=${PWD}/new
+OUTPUTDIR="${PWD}/new"
 
 # where to put the uncutted original files
-ORIGDIR=${PWD}/orig
+ORIGDIR="${PWD}/orig"
 
 # here are the already fadecut'ted files, which are tested and we listened to 
 # already
-DONEDIR=${PWD}/done
+DONEDIR="${PWD}/done"
 
 # here we put songs which we don't like
-DONTLIKEDIR=${PWD}/dontlike
+DONTLIKEDIR="${PWD}/dontlike"
 
 # here are the files, with which we got an error
 # in same folder i put files, which i was listening to and found advertisement 
 # or bad cutting
-ERRORDIR=${PWD}/error
+ERRORDIR="${PWD}/error"
 
 # here will be the files which we have already downloaded and which we got again
-DOUBLEDIR=${PWD}/double
+DOUBLEDIR="${PWD}/double"
 
 # enqueue to rhythmbox or vlc player (0=false, 1=true)
 ENQUEUE=0
@@ -187,7 +187,7 @@ startStream()
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 
-cd ${WORKDIR}
+cd "${WORKDIR}"
 
 if [ ! -x ${BIN_STREAMRIPPER} ]; then
   logging -e "Ooops! No streamripper found"
@@ -209,7 +209,7 @@ else
   logging -n "${BIN_STREAMRIPPER} running pid=${PidStreamripper}"
 fi
 
-cd ${PWD}
+cd "${PWD}"
 
 return 0
 }
@@ -274,7 +274,7 @@ if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 RetLoop=0
 
-cd ${WORKDIR}
+cd "${WORKDIR}"
 for F in $FILES
 do
   if [ "$F" == "$FILES" ]; then
@@ -374,7 +374,7 @@ do
 queueSong
 showStats
 done
-cd ${PWD}
+cd "${PWD}"
 }
 
 load_profile()
@@ -382,18 +382,18 @@ load_profile()
 createDirs
 logging -i "Loading profile file(s):"
 
-if [ -r ${PROFILDIR}/fadecutrc ]; then
+if [ -r "${PROFILDIR}/fadecutrc" ]; then
   logging -a "${PROFILDIR}/fadecutrc"
-  . ${PROFILDIR}/fadecutrc
+  . "${PROFILDIR}/fadecutrc"
 fi
 
-if [ ! -r ${PROFILDIR}/profiles/${PROFILE} ]; then
+if [ ! -r "${PROFILDIR}/profiles/${PROFILE}" ]; then
   logging -e "Can't not load profile ${PROFILDIR}/profiles/${PROFILE}"
   exit 1
 fi
 
 logging -a "${PROFILDIR}/profiles/${PROFILE}"
-. ${PROFILDIR}/profiles/${PROFILE}
+. "${PROFILDIR}/profiles/${PROFILE}"
 
 check_profile
 }
@@ -440,12 +440,12 @@ fi
 showStats()
 # Show file statistics
 {
-StatsNewDir=`find ${OUTPUTDIR} -type f | wc -l`
-StatsOrigDir=`find ${ORIGDIR} -type f | wc -l`
-StatsDoneDir=`find ${DONEDIR} -type f | wc -l`
-StatsDontlikeDir=`find ${DONTLIKEDIR} -type f | wc -l`
-StatsErrorDir=`find ${ERRORDIR} -type f | wc -l`
-StatsDoubleDir=`find ${DOUBLEDIR} -type f | wc -l`
+StatsNewDir=`find "${OUTPUTDIR}" -type f | wc -l`
+StatsOrigDir=`find "${ORIGDIR}" -type f | wc -l`
+StatsDoneDir=`find "${DONEDIR}" -type f | wc -l`
+StatsDontlikeDir=`find "${DONTLIKEDIR}" -type f | wc -l`
+StatsErrorDir=`find "${ERRORDIR}" -type f | wc -l`
+StatsDoubleDir=`find "${DOUBLEDIR}" -type f | wc -l`
 logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
 }
 
