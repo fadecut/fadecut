@@ -246,13 +246,13 @@ queueSong()
 if [ $ENQUEUE -eq "1" ]; then
   if [ "$(pidof rhythmbox)" ];
   then
-    logging -n "Rhythmbox is running, adding to playlist"
+    logging -i "Rhythmbox is running, adding to playlist"
     rhythmbox-client --enqueue "$OUTPUTDIR"/"$FDST"
   fi
   if [ "$(pidof vlc)" ];
   then
     # enqueue to vlc player if in one instance mode (default disabled)
-    logging -n "vlc is running, adding to playlist"
+    logging -i "vlc is running, adding to playlist"
     vlc --playlist-enqueue "$OUTPUTDIR"/"$FDST"
   fi
 fi
@@ -494,6 +494,7 @@ while true
 do
   startStream
   loop_fadecut
-  logging -n "Main(): Loop until we're finished"
-  sleep ${LOOP_INTERVAL}
+  if [ ${VERBOSE} -ge 1 ]; then logging -n "Main(): Loop until we're finished"
+  fi
+sleep ${LOOP_INTERVAL}
 done
