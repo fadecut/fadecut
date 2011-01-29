@@ -53,9 +53,6 @@ install: build
 	cp fadecut $(CURDIR)/debian/fadecut/usr/bin
 	rmdir $(CURDIR)/debian/fadecut/usr/sbin
 	dh_installman ./fadecut.1
-	#mkdir -p ${CURDIR}/debian/fadecut/usr/share/man/man1
-	#cp fadecut.1 ${CURDIR}/debian/fadecut/usr/share/man/man1
-	#gzip ${CURDIR}/debian/fadecut/usr/share/man/man1/fadecut.1
 
 # Build architecture-independent files here.
 binary-indep: build install

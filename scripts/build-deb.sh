@@ -3,19 +3,24 @@
 # aptitude install dh-make fakeroot devscripts debian-policy gnu-standards developers-reference build-essential 
 
 REVISION=fadecut-0.1.1
+WORKDIR=`pwd`
 TMPDIR=/tmp
 
 echo "generate tar package ----------------------------------------------------"
-rm -rf fadecut_* fadecut-*
+rm -rf ${TMPDIR}/fadecut_* ${TMPDIR}/fadecut-*
 git archive --format=tar --prefix=${REVISION}/ HEAD | gzip \
        >${TMPDIR}/${REVISION}.tgz
 tar fz ${TMPDIR}/${REVISION}.tgz --list
-cp ${TMPDIR}/${REVISION}.tgz .
-tar xfz ${TMPDIR}/${REVISION}.tgz
+cd ${TMPDIR}
+tar xfz ${REVISION}.tgz
 cd ${REVISION}
 dh_make -f ../${REVISION}.tgz
-cp -rp ../debian/* ./debian
+cd ${WORKDIR}
+echo "copy our scripts for generating deb package -----------------------------"
+cp -rp ./scripts/debian/* ${TMPDIR}/${REVISION}/debian
+rm ${TMPDIR}/${REVISION}/debian/README.Debian
 echo "dpkg-buildpackage  ------------------------------------------------------"
+cd ${TMPDIR}/${REVISION}
 dpkg-buildpackage -rfakeroot
 # check package
 echo "lintian -----------------------------------------------------------------"
