@@ -1,0 +1,13 @@
+Source: fadecut
+Section: sound
+Priority: extra
+Maintainer: Marco Balmer <marco@balmer.name>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.7.3
+Homepage: http://github.com/micressor/fadecut
+
+Package: fadecut
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},vorbis-tools
+Description: Managing live streams and convert to ogg or mp3 files
+ <this is>
