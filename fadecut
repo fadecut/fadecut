@@ -89,6 +89,7 @@ PidStreamripper=""
 IdleCounter=-1
 IdleSeconds=0
 MissingVar=""
+Fdst=""
 # Functions --------------------------------------------------------------------
 
 usage()
@@ -247,13 +248,13 @@ if [ $ENQUEUE -eq "1" ]; then
   if [ "$(pidof rhythmbox)" ];
   then
     logging -i "Rhythmbox is running, adding to playlist"
-    rhythmbox-client --enqueue "$OUTPUTDIR"/"$FDST"
+    rhythmbox-client --enqueue "$OUTPUTDIR"/"$Fdst"
   fi
   if [ "$(pidof vlc)" ];
   then
     # enqueue to vlc player if in one instance mode (default disabled)
     logging -i "vlc is running, adding to playlist"
-    vlc --playlist-enqueue "$OUTPUTDIR"/"$FDST"
+    vlc --playlist-enqueue "$OUTPUTDIR"/"$Fdst"
   fi
 fi
 }
@@ -324,23 +325,15 @@ do
 
     logging -i "Encoding to ${ENCODING}"
     if [ "${ENCODING}" == "mp3" ]; then
-      FDST=${F}
+      Fdst=${F}
       nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
     	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
 	nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
-	--tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$FDST" || RetLoop=3
+	--tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$Fdst" || RetLoop=3
     fi
 
     if [ "${ENCODING}" == "ogg" ]; then
-      FDST=$(echo $F | sed 's/.mp3/.ogg/g')
-      nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
-	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
-	oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
-              -c "comment=$COMMENT" -o "$OUTPUTDIR"/"$FDST" || RetLoop=3
-      if [ ${VERBOSE} -ge 1 ];
-      then
-        ogginfo "$OUTPUTDIR"/"$FDST" || RetLoop=3
-      fi
+      oggEncoding ${F}
     fi
   fi
 
@@ -360,15 +353,15 @@ do
   if [ "$METHOD" == "split" ]; then
     if [ "${ENCODING}" == "mp3" ]; then
       logging -i "splitting with mp3splt ..."
-      FSRC=$(echo $F | sed 's/.mp3//g')
+      Fsrc=$(echo $F | sed 's/.mp3//g')
       #verbose   : mp3splt -N -s -p nt=3 "$F"
       #quiet     : mp3splt -q -N -s -p nt=3 "$F"
       #more quiet: mp3splt -Q -N -s -p nt=3 "$F"
       mp3splt -Q -N -s -p nt=3 "$F"
-      FDST=`ls -1t "$FSRC"* | head -1`
-      cp "$FDST" "$OUTPUTDIR"/"$F"
-      rm -f "$FSRC"_silence_*.*
-      FDST="$F"
+      Fdst=`ls -1t "$Fsrc"* | head -1`
+      cp "$Fdst" "$OUTPUTDIR"/"$F"
+      rm -f "$Fsrc"_silence_*.*
+      Fdst="$F"
     else
       logging -e "This method works only for mp3 encoding"
     fi
@@ -376,7 +369,7 @@ do
   
   if [ "${RetLoop}" -eq "0" ]; then
     logging -s "Ready for listening:"
-    logging -a "$FDST"
+    logging -a "$Fdst"
     mv "$F" "$ORIGDIR"
   else
     mv "$F" "$ERRORDIR"
@@ -464,6 +457,20 @@ StatsDontlikeDir=`find "${DONTLIKEDIR}" -type f | wc -l`
 StatsErrorDir=`find "${ERRORDIR}" -type f | wc -l`
 StatsDoubleDir=`find "${DOUBLEDIR}" -type f | wc -l`
 logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
+}
+
+oggEncoding()
+# Encoding to ogg
+{
+Fdst=$(echo $F | sed 's/.mp3/.ogg/g')
+nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
+  fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
+  oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
+	-c "comment=$COMMENT" -o "$OUTPUTDIR"/"$Fdst" || RetLoop=3
+if [ ${VERBOSE} -ge 1 ];
+then
+  ogginfo "$OUTPUTDIR"/"$Fdst" || RetLoop=3
+fi
 }
 
 # Main  ------------------------------------------------------------------------
