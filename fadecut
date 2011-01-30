@@ -38,7 +38,7 @@ PWD=`pwd`
 # prefered destination fileformat. (ogg/mp3)
 ENCODING=mp3
 
-# preferred fadecut method. <sox|cutmp3>
+# preferred fadecut method. <sox|cut|split>
 METHOD=sox
 
 # fadecut's profil dir
@@ -99,7 +99,7 @@ usage: $0 -p <profilename> [other options]
 OPTIONS:
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
   -h	Show this message
-  -m    Method <sox|cutmp3>
+  -m    Method <sox|cut|split>
   -p    Profile <profilename>
   -q	Quiet
   -s    Stream (and rip), start streamripper
@@ -344,7 +344,7 @@ do
     fi
   fi
 
-  if [ "$METHOD" == "cutmp3" ]; then
+  if [ "$METHOD" == "cut" ]; then
     if [ "${ENCODING}" == "mp3" ]; then
       logging -i "cutting with cutmp3 ..."
       #quiet:
@@ -352,6 +352,23 @@ do
       
       #verbose:
       echo nnnnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c || RetLoop=3
+    else
+      logging -e "This method works only for mp3 encoding"
+    fi
+  fi
+
+  if [ "$METHOD" == "split" ]; then
+    if [ "${ENCODING}" == "mp3" ]; then
+      logging -i "splitting with mp3splt ..."
+      FSRC=$(echo $F | sed 's/.mp3//g')
+      #verbose   : mp3splt -N -s -p nt=3 "$F"
+      #quiet     : mp3splt -q -N -s -p nt=3 "$F"
+      #more quiet: mp3splt -Q -N -s -p nt=3 "$F"
+      mp3splt -Q -N -s -p nt=3 "$F"
+      FDST=`ls -1t "$FSRC"* | head -1`
+      cp "$FDST" "$OUTPUTDIR"/"$F"
+      rm -f "$FSRC"_silence_*.*
+      FDST="$F"
     else
       logging -e "This method works only for mp3 encoding"
     fi
