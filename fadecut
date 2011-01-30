@@ -325,15 +325,11 @@ do
 
     logging -i "Encoding to ${ENCODING}"
     if [ "${ENCODING}" == "mp3" ]; then
-      Fdst=${F}
-      nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
-    	fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
-	nice -15 lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
-	--tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$Fdst" || RetLoop=3
+      mp3Encoding "${F}"
     fi
 
     if [ "${ENCODING}" == "ogg" ]; then
-      oggEncoding ${F}
+      oggEncoding "${F}"
     fi
   fi
 
@@ -471,6 +467,16 @@ if [ ${VERBOSE} -ge 1 ];
 then
   ogginfo "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 fi
+}
+mp3Encoding()
+# Encoding to mp3
+{
+Fsrc=${1}
+Fdst=${Fsrc}
+nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
+  fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
+  lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
+  --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 }
 
 # Main  ------------------------------------------------------------------------
