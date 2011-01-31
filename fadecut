@@ -362,10 +362,10 @@ do
       #quiet     : mp3splt -q -N -s -p nt=3 "$F"
       #more quiet: mp3splt -Q -N -s -p nt=3 "$F"
       mp3splt -Q -N -s -p nt=3 "$F"
-      Fdst=`ls -1t "$Fsrc"* | head -1`
-      cp "$Fdst" "$OUTPUTDIR"/"$F"
+      Ftmp=`ls -1t "$Fsrc"* | head -1`
+      Fdst=$(echo $Ftmp | sed 's/ /_/g')
+      cp "$Ftmp" "$OUTPUTDIR"/"$Fdst"
       rm -f "$Fsrc"_silence_*.*
-      Fdst="$F"
     else
       logging -e "This method works only for mp3 encoding"
     fi
