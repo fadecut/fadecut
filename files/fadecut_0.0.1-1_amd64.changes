@@ -1,0 +1,28 @@
+Format: 1.8
+Date: Fri, 28 Jan 2011 15:40:04 +0100
+Source: fadecut
+Binary: fadecut
+Architecture: source all
+Version: 0.0.1-1
+Distribution: unstable
+Urgency: low
+Maintainer: Marco Balmer <marco@balmer.name>
+Changed-By: Marco Balmer <marco@balmer.name>
+Description: 
+ fadecut    - Radio livestream to ogg/mp3 tool
+Changes: 
+ fadecut (0.0.1-1) unstable; urgency=low
+ .
+   * Initial release
+Checksums-Sha1: 
+ cf4a9403694920cfc3826ba4549ffe5b55255508 500 fadecut_0.0.1-1.dsc
+ 3902aa78434e5de85838af69845f075d0fe873a1 41019 fadecut_0.0.1-1.tar.gz
+ ee755b8b0296ba66a1376dcbf892cc1e0219cdbc 7672 fadecut_0.0.1-1_all.deb
+Checksums-Sha256: 
+ 34736c4915540962bb7f2cff72ca463dcfa25077af2caf6060a3861d82c86e35 500 fadecut_0.0.1-1.dsc
+ 8e9560cbb323fce62532d3164fcbd900768bfe00381fff3e2379d804844cc93c 41019 fadecut_0.0.1-1.tar.gz
+ 5fcc2c4dd8570c0722f1e5bf2b108bbbc02b0fce78a4fc5d1d20360ee7517553 7672 fadecut_0.0.1-1_all.deb
+Files: 
+ 1712c9e19eb3122941f4719d357441f1 500 sound optional fadecut_0.0.1-1.dsc
+ 26014e29f9d0c3423afbaee3d9d47a11 41019 sound optional fadecut_0.0.1-1.tar.gz
+ 008298f64d9103790508074801d098ed 7672 sound optional fadecut_0.0.1-1_all.deb
