@@ -95,6 +95,7 @@ Fdst=""
 usage()
 {
 cat << EOF
+
 usage: $0 -p <profilename> [other options]
 
 OPTIONS:
@@ -105,6 +106,7 @@ OPTIONS:
   -q	Quiet
   -s    Stream (and rip), start streamripper
   -v	Verbose
+
 EOF
 }
 
@@ -487,7 +489,7 @@ nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 
 # Main  ------------------------------------------------------------------------
 
-while getopts "d:hm:p:q:sv" OPTION
+while getopts ":d:hm:p:qsv" OPTION
 do
 # When you need an argument that needs a value, you put the ":" right after the argument in the optstring. If your var is just a flag, withou any additional argument, just leave the var, without the ":" following it.
   case $OPTION in
@@ -516,6 +518,15 @@ do
       ;;
     v)
       VERBOSE=1
+      ;;
+    \?)
+      logging -e "Invalid option: -$OPTARG" >&2
+      usage
+      exit 1
+      ;;
+    :)
+      logging -e "Option -$OPTARG requires an argument." >&2
+      exit 1
       ;;
   esac
 done
