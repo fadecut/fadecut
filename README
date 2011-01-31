@@ -68,3 +68,4 @@ vi ~/.fadecut/profiles/swisspop
 2. Let's stream, rip and automatically fade & cut now
 fadecut -s -p swisspop
 
+3. man fadecut
