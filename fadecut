@@ -308,6 +308,12 @@ do
     continue
   fi
 
+  if [ -f "$OUTPUTDIR"/"$F" ]; then
+    logging -i "$F already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
+    mv "$F" "$DOUBLEDIR"
+    continue
+  fi
+
   if [ -f "$DONTLIKEDIR"/"$F" ]; then
     logging -i "$F already exists in $DONTLIKEDIR -> deleting ..."
     rm "$F"
