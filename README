@@ -42,7 +42,7 @@ apt-get -t testing install sox libsox-fmt-mp3 vorbis-tools
 
 --- Usage ----------------------------------------------------------------------
 1. Create a profile file
-vim swisspop.pro
+vim ${HOME}/.fadecut/profiles/swisspop
   export STREAM_URL="http://livestream.srg-ssr.ch/1/rsp/mp3_128"
   export ENCODING=ogg
   #export ENCODING=mp3
@@ -56,4 +56,6 @@ vim swisspop.pro
 :wq
 
 2. Let's rip now
-./fadecut swisspop
+./fadecut -p swisspop -s
+
+3. man fadecut
