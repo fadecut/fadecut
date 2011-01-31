@@ -99,6 +99,8 @@ cat << EOF
 usage: $0 -p <profilename> [other options]
 
 OPTIONS:
+  -c    create profile <profilename>
+  -e    edit profile <profilename>
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
   -h	Show this message
   -m    Method <sox|cut|split>
@@ -412,6 +414,31 @@ logging -a "${PROFILDIR}/profiles/${PROFILE}"
 check_profile
 }
 
+create_profile()
+# creating a profile
+{
+NEW=${1}
+
+echo \
+"STREAM_URL=\"http://radiostream\"
+GENRE=\"YourGenre\"
+COMMENT=\"Your Comment\"
+# all values in seconds:
+TRIM_BEGIN=0
+TRIM_END=0
+FADE_IN=1
+FADE_OUT=4" > "${PROFILDIR}/profiles/${NEW}"
+logging -i "Starting vim editor"
+vi "${PROFILDIR}/profiles/${NEW}"
+logging -i "Now start: fadecut -p ${NEW} -s"
+}
+
+edit_profile()
+# creating a profile
+{
+vi "${PROFILDIR}/profiles/${1}"
+}
+
 check_profile()
 # Check profile, we need all variables to work
 {
@@ -489,9 +516,11 @@ nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 
 # Main  ------------------------------------------------------------------------
 
-while getopts ":d:hm:p:qsv" OPTION
+while getopts ":d:hm:p:c:e:qsv" OPTION
 do
-# When you need an argument that needs a value, you put the ":" right after the argument in the optstring. If your var is just a flag, withou any additional argument, just leave the var, without the ":" following it.
+# When you need an argument that needs a value, you put the ":" right after 
+# the argument in the optstring. If your var is just a flag, withou any 
+# additional argument, just leave the var, without the ":" following it.
   case $OPTION in
     d)
       DEBUG=$OPTARG
@@ -506,6 +535,14 @@ do
     p)
       PROFILE=$OPTARG
       load_profile
+      ;;
+    c)
+      create_profile $OPTARG
+      exit 0
+      ;;
+    e)
+      edit_profile $OPTARG
+      exit 0
       ;;
     q)
       DEBUG=0
