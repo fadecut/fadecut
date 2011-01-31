@@ -30,8 +30,17 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 
 --- Ubuntu ---------------------------------------------------------------------
-apt-get install ...
+apt-get install bash coreutils findutils nice sed sox streamripper 
 
+for ogg encoding:
+apt-get install vorbis-tools
+
+for mp3 encoding:
+apt-get install lame
+
+optional for the use of different fadecut methods:
+apt-get install cutmp3
+apt-get install mp3splt
 
 --- Debian ---------------------------------------------------------------------
 * We need soxi from debian testing repository
@@ -42,7 +51,8 @@ apt-get -t testing install sox libsox-fmt-mp3 vorbis-tools
 
 --- Usage ----------------------------------------------------------------------
 1. Create a profile file
-vim swisspop.pro
+mkdir -p ~/.fadecut/profiles
+vi ~/.fadecut/profiles/swisspop
   export STREAM_URL="http://livestream.srg-ssr.ch/1/rsp/mp3_128"
   export ENCODING=ogg
   #export ENCODING=mp3
@@ -55,5 +65,6 @@ vim swisspop.pro
   export FADE_OUT=4
 :wq
 
-2. Let's rip now
-./fadecut swisspop
+2. Let's stream, rip and automatically fade & cut now
+fadecut -s -p swisspop
+
