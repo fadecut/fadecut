@@ -14,10 +14,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
+
 --- Overview -------------------------------------------------------------------
  This script handle mp3 files (-ripped by streamripper), fade in and            
  out. It set stream tags: artist, title and your own decided genre.             
- If you have songs you do not like, move the ripped file to dontlike/ folder,    so fadecut will no longer convert this song, if it was read on the livestream. 
+ If you have songs you do not like, move the ripped file to dontlike/ folder,
+ so fadecut will no longer convert this song, if it was read on the livestream. 
  All processed files of fadecut are in new/ folder. The original files from     
  streamripper are in the orig/ folder after processing. 
 
@@ -41,6 +43,7 @@ apt-get install lame
 optional for the use of different fadecut methods:
 apt-get install cutmp3
 apt-get install mp3splt
+
 
 --- Debian ---------------------------------------------------------------------
 * We need soxi from debian testing repository
@@ -69,3 +72,5 @@ vi ~/.fadecut/profiles/swisspop
 fadecut -s -p swisspop
 
 3. man fadecut
+
+
