@@ -519,11 +519,10 @@ Fwoext=$(echo $F | sed 's/.mp3//g')
 #verbose   : mp3splt -N -s -p nt=3 "$F"
 #quiet     : mp3splt -q -N -s -p nt=3 "$F"
 #more quiet: mp3splt -Q -N -s -p nt=3 "$F"
-mp3splt -Q -N -s -p nt=3 "$F"
+mp3splt -q -N -s -p nt=3 "$F"
 Ftmp=`ls -1t "$Fwoext"* | head -1`
 if [[ "$Ftmp" != "$F" ]]
 then 
-  logging -i "moving $Ftmp to $F ............"
   mv "$Ftmp" "$F"
 fi
 rm -f "$Fwoext"_silence_*.*
