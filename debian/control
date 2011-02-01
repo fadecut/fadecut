@@ -8,7 +8,7 @@ Homepage: http://github.com/micressor/fadecut
 
 Package: fadecut
 Architecture: all
-Depends: vorbis-tools, sox (>=14.3), streamripper, mp3info,  libc-bin
+Depends: vorbis-tools, sox, streamripper, mp3info,  libc-bin
 Suggests: lame
 Description: Radio livestream to ogg/mp3 tool
  This script handle mp3 files (-ripped by streamripper), fade in and
