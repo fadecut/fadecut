@@ -1,45 +1,45 @@
 .TH "fadecut" "1" "0.0.1"
 .SH NAME
-fadecut - Radio livestream to ogg/mp3 tool
+fadecut \- Radio livestream to ogg/mp3 tool
 .SH SYNOPSIS
-fadecut -p [
+fadecut \-p [
 .I profile
 ] [
 .I OPTIONS
 ]
 .SH DESCRIPTION
-This script handle mp3 files (-ripped by streamripper), fade in and            
+This script handle mp3 files (\-ripped by streamripper), fade in and            
 out. It set stream tags: artist, title and your own decided genre.             
 If you have songs you do not like, move the ripped file to dontlike/ folder,
 so fadecut will no longer convert this song, if it was read on the livestream. 
 All processed files of fadecut are in new/ folder. The original files of     
 streamripper are in the orig/ folder after processing. 
 .SH OPTIONS
-.B -c
+.B \-c
 Create a new profile <profilename>
 .PP
-.B -e
+.B \-e
 Edit an existing profile <profilename>
 .PP
-.B -d
-Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
+.B \-d
+Debug: \-d 0|1|2|3 (level 0 is standard, \-d without number is like 1)
 .PP
-.B -h
+.B \-h
 Show this message
 .PP
-.B -m
+.B \-m
 Method <sox|split>
 .PP
-.B -p
+.B \-p
 Profile <profilename>
 .PP
-.B -q
+.B \-q
 Quiet
 .PP
-.B -s
+.B \-s
 Stream (and rip), start streamripper
 .PP
-.B -v
+.B \-v
 Verbose
 .SH VARIABLES
 STREAM_URL="http://streamurl"
@@ -49,7 +49,7 @@ test
 .PP
 ENCODING=ogg
 .RS
-prefered destination fileformat. (ogg/mp3)
+preferred destination fileformat. (ogg/mp3)
 .RE
 .PP
 GENRE="SwissPop"
@@ -84,22 +84,22 @@ Fade out for <n> seconds.
 .SH EXAMPLES
 Create a new ripping profile
 .RS
-fadecut -c test
+fadecut \-c test
 .RE
 .PP
 Edit/update profile test
 .RS
-fadecut -e test
+fadecut \-e test
 .RE
 .PP
-Rip, cut and fade in-/out with profile test
+Rip, cut and fade in\-/out with profile test
 .RS
-fadecut -p test -s
+fadecut \-p test \-s
 .RE
 .PP
-Only cut and fade in-/out without ripping from livestream
+Only cut and fade in\-/out without ripping from livestream
 .RS
-fadecut -p test
+fadecut \-p test
 .RE
 .SH FILES
 https://github.com/micressor/fadecut
