@@ -14,19 +14,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License               
 along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-# --- 1st release --------------------------------------------------------------
-* team  to discuss, version numbering, may be usful information 
-	for debian packaging
-* team  to discuss, checking out debian rules
-* marco Check for necessary binaries
-* marco Testframework, which will auto-test all ENCODING and METHOD's, before
-	releasing.
-* tinu  provide testfiles *.mp3 to marco for using in the testframework
-* marco debian packet, usability
+# --- notes --------------------------------------------------------------------
+to change tags you may use lltag (writes only id3v1 tags):
+lltag --yes -g SwissPop -c "Radio Swiss Pop" *.mp3
 
+to change filenames according to tags:
+lltag --rename "%a_-_%t" --rename-min --rename-sep _ --yes *.mp3
 
-# --- later --------------------------------------------------------------------
-* tinu  history/statistics
-        in debug mode: write how much files were splitted with mp3splt
-* tinu  cross correlation with well known ad files
-* tinu  maybe we could use ffmpeg instead of sox/lame 
+to change filenames with iso-8859 umlaut to utf8:
+convmv -f iso-8859-15 -t utf8 -r *.mp3 --notest
+
+another command line tagging tool, which reads and writes also id3v2:
+(and it is able to write lyrics and pictures into the files)
+(not useful for reading tags)
+* eyeD3 - displays and manipulates id3-tags on mp3 files
