@@ -1,0 +1,30 @@
+This package was debianized by Marco Balmer <marco@balmer.name> on
+Fri, 28 Jan 2011 15:40:04 +0100.
+
+It was downloaded from http://github.com/micressor/fadecut
+
+Copyright:
+2011 Martin Gafner
+2011 Marco Balmer
+
+License:
+
+This file is part of fadecut
+http://github.com/micressor/fadecut
+
+fadecut is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+fadecut is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
+
+
+The Debian packaging is (C) 2011, Marco Balmer <marco@balmer.name> and
+is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
