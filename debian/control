@@ -8,12 +8,12 @@ Homepage: http://github.com/micressor/fadecut
 
 Package: fadecut
 Architecture: all
-Depends: vorbis-tools, sox, streamripper, mp3info,  libc-bin, mp3splt (>=2.2.5)
+Depends: vorbis-tools, sox, libsox-fmt-mp3, streamripper, mp3info,  libc-bin, mp3splt
 Suggests: lame
 Description: Radio livestream to ogg/mp3 tool
- This script handles mp3 files (-ripped by streamripper), fades them in and
- out. It sets stream tags: artist, title and your own decided genre.
- If you have songs you do not like, move the ripped file to the dontlike/ folder,
+ This script handle mp3 files (-ripped by streamripper), fade in and
+ out. It set stream tags: artist, title and your own decided genre.
+ If you have songs you do not like, move the ripped file to dontlike/ folder,
  so fadecut will no longer convert this song, if it was read on the livestream.
  All processed files of fadecut are in new/ folder. The original files from
  streamripper are in the orig/ folder after processing.
