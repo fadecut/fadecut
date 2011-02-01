@@ -38,7 +38,7 @@ PWD=`pwd`
 # prefered destination fileformat. (ogg/mp3)
 ENCODING=mp3
 
-# preferred fadecut method. <sox|cut|split>
+# preferred fadecut method. <sox|split>
 METHOD=sox
 
 # fadecut's profil dir
@@ -67,6 +67,9 @@ ERRORDIR="${PWD}/error"
 
 # here will be the files which we have already downloaded and which we got again
 DOUBLEDIR="${PWD}/double"
+
+# where to put temporary files
+TMPDIR=/tmp
 
 # enqueue to rhythmbox or vlc player (0=false, 1=true)
 ENQUEUE=0
@@ -103,7 +106,7 @@ OPTIONS:
   -e    edit profile <profilename>
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
   -h	Show this message
-  -m    Method <sox|cut|split>
+  -m    Method <sox|split>
   -p    Profile <profilename>
   -q	Quiet
   -s    Stream (and rip), start streamripper
@@ -305,34 +308,42 @@ do
 
   logging -i "Processing:"
   logging -a "$F"
-
-  if [ -f "$DONEDIR"/"$F" ]; then
+  
+  Fnew=$(filerename $F)
+  if [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
     logging -i "$F already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
     mv "$F" "$DOUBLEDIR"
     continue
   fi
 
-  if [ -f "$OUTPUTDIR"/"$F" ]; then
+  if [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
     logging -i "$F already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
     mv "$F" "$DOUBLEDIR"
     continue
   fi
 
-  if [ -f "$DONTLIKEDIR"/"$F" ]; then
+  if [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
     logging -i "$F already exists in $DONTLIKEDIR -> deleting ..."
     rm "$F"
     continue
   fi
 
+  # not needed anymore?
   set -o pipefail
-  ARTIST=`echo $F | sed -e 's/ -.*//' | iconv -f UTF-8 -t ISO8859-1`
-  TITLE=`echo $F | sed -e 's/^.* - //' | sed -e 's/.mp3//' | iconv -f UTF-8 -t ISO8859-1`
+  
+  ARTIST=`mp3info -p "%a" "$F"`
+  TITLE=`mp3info -p "%t" "$F"`
+  LENGTH=`mp3info -p "%S" "$F"`
+  if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z LENGTH ]]
+  then
+    logging -e "could not get mp3 tags from source file."
+    logging -e "ARTIST: $ARTIST / TITLE: $TITLE / LENGTH: $LENGTH"
+    shutdown_fadecut
+  fi
+  let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
+  let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
   if [ "$METHOD" == "sox" ]; then
-    LENGTH=`soxi -D "$F" | sed -e 's/\..*//'`
-    let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
-    let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
-
     logging -i "Encoding to ${ENCODING}"
     if [ "${ENCODING}" == "mp3" ]; then
       mp3Encoding "${F}"
@@ -343,33 +354,16 @@ do
     fi
   fi
 
-  if [ "$METHOD" == "cut" ]; then
-    if [ "${ENCODING}" == "mp3" ]; then
-      logging -i "cutting with cutmp3 ..."
-      #quiet:
-      #echo nnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c &> /dev/null
-      
-      #verbose:
-      echo nnnnnnpwq | cutmp3 -i "$F" -O "$OUTPUTDIR"/"$F" -q -c || RetLoop=3
-    else
-      logging -e "This method works only for mp3 encoding"
-    fi
-  fi
-
   if [ "$METHOD" == "split" ]; then
+    splitting "${F}"
+
+    logging -i "Encoding to ${ENCODING}"
     if [ "${ENCODING}" == "mp3" ]; then
-      logging -i "splitting with mp3splt ..."
-      Fsrc=$(echo $F | sed 's/.mp3//g')
-      #verbose   : mp3splt -N -s -p nt=3 "$F"
-      #quiet     : mp3splt -q -N -s -p nt=3 "$F"
-      #more quiet: mp3splt -Q -N -s -p nt=3 "$F"
-      mp3splt -Q -N -s -p nt=3 "$F"
-      Ftmp=`ls -1t "$Fsrc"* | head -1`
-      Fdst=$(echo $Ftmp | sed 's/ /_/g')
-      cp "$Ftmp" "$OUTPUTDIR"/"$Fdst"
-      rm -f "$Fsrc"_silence_*.*
-    else
-      logging -e "This method works only for mp3 encoding"
+      mp3Encoding "${F}"
+    fi
+
+    if [ "${ENCODING}" == "ogg" ]; then
+      oggEncoding "${F}"
     fi
   fi
   
@@ -493,7 +487,9 @@ logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDo
 oggEncoding()
 # Encoding to ogg
 {
-Fdst=$(echo $F | sed 's/.mp3/.ogg/g')
+Fsrc="$*"
+Ftmp=$(echo $Fsrc | sed 's/.mp3/.ogg/g')
+Fdst=$(filerename $Ftmp)
 nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
@@ -506,12 +502,39 @@ fi
 mp3Encoding()
 # Encoding to mp3
 {
-Fsrc=${1}
-Fdst=${Fsrc}
+Fsrc="$*"
+Fdst=$(filerename $Fsrc)
 nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
   --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$Fdst" || RetLoop=3
+}
+
+splitting()
+# split files using silence detection
+{
+logging -i "splitting with mp3splt ..."
+F="$*"
+Fwoext=$(echo $F | sed 's/.mp3//g')
+#verbose   : mp3splt -N -s -p nt=3 "$F"
+#quiet     : mp3splt -q -N -s -p nt=3 "$F"
+#more quiet: mp3splt -Q -N -s -p nt=3 "$F"
+mp3splt -Q -N -s -p nt=3 "$F"
+Ftmp=`ls -1t "$Fwoext"* | head -1`
+if [[ "$Ftmp" != "$F" ]]
+then 
+  logging -i "moving $Ftmp to $F ............"
+  mv "$Ftmp" "$F"
+fi
+rm -f "$Fwoext"_silence_*.*
+}
+
+filerename()
+# rename filenames
+{
+Fnold="$*"
+Fnnew=$(echo $Fnold | sed -e 's/ /_/g' -e 's/\(.*\)/\L\1/')
+echo $Fnnew
 }
 
 # Main  ------------------------------------------------------------------------
@@ -531,6 +554,13 @@ do
       ;;
     m)
       METHOD=$OPTARG
+      echo $METHOD
+      if [[ $METHOD != sox ]] && [[ $METHOD != split ]]
+      then
+        logging -e "Option -m needs 'sox' or 'split' as an argument." >&2
+        usage
+        exit 1
+      fi
       ;;
     p)
       PROFILE=$OPTARG
