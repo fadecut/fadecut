@@ -16,7 +16,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 # --- 1st release --------------------------------------------------------------
 * tinu  Check for necessary binaries
-* tinu  Renaming files without white-space
+* done  Renaming files without white-space
 * marco ogg default encoding?
 * marco auto-select ogg encoding if mp3 lame is not available
 * team  to discuss, version numbering, may be usful information 

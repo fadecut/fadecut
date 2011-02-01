@@ -29,21 +29,17 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * lame, An MP3 encoding library (frontend)
 * sox, the Swiss army knife of sound processing
 * vorbis-tools, several Ogg Vorbis tools
+* mp3info, a MP3 technical info viewer and ID3 1.x tag editor
 
 
 --- Ubuntu ---------------------------------------------------------------------
-apt-get install bash coreutils findutils nice sed sox streamripper 
+apt-get install bash coreutils findutils mp3info mp3splt nice sed sox streamripper 
 
 for ogg encoding:
 apt-get install vorbis-tools
 
 for mp3 encoding:
 apt-get install lame
-
-optional for the use of different fadecut methods:
-apt-get install cutmp3
-apt-get install mp3splt
-
 
 --- Debian ---------------------------------------------------------------------
 * We need soxi from debian testing repository
