@@ -41,8 +41,10 @@ clean:
 	dh_clean 
 
 install: build
-	cp fadecut $(CURDIR)/debian/fadecut/usr/bin
+	# dh_install check file debian/fadecut.install
+	dh_install
 	dh_installman ./fadecut.1
+	dh_installexamples ./examples/*
 
 # Build architecture-independent files here.
 binary-indep: build install
