@@ -345,28 +345,20 @@ do
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
-  if [ "$METHOD" == "sox" ]; then
-    logging -i "Encoding to ${ENCODING}"
-    if [ "${ENCODING}" == "mp3" ]; then
-      mp3Encoding "${F}"
-    fi
-
-    if [ "${ENCODING}" == "ogg" ]; then
-      oggEncoding "${F}"
-    fi
-  fi
-
+  logging -i "Encoding to ${ENCODING} with method ${METHOD}"
   if [ "$METHOD" == "split" ]; then
     splitting "${F}"
+  fi
 
-    logging -i "Encoding to ${ENCODING}"
-    if [ "${ENCODING}" == "mp3" ]; then
-      mp3Encoding "${F}"
-    fi
+  # Only for information:
+  # if [ "$METHOD" == "sox" ]; then
+  # fi
 
-    if [ "${ENCODING}" == "ogg" ]; then
-      oggEncoding "${F}"
-    fi
+  if [ "${ENCODING}" == "mp3" ]; then
+    mp3Encoding "${F}"
+  fi
+  if [ "${ENCODING}" == "ogg" ]; then
+    oggEncoding "${F}"
   fi
   
   if [ "${RetLoop}" -eq "0" ]; then
