@@ -211,9 +211,7 @@ fi
 if [ ! "$(pidof streamripper)" ] && [ "$STREAMRIPPER_START" == "1" ];
 then
   ${BIN_STREAMRIPPER} ${STREAM_URL} -d . \
-                      --with-id3v1 \
                       --codeset-filesys=utf8 \
-                      --codeset-id3=ISO-8859-1 \
                       -s ${STREAMRIPPER_OPTS} & 
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
@@ -335,8 +333,8 @@ do
   # not needed anymore?
   set -o pipefail
   
-  ARTIST=`mp3info -p "%a" "$F"`
-  TITLE=`mp3info -p "%t" "$F"`
+  ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
+  TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
   LENGTH=`mp3info -p "%S" "$F"`
   if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z LENGTH ]]
   then
