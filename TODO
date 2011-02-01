@@ -29,3 +29,12 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * tinu  history/statistics
 * tinu  cross correlation with well known ad files
 * tinu  maybe we could use ffmpeg instead of sox/lame 
+
+
+# ---- notes -------------------------------------------------------------------
+to change tags you may use lltag:
+lltag --yes -g SwissPop -c "Radio Swiss Pop" *.mp3
+
+to change filenames according to tags:
+lltag --rename "%a_-_%t" --rename-min --rename-sep _ --yes *.mp3
+
