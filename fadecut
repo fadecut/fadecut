@@ -549,7 +549,6 @@ do
       ;;
     m)
       METHOD=$OPTARG
-      echo $METHOD
       if [[ $METHOD != sox ]] && [[ $METHOD != split ]]
       then
         logging -e "Option -m needs 'sox' or 'split' as an argument." >&2
