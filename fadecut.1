@@ -28,7 +28,7 @@ Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
 Show this message
 .PP
 .B -m
-Method <sox|cut|split>
+Method <sox|split>
 .PP
 .B -p
 Profile <profilename>
@@ -41,8 +41,65 @@ Stream (and rip), start streamripper
 .PP
 .B -v
 Verbose
+.SH VARIABLES
+STREAM_URL="http://streamurl"
+.RS
+test
+.RE
+.PP
+ENCODING=ogg
+.RS
+prefered destination fileformat. (ogg/mp3)
+.RE
+.PP
+GENRE="SwissPop"
+.RS
+Processed files will get the above genre.
+.RE
+.PP
+COMMENT="Radio Swiss Pop"
+.RS
+Processed files will get the above comment.
+.RE
+.PP
+TRIM_BEGIN=0
+.RS
+trim?
+.RE
+.PP
+TRIM_END=0
+.RS
+trim?
+.RE
+.PP
+FADE_IN=1
+.RS
+Fade in for <n> seconds.
+.RE
+.PP
+FADE_OUT=4
+.RS
+Fade out for <n> seconds.
+.RE
+.SH EXAMPLES
+Create a new ripping profile
+.RS
+fadecut -c test
+.RE
+.PP
+Edit/update profile test
+.RS
+fadecut -e test
+.RE
+.PP
+Rip, cut and fade in-/out with profile test
+.RS
+fadecut -p test -s
+.RE
+.PP
+Only cut and fade in-/out without ripping from livestream
+.RS
+fadecut -p test
+.RE
 .SH FILES
 https://github.com/micressor/fadecut
-.SH EXAMPLE
-.PP
-fadecut -p chillout -s
