@@ -36,7 +36,7 @@ FILES=*.mp3
 PWD=`pwd`
 
 # prefered destination fileformat. (ogg/mp3)
-ENCODING=mp3
+ENCODING=ogg
 
 # preferred fadecut method. <sox|split>
 METHOD=sox

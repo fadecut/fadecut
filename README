@@ -26,17 +26,16 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 --- Requirements ---------------------------------------------------------------
 * bash, The GNU Bourne Again SHell
-* lame, An MP3 encoding library (frontend)
 * sox, the Swiss army knife of sound processing
 * vorbis-tools, several Ogg Vorbis tools
 * mp3info, a MP3 technical info viewer and ID3 1.x tag editor
 
+optional, for mp3 encoding:
+* lame, An MP3 encoding library (frontend)
+
 
 --- Ubuntu ---------------------------------------------------------------------
-apt-get install bash coreutils findutils mp3info mp3splt nice sed sox streamripper 
-
-for ogg encoding:
-apt-get install vorbis-tools
+apt-get install bash coreutils findutils mp3info mp3splt nice sed sox streamripper vorbis-tools
 
 for mp3 encoding:
 apt-get install lame
@@ -53,8 +52,6 @@ apt-get -t testing install sox libsox-fmt-mp3 vorbis-tools
 mkdir -p ~/.fadecut/profiles
 vi ~/.fadecut/profiles/swisspop
   export STREAM_URL="http://livestream.srg-ssr.ch/1/rsp/mp3_128"
-  export ENCODING=ogg
-  #export ENCODING=mp3
   export GENRE="Pop"
   export COMMENT="Radio Swiss Pop"
   #all values in seconds:
