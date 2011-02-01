@@ -25,10 +25,11 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 
 --- Requirements ---------------------------------------------------------------
-* bash, The GNU Bourne Again SHell
-* sox, the Swiss army knife of sound processing
-* vorbis-tools, several Ogg Vorbis tools
-* mp3info, a MP3 technical info viewer and ID3 1.x tag editor
+* bash - The GNU Bourne Again SHell
+* sox - the Swiss army knife of sound processing
+* vorbis-tools - several Ogg Vorbis tools
+* mp3info - a MP3 technical info viewer and ID3 1.x tag editor
+* id3v2 - A command line id3v2 tag editor
 
 optional, for mp3 encoding:
 * lame, An MP3 encoding library (frontend)
@@ -41,29 +42,24 @@ for mp3 encoding:
 apt-get install lame
 
 --- Debian ---------------------------------------------------------------------
-* We need soxi from debian testing repository
-* lame is official not available in debian.
+* lame (mp3 encoding) is official not available in debian.
 
-apt-get -t testing install sox libsox-fmt-mp3 vorbis-tools
-
+apt-get vorbis-tools sox libsox-fmt-mp3 streamripper mp3info mp3splt
 
 --- Usage ----------------------------------------------------------------------
 1. Create a profile file
-mkdir -p ~/.fadecut/profiles
-vi ~/.fadecut/profiles/swisspop
-  export STREAM_URL="http://livestream.srg-ssr.ch/1/rsp/mp3_128"
-  export GENRE="Pop"
-  export COMMENT="Radio Swiss Pop"
-  #all values in seconds:
-  export TRIM_BEGIN=0
-  export TRIM_END=0
-  export FADE_IN=1
-  export FADE_OUT=4
-:wq
+fadecut -c swisspop
+
+Edit variables:
+ STREAM_URL="http://livestream.srg-ssr.ch/1/rsp/mp3_128"
+ GENRE="Pop"
+ COMMENT="Radio Swiss Pop"
+ TRIM_BEGIN=0
+ TRIM_END=0
+ FADE_IN=1
+ FADE_OUT=4
 
 2. Let's stream, rip and automatically fade & cut now
-fadecut -s -p swisspop
+fadecut -p swisspop -s
 
 3. man fadecut
-
-
