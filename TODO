@@ -15,23 +15,25 @@ You should have received a copy of the GNU General Public License
 along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 # --- 1st release --------------------------------------------------------------
-* tinu  Check for necessary binaries
 * done  Renaming files without white-space
-* marco ogg default encoding?
-* marco auto-select ogg encoding if mp3 lame is not available
+* tinu  ogg default encoding?
+* tinu  auto-select ogg encoding if mp3 lame is not available
 * team  to discuss, version numbering, may be usful information 
 	for debian packaging
+* team  to discuss, checking out debian rules
+* marco Check for necessary binaries
 * marco Testframework, which will auto-test all ENCODING and METHOD's, before
 	releasing.
+* marco debian packet, usability
 
-# ---- later -------------------------------------------------------------------
-* ?     debian packet
+
+# --- later --------------------------------------------------------------------
 * tinu  history/statistics
 * tinu  cross correlation with well known ad files
 * tinu  maybe we could use ffmpeg instead of sox/lame 
 
 
-# ---- notes -------------------------------------------------------------------
+# --- notes --------------------------------------------------------------------
 to change tags you may use lltag:
 lltag --yes -g SwissPop -c "Radio Swiss Pop" *.mp3
 
