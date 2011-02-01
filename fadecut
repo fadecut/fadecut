@@ -210,7 +210,11 @@ fi
 
 if [ ! "$(pidof streamripper)" ] && [ "$STREAMRIPPER_START" == "1" ];
 then
-  ${BIN_STREAMRIPPER} ${STREAM_URL} -d . --with-id3v1 -s ${STREAMRIPPER_OPTS} & 
+  ${BIN_STREAMRIPPER} ${STREAM_URL} -d . \
+                      --with-id3v1 \
+                      --codeset-filesys=utf8 \
+                      --codeset-id3=ISO-8859-1 \
+                      -s ${STREAMRIPPER_OPTS} & 
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
 else
