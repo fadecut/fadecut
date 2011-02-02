@@ -422,10 +422,10 @@ echo \
 GENRE=\"YourGenre\"
 COMMENT=\"Your Comment\"
 # all values in seconds:
-TRIM_BEGIN=0
-TRIM_END=0
 FADE_IN=1
-FADE_OUT=4" > "${PROFILDIR}/profiles/${NEW}"
+FADE_OUT=4
+# TRIM_BEGIN=0
+# TRIM_END=0" > "${PROFILDIR}/profiles/${NEW}"
 logging -i "Starting vim editor"
 vi "${PROFILDIR}/profiles/${NEW}"
 logging -i "Now start: fadecut -p ${NEW} -s"
