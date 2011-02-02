@@ -17,7 +17,7 @@
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 # Constants --------------------------------------------------------------------
-# Debug level 1-3
+# Debug level 0-3
 DEBUG=0
 
 # Verbosity level
@@ -511,14 +511,15 @@ splitting()
 logging -i "splitting with mp3splt ..."
 F="$*"
 Fwoext=$(echo $F | sed 's/.mp3//g')
-#verbose   : mp3splt -N -s -p nt=3 "$F"
-#quiet     : mp3splt -q -N -s -p nt=3 "$F"
-#more quiet: mp3splt -Q -N -s -p nt=3 "$F" # geht unter debian nicht
-#another more quiet, actually totally quiet ;-)
-mp3splt -q -N -s -p nt=3 "$F" > /dev/null 2>&1
+if [ ${DEBUG} -ge 1 ]; then 
+  mp3splt -N -s -p nt=3 "$F" 
+elif [ ${VERBOSE} -ge 1 ]; then
+  mp3splt -q -N -s -p nt=3 "$F"
+else
+  mp3splt -q -N -s -p nt=3 "$F" > /dev/null 2>&1
+fi
 Ftmp=`ls -1t "$Fwoext"* | head -1`
-if [[ "$Ftmp" != "$F" ]]
-then 
+if [ "$Ftmp" != "$F" ] ; then
   mv "$Ftmp" "$F"
 fi
 rm -f "$Fwoext"_silence_*.*
@@ -592,17 +593,11 @@ do
   esac
 done
 
-if [[ -z $PROFILE ]] || [[ -z $METHOD ]] 
-then
-     usage
-     exit 1
-fi
-
 while true
 do
   startStream
   loop_fadecut
   if [ ${VERBOSE} -ge 1 ]; then logging -n "Main(): Loop until we're finished"
   fi
-sleep ${LOOP_INTERVAL}
+  sleep ${LOOP_INTERVAL}
 done
