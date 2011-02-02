@@ -33,9 +33,10 @@ install: build
 	dh_prep
 	dh_installdirs
 	# dh_install check file debian/fadecut.install
-        dh_install
-        dh_installman ./fadecut.1
-        dh_installexamples ./examples/*
+	dh_install
+	dh_installman ./fadecut.1
+	dh_installexamples ./examples/*
+	find . -type d -empty -delete
 
 # Build architecture-independent files here.
 binary-indep: build install
