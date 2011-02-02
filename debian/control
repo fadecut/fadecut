@@ -1,6 +1,6 @@
 Source: fadecut
 Section: sound
-Priority: optional
+Priority: extra
 Maintainer: Marco Balmer <marco@balmer.name>
 Build-Depends: debhelper (>= 7)
 Standards-Version: 3.9.1
