@@ -48,18 +48,16 @@ apt-get vorbis-tools sox libsox-fmt-mp3 streamripper mp3info mp3splt
 
 --- Usage ----------------------------------------------------------------------
 1. Create a profile file
-fadecut -c swisspop
+fadecut -c myradiostation
 
 Edit variables:
- STREAM_URL="http://livestream.srg-ssr.ch/1/rsp/mp3_128"
+ STREAM_URL="http://streamurl"
  GENRE="Pop"
- COMMENT="Radio Swiss Pop"
- TRIM_BEGIN=0
- TRIM_END=0
+ COMMENT="Radio station comment"
  FADE_IN=1
  FADE_OUT=4
 
 2. Let's stream, rip and automatically fade & cut now
-fadecut -p swisspop -s
+fadecut -p myradiostation -s
 
 3. man fadecut
