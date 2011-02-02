@@ -9,7 +9,7 @@ Homepage: http://github.com/micressor/fadecut
 Package: fadecut
 Architecture: all
 Depends: ${misc:Depends}, vorbis-tools|lame, sox, libsox-fmt-mp3, streamripper, mp3info, mp3splt,bash (>=3.2-4)
-Description: fadecut is a radio livestream to ogg/mp3 tool
+Description: Radio livestream to ogg/mp3 tool
  This script handle mp3 files (-ripped by streamripper), fade in and
  out. It set stream tags: artist, title and your own decided genre.
  If you have songs you do not like, move the ripped file to dontlike/ folder,
