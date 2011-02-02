@@ -1,2 +1,2 @@
 version=3
-https://github.com/micressor/fadecut/tarball/(.*)
+http://githubredir.debian.net/github/micressor/fadecut (.*).tar.gz
