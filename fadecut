@@ -41,6 +41,16 @@ ENCODING=ogg
 # preferred fadecut method. <sox|split>
 METHOD=sox
 
+# trim start- and endpoint of cut in seconds
+TRIM_BEGIN=0
+TRIM_END=0
+
+# seconds to fade in 
+FADE_IN=1
+
+# seconds to fade out
+FADE_OUT=4
+
 # fadecut's profil dir
 PROFILDIR="${HOME}/.fadecut"
 
@@ -82,7 +92,6 @@ STREAMRIPPER_START=0
 
 # stream ripper binary
 BIN_STREAMRIPPER="/usr/bin/streamripper"
-
 
 # streamripper options
 STREAMRIPPER_OPTS="--quiet -o always -T"
