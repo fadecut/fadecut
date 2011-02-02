@@ -602,6 +602,11 @@ do
   esac
 done
 
+if [ -z $PROFILE ] ; then
+  usage
+  exit 1
+fi
+
 while true
 do
   startStream
