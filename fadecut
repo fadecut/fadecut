@@ -98,6 +98,7 @@ BIN_OGGINFO=$(which ogginfo)
 BIN_OGGENC=$(which oggenc)
 BIN_MP3INFO=$(which mp3info)
 BIN_ID3V2=$(which id3v2)
+BIN_LAME=$(which lame)
 
 # streamripper options
 STREAMRIPPER_OPTS="--quiet -o always -T"
@@ -574,13 +575,23 @@ if [ -z ${BIN_SOX} ]; then RequirementsMsg=sox
 fi
 if [ -z ${BIN_MP3SPLT} ]; then RequirementsMsg=mp3splt
 fi
-if [ -z ${BIN_OGGINFO} ]; then RequirementsMsg=ogginfo
-fi
-if [ -z ${BIN_OGGENC} ]; then RequirementsMsg=oggenc
-fi
 if [ -z ${BIN_MP3INFO} ]; then RequirementsMsg=mp3info
 fi
 if [ -z ${BIN_ID3V2} ]; then RequirementsMsg=id3v2
+fi
+
+if [ "${ENCODING}" == "ogg" ];
+then
+  if [ -z ${BIN_OGGINFO} ]; then RequirementsMsg=ogginfo
+  fi
+  if [ -z ${BIN_OGGENC} ]; then RequirementsMsg=oggenc
+  fi
+fi
+
+if [ "${ENCODING}" == "mp3" ];
+then
+  if [ -z ${BIN_LAME} ]; then RequirementsMsg=lame
+  fi
 fi
 
 if [ ! -z ${RequirementsMsg} ];
@@ -593,8 +604,6 @@ return 0
 
 # Main  ------------------------------------------------------------------------
 
-if ! checkRequirements; then shutdown_fadecut
-fi
 
 while getopts ":d:hm:p:c:e:qsv" OPTION
 do
@@ -621,6 +630,8 @@ do
     p)
       PROFILE=$OPTARG
       load_profile
+      if ! checkRequirements; then shutdown_fadecut
+      fi
       ;;
     c)
       create_profile $OPTARG
