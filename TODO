@@ -20,10 +20,13 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * tinu  provide testfiles *.mp3 to marco for using in the testframework
 * tinu  history/statistics
         in debug mode: write how much files were splitted with mp3splt
-* tinu  cross correlation with well known ad files
-* tinu  maybe we could use ffmpeg instead of sox/lame 
 * marco -i -o options for custom input/output directories
 * tinu  change functionality of -m option
 * tinu  standard output files is `pwd` from which fadecut was started (workdir)
 * tinu  dontlike/ folder + manpage documentation
 * tinu  create error/ folder if needed
+
+# --- later --------------------------------------------------------------------
+* tinu  cross correlation with well known ad files
+* tinu  maybe we could use ffmpeg instead of sox/lame 
+
