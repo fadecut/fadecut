@@ -8,7 +8,7 @@ Homepage: http://github.com/micressor/fadecut
 
 Package: fadecut
 Architecture: all
-Depends: ${misc:Depends}, vorbis-tools|lame, sox, libsox-fmt-mp3, streamripper, mp3info, mp3splt, bash (>=3.2-4)
+Depends: ${misc:Depends}, vorbis-tools|lame, sox, libsox-fmt-mp3, streamripper, mp3info, mp3splt, bash (>=3.2-4), id3v2
 Description: toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
  fadecut is a script to rip audio files from a livestream and to process them
  automatically. Beginning and ending fo the audio files will be cut and faded
