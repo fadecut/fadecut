@@ -90,14 +90,20 @@ E_NOARGS=65
 # start streamripper
 STREAMRIPPER_START=0 
 
-# stream ripper binary
-BIN_STREAMRIPPER="/usr/bin/streamripper"
+# define all binaries
+BIN_STREAMRIPPER=$(which streamripper)
+BIN_SOX=$(which sox)
+BIN_MP3SPLT=$(which mp3splt)
+BIN_OGGINFO=$(which ogginfo)
+BIN_OGGENC=$(which oggenc)
+BIN_MP3INFO=$(which mp3info)
+BIN_ID3V2=$(which id3v2)
 
 # streamripper options
 STREAMRIPPER_OPTS="--quiet -o always -T"
 
 # Variables --------------------------------------------------------------------
-PidStreamripper=""
+PidStreamripper="-1"
 IdleCounter=-1
 IdleSeconds=0
 MissingVar=""
@@ -237,15 +243,25 @@ return 0
 shutdown_streamripper()
 # Shutting down streamripper
 {
-if [ "$(pidof streamripper)" ];
-then 
-  logging -i "Shutdown streamripper" 
-  kill ${PidStreamripper}
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+TmpPid=$(pidof streamripper)
+
+if [ -z ${TmpPid} ]; then return 0
+fi
+
+if [ $TmpPid -eq $PidStreamripper ];
+then
+  logging -i "Shuting down streamripper" 
+  kill ${PidStreamripper} 
+  sleep 1
   if [ "$(pidof streamripper)" ];
   then
     logging -w "Streamripper still here, killing it!"
     kill -9 ${PidStreamripper}
   fi
+else
+  logging -n "Another streamripper is still running"
 fi
 }
 
@@ -479,13 +495,17 @@ fi
 showStats()
 # Show file statistics
 {
-StatsNewDir=`find "${OUTPUTDIR}" -type f | wc -l`
-StatsOrigDir=`find "${ORIGDIR}" -type f | wc -l`
-StatsDoneDir=`find "${DONEDIR}" -type f | wc -l`
-StatsDontlikeDir=`find "${DONTLIKEDIR}" -type f | wc -l`
-StatsErrorDir=`find "${ERRORDIR}" -type f | wc -l`
-StatsDoubleDir=`find "${DOUBLEDIR}" -type f | wc -l`
-logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
+# show statistics only, if all directories are existing
+if [ -d "${OUTPUTDIR}" ];
+then
+  StatsNewDir=`find "${OUTPUTDIR}" -type f | wc -l`
+  StatsOrigDir=`find "${ORIGDIR}" -type f | wc -l`
+  StatsDoneDir=`find "${DONEDIR}" -type f | wc -l`
+  StatsDontlikeDir=`find "${DONTLIKEDIR}" -type f | wc -l`
+  StatsErrorDir=`find "${ERRORDIR}" -type f | wc -l`
+  StatsDoubleDir=`find "${DOUBLEDIR}" -type f | wc -l`
+  logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
+fi
 }
 
 oggEncoding()
@@ -542,7 +562,39 @@ Fnnew=$(echo $Fnold | sed -e 's/ /_/g' -e 's/\(.*\)/\L\1/')
 echo $Fnnew
 }
 
+checkRequirements()
+# Check if all necessary tools and binaries are available
+{
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+logging -d "Checking fadecut requirements"
+if [ -z ${BIN_STREAMRIPPER} ]; then RequirementsMsg=streamripper
+fi
+if [ -z ${BIN_SOX} ]; then RequirementsMsg=sox
+fi
+if [ -z ${BIN_MP3SPLT} ]; then RequirementsMsg=mp3splt
+fi
+if [ -z ${BIN_OGGINFO} ]; then RequirementsMsg=ogginfo
+fi
+if [ -z ${BIN_OGGENC} ]; then RequirementsMsg=oggenc
+fi
+if [ -z ${BIN_MP3INFO} ]; then RequirementsMsg=mp3info
+fi
+if [ -z ${BIN_ID3V2} ]; then RequirementsMsg=id3v2
+fi
+
+if [ ! -z ${RequirementsMsg} ];
+then
+  logging -e "Program ${RequirementsMsg} not installed or not in PATH"
+  return 1
+fi
+return 0
+}
+
 # Main  ------------------------------------------------------------------------
+
+if ! checkRequirements; then shutdown_fadecut
+fi
 
 while getopts ":d:hm:p:c:e:qsv" OPTION
 do
