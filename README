@@ -16,12 +16,24 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 
 --- Overview -------------------------------------------------------------------
- This script handle mp3 files (-ripped by streamripper), fade in and            
- out. It set stream tags: artist, title and your own decided genre.             
- If you have songs you do not like, move the ripped file to dontlike/ folder,
- so fadecut will no longer convert this song, if it was read on the livestream. 
- All processed files of fadecut are in new/ folder. The original files from     
- streamripper are in the orig/ folder after processing. 
+synopsis/short description: 
+toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
+
+long description:
+mit fadecut können Audio Dateien aus einem Livestream gerippt und automatisch 
+verarbeitet werden. Anfang und Ende der Audiofiles werden geschnitten sowie ein-
+und ausgeblendet. Damit können Signete und Werbung von Radiostationen automatisch
+entfernt werden.
+
+Im Streaming-Modus startet fadecut den streamripper und lädt damit die Audio 
+Data herunter. Die heruntergeladenen Audio Dateien werden dann mittels Silence 
+Detection geschnitten sowie ein- und ausgeblendet. Anschliessend werden die 
+Dateien wahlweise nach ogg oder mp3 codiert und mit Tags (Titel, Artist, Genre, 
+Kommentar) versehen. 
+
+Ein bereits verarbeiteter Song wird erkannt und nicht neu verarbeitet. Nicht 
+erwünschte Songs können in einem separaten Verzeichnis abgelegt werden. Diese 
+werden dann ebenfalls nicht mehr weiter verarbeitet.
 
 
 --- Requirements ---------------------------------------------------------------
