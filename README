@@ -16,12 +16,43 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 
 --- Overview -------------------------------------------------------------------
- This script handle mp3 files (-ripped by streamripper), fade in and            
- out. It set stream tags: artist, title and your own decided genre.             
- If you have songs you do not like, move the ripped file to dontlike/ folder,
- so fadecut will no longer convert this song, if it was read on the livestream. 
- All processed files of fadecut are in new/ folder. The original files from     
- streamripper are in the orig/ folder after processing. 
+synopsis/short description: 
+---------------------------
+toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
+
+long description (english):
+---------------------------
+fadecut is a script to rip audio files from a livestream and to process them 
+automatically. Beginning and ending fo the audio files will be cut and faded 
+in/out. So logos and advertising of radio stations will be automatically removed.
+
+In streaming mode fadecut is ripping audio files using streamripper. The 
+downloaded audio files are cutted using silence detection and then faded in and 
+out. Subsequently, the files are encoded to either ogg or mp3 and tagged with 
+tags (title, artist, genre and comment provided).
+
+In file mode fadecut is just processing already ripped audio files.
+
+An audio file which has already been processed is detected and will not be 
+processed again. Not desired songs can be stored in a separate directory. This 
+files are not processed anymore too.
+
+long description (german):
+--------------------------
+mit fadecut können Audio Dateien aus einem Livestream gerippt und automatisch 
+verarbeitet werden. Anfang und Ende der Audiofiles werden geschnitten sowie ein-
+und ausgeblendet. Damit können Signete und Werbung von Radiostationen automatisch
+entfernt werden.
+
+Im Streaming-Modus startet fadecut den streamripper und lädt damit die Audio 
+Data herunter. Die heruntergeladenen Audio Dateien werden dann mittels Silence 
+Detection geschnitten sowie ein- und ausgeblendet. Anschliessend werden die 
+Dateien wahlweise nach ogg oder mp3 codiert und mit Tags (Titel, Artist, Genre, 
+Kommentar) versehen. 
+
+Ein bereits verarbeiteter Song wird erkannt und nicht neu verarbeitet. Nicht 
+erwünschte Songs können in einem separaten Verzeichnis abgelegt werden. Diese 
+werden dann ebenfalls nicht mehr weiter verarbeitet.
 
 
 --- Requirements ---------------------------------------------------------------
