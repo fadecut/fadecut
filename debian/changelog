@@ -1,6 +1,6 @@
 fadecut (0.0.1-2) UNRELEASED; urgency=low
 
-  * debian/control: Missed Depends: id3v2
+  * Adding missing Depends on id3v2
 
  -- Marco Balmer <marco@balmer.name>  Thu, 03 Feb 2011 15:58:26 +0100
 
