@@ -67,7 +67,7 @@ optional, for mp3 encoding:
 
 
 --- Ubuntu ---------------------------------------------------------------------
-apt-get install bash coreutils findutils mp3info mp3splt nice sed sox streamripper vorbis-tools
+apt-get install bash coreutils findutils mp3info mp3splt nice sed sox libsox-fmt-mp3 streamripper vorbis-tools
 
 for mp3 encoding:
 apt-get install lame
