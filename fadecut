@@ -24,7 +24,7 @@ DEBUG=0
 VERBOSE=0
 
 # loop interval in seconds
-LOOP_INTERVAL=120
+LOOP_INTERVAL=10
 
 # restart interval streamripper
 RESTART_STREAMRIPPER_INTERVAL=900
@@ -144,20 +144,27 @@ logging()
  case $1 in
    -e)     prefix="Error:   " stderr=1;;
    -i)     prefix="Info:    " stderr=0;;
-   -n)     prefix="Notice:  " stderr=0;;
+   -n)     prefix="Notice:  " stderr=1;;
    -s)     prefix="Success: " stderr=0;;
    -w)     prefix="Warning: " stderr=1;;
    -d)     prefix="Debug:   " stderr=1;;
-   -a)     prefix="         " stderr=1;;
+   -a)     prefix="         " stderr=0;;
+   -r)     prefix="Stream:  " stderr=0;;
  esac
  shift
 
+if [ ${DEBUG} -ge 1 ]; then 
  if [ "${stderr}" -eq 1 ];
  then
    echo "${time} ${prefix}" ${1} >&2
  else
    echo "${time} ${prefix}" ${1}
  fi
+else
+ if [ "${stderr}" -eq 0 ]; then
+   echo "${time} ${prefix}" ${1}
+ fi
+fi
 }
 
 createDirs()
@@ -197,7 +204,8 @@ then
   ${BIN_STREAMRIPPER} ${STREAM_URL} -d . \
                       --codeset-filesys=utf8 \
                       --codeset-id3=ISO-8859-1 \
-                      -s ${STREAMRIPPER_OPTS} & 
+                      -s ${STREAMRIPPER_OPTS} \
+                      > /tmp/fadecutstream.log 2>&1 & 
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
 else
@@ -241,6 +249,9 @@ if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 shutdown_streamripper
 showStats
+if [ -f /tmp/fadecutstream.log ] ; then
+  rm /tmp/fadecutstream.log
+fi
 logging -i "Shutting down fadecut..."
 exit $?
 }
@@ -619,11 +630,11 @@ do
     \?)
       logging -e "Invalid option: -$OPTARG" >&2
       usage
-      exit 1
+      shutdown_fadecut
       ;;
     :)
       logging -e "Option -$OPTARG requires an argument." >&2
-      exit 1
+      shutdown_fadecut
       ;;
   esac
 done
@@ -633,11 +644,18 @@ if [ -z $PROFILE ] ; then
   exit 1
 fi
 
+StreamInfo=""
+StreamInfo2=""
 while true
 do
   startStream
   loop_fadecut
-  if [ ${VERBOSE} -ge 1 ]; then logging -n "Main(): Loop until we're finished"
+  logging -n "Main(): Loop until we're finished"
+  sleep 2
+  StreamInfo=$(tail -1 /tmp/fadecutstream.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+  if [ "$StreamInfo" != "$StreamInfo2" ] ; then
+    logging -r "${StreamInfo}"
+    StreamInfo2="$StreamInfo"
   fi
   sleep ${LOOP_INTERVAL}
 done
