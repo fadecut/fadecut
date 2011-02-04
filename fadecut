@@ -98,7 +98,7 @@ BIN_ID3V2=$(which id3v2)
 BIN_LAME=$(which lame)
 
 # streamripper options
-STREAMRIPPER_OPTS="--quiet -o always -T"
+STREAMRIPPER_OPTS="-o always -T"
 
 # Variables --------------------------------------------------------------------
 PidStreamripper="-1"
@@ -191,12 +191,6 @@ cd "${WORKDIR}"
 if [ ! -x ${BIN_STREAMRIPPER} ]; then
   logging -e "Ooops! No streamripper found"
   shutdown_fadecut
-fi
-
-if [ ${VERBOSE} -ge 1 ];
-then
-  # opposite of quiet
-  STREAMRIPPER_OPTS="-o always -T"
 fi
 
 if [ ! "$(pidof streamripper)" ] && [ "$STREAMRIPPER_START" == "1" ];
