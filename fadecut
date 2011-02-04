@@ -505,7 +505,6 @@ nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 splitting()
 # split files using silence detection
 {
-logging -i "splitting with mp3splt ..."
 F="$*"
 Fwoext=$(echo $F | sed 's/.mp3//g')
 if [ ${DEBUG} -ge 1 ]; then 
