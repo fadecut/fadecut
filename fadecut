@@ -142,26 +142,27 @@ logging()
  stderr=-1
 
  case $1 in
-   -e)     prefix="Error:   " stderr=1;;
-   -i)     prefix="Info:    " stderr=0;;
-   -n)     prefix="Notice:  " stderr=1;;
-   -s)     prefix="Success: " stderr=0;;
-   -w)     prefix="Warning: " stderr=1;;
-   -d)     prefix="Debug:   " stderr=1;;
-   -a)     prefix="         " stderr=0;;
-   -r)     prefix="Stream:  " stderr=0;;
+   -e)     prefix="Error:   " stderr=1 verbose=0;;
+   -i)     prefix="Info:    " stderr=0 verbose=0;;
+   -n)     prefix="Notice:  " stderr=0 verbose=1;;
+   -s)     prefix="Success: " stderr=0 verbose=0;;
+   -w)     prefix="Warning: " stderr=1 verbose=1;;
+   -d)     prefix="Debug:   " stderr=1 verbose=2;;
+   -a)     prefix="         " stderr=1 verbose=0;;
+   -r)     prefix="Stream:  " stderr=0 verbose=0;;
  esac
  shift
 
-if [ ${DEBUG} -ge 1 ]; then 
- if [ "${stderr}" -eq 1 ];
- then
+if [ ${verbose} -ge 1 ] && [ ${VERBOSE} -ge 1 ] ; then 
+ if [ "${stderr}" -eq 1 ]; then
    echo "${time} ${prefix}" ${1} >&2
  else
    echo "${time} ${prefix}" ${1}
  fi
-else
- if [ "${stderr}" -eq 0 ]; then
+elif [ ${verbose} -eq 0 ] ; then
+ if [ "${stderr}" -eq 1 ]; then
+   echo "${time} ${prefix}" ${1} >&2
+ else
    echo "${time} ${prefix}" ${1}
  fi
 fi
