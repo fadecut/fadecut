@@ -38,9 +38,6 @@ PWD=`pwd`
 # prefered destination fileformat. (ogg/mp3)
 ENCODING=ogg
 
-# preferred fadecut method. <sox|split>
-METHOD=sox
-
 # trim start- and endpoint of cut in seconds
 TRIM_BEGIN=0
 TRIM_END=0
@@ -51,11 +48,11 @@ FADE_IN=1
 # seconds to fade out
 FADE_OUT=4
 
-# fadecut's profil dir
-PROFILDIR="${HOME}/.fadecut"
+# fadecut's profile dir
+PROFILEDIR="${HOME}/.fadecut" 
 
-# fadcut's workdir
-WORKDIR="${PWD}/workdir"
+# fadecut's workdir
+WORKDIR="${PWD}"
 
 # where to put fadecut'ted files
 OUTPUTDIR="${PWD}/new"
@@ -122,7 +119,6 @@ OPTIONS:
   -e    edit profile <profilename>
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
   -h	Show this message
-  -m    Method <sox|split>
   -p    Profile <profilename>
   -q	Quiet
   -s    Stream (and rip), start streamripper
@@ -170,36 +166,8 @@ createDirs()
 if [ ${DEBUG} -ge 2 ]; then set -x
 fi
 
-if [ ! -d "${PROFILDIR}/profiles" ]; then
-  mkdir -p "${PROFILDIR}/profiles"
-fi
-
-if [ ! -d "$OUTPUTDIR" ]; then
-  mkdir -p "$OUTPUTDIR"
-fi
-
-if [ ! -d "$ORIGDIR" ]; then
-  mkdir -p "$ORIGDIR"
-fi
-
-if [ ! -d "$DONEDIR" ]; then
-  mkdir -p "$DONEDIR"
-fi
-
-if [ ! -d "$DONTLIKEDIR" ]; then
-  mkdir -p "$DONTLIKEDIR"
-fi
-
-if [ ! -d "$ERRORDIR" ]; then
-  mkdir -p "$ERRORDIR"
-fi
-
-if [ ! -d "$DOUBLEDIR" ]; then
-  mkdir -p "$DOUBLEDIR"
-fi
-
-if [ ! -d "$WORKDIR" ]; then
-  mkdir -p "$WORKDIR"
+if [ ! -d "${PROFILEDIR}/profiles" ]; then
+  mkdir -p "${PROFILEDIR}/profiles"
 fi
 
 return 0
@@ -341,13 +309,13 @@ do
   Fnew=$(filerename $F)
   if [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
     logging -i "$F already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
-    mv "$F" "$DOUBLEDIR"
+    move_file "$F" "$DOUBLEDIR"
     continue
   fi
 
   if [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
     logging -i "$F already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
-    mv "$F" "$DOUBLEDIR"
+    move_file "$F" "$DOUBLEDIR"
     continue
   fi
 
@@ -372,14 +340,7 @@ do
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
-  logging -i "Encoding to ${ENCODING} with method ${METHOD}"
-  if [ "$METHOD" == "split" ]; then
-    splitting "${F}"
-  fi
-
-  # Only for information:
-  # if [ "$METHOD" == "sox" ]; then
-  # fi
+  splitting "${F}"
 
   if [ "${ENCODING}" == "mp3" ]; then
     mp3Encoding "${F}"
@@ -391,9 +352,9 @@ do
   if [ "${RetLoop}" -eq "0" ]; then
     logging -s "Ready for listening:"
     logging -a "$Fdst"
-    mv "$F" "$ORIGDIR"
+    move_file "$F" "$ORIGDIR"
   else
-    mv "$F" "$ERRORDIR"
+    move_file "$F" "$ERRORDIR"
       # when sox or lame are receiving SIGINT they exit with return-code > 0
       # the ctrl_c function does not catch this case, so we have to break here
     logging -n "loop_fadecut(): Oops! Something was wrong."
@@ -402,8 +363,8 @@ do
   fi
   set +o pipefail
 
-queueSong
-showStats
+  queueSong
+  showStats
 done
 cd "${PWD}"
 }
@@ -413,18 +374,18 @@ load_profile()
 createDirs
 logging -i "Loading profile file(s):"
 
-if [ -r "${PROFILDIR}/fadecutrc" ]; then
-  logging -a "${PROFILDIR}/fadecutrc"
-  . "${PROFILDIR}/fadecutrc"
+if [ -r "${PROFILEDIR}/fadecutrc" ]; then
+  logging -a "${PROFILEDIR}/fadecutrc"
+  . "${PROFILEDIR}/fadecutrc"
 fi
 
-if [ ! -r "${PROFILDIR}/profiles/${PROFILE}" ]; then
-  logging -e "Can't not load profile ${PROFILDIR}/profiles/${PROFILE}"
+if [ ! -r "${PROFILEDIR}/profiles/${PROFILE}" ]; then
+  logging -e "Can't not load profile ${PROFILEDIR}/profiles/${PROFILE}"
   exit 1
 fi
 
-logging -a "${PROFILDIR}/profiles/${PROFILE}"
-. "${PROFILDIR}/profiles/${PROFILE}"
+logging -a "${PROFILEDIR}/profiles/${PROFILE}"
+. "${PROFILEDIR}/profiles/${PROFILE}"
 
 check_profile
 }
@@ -442,16 +403,16 @@ COMMENT=\"Your Comment\"
 FADE_IN=1
 FADE_OUT=4
 # TRIM_BEGIN=0
-# TRIM_END=0" > "${PROFILDIR}/profiles/${NEW}"
+# TRIM_END=0" > "${PROFILEDIR}/profiles/${NEW}"
 logging -i "Starting vim editor"
-vi "${PROFILDIR}/profiles/${NEW}"
+vi "${PROFILEDIR}/profiles/${NEW}"
 logging -i "Now start: fadecut -p ${NEW} -s"
 }
 
 edit_profile()
 # creating a profile
 {
-vi "${PROFILDIR}/profiles/${1}"
+vi "${PROFILEDIR}/profiles/${1}"
 }
 
 check_profile()
@@ -487,7 +448,7 @@ fi
 
 if [ ${RetCheckProfile} -eq 1 ]; 
 then 
-  logging -e "${PROFILDIR}/profiles/${PROFILE}:"
+  logging -e "${PROFILEDIR}/profiles/${PROFILE}:"
   logging -a "${MissingVar} not defined"
   shutdown_fadecut
 fi
@@ -602,10 +563,21 @@ fi
 return 0
 }
 
+move_file()
+#checks if directory exists, creates it if necessary and moves file to it
+# $1 = file
+# $2 = destination directory
+{
+if [ ! -d "$2" ]; then
+  mkdir -p "$2"
+fi
+mv "$1" "$2"
+}
+
 # Main  ------------------------------------------------------------------------
 
 
-while getopts ":d:hm:p:c:e:qsv" OPTION
+while getopts ":d:hp:c:e:qsv" OPTION
 do
 # When you need an argument that needs a value, you put the ":" right after 
 # the argument in the optstring. If your var is just a flag, withou any 
@@ -617,15 +589,6 @@ do
     h)
       usage
       exit 1
-      ;;
-    m)
-      METHOD=$OPTARG
-      if [[ $METHOD != sox ]] && [[ $METHOD != split ]]
-      then
-        logging -e "Option -m needs 'sox' or 'split' as an argument." >&2
-        usage
-        exit 1
-      fi
       ;;
     p)
       PROFILE=$OPTARG
