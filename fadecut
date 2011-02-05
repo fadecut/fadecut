@@ -466,12 +466,12 @@ showStats()
 # show statistics only, if all directories are existing
 if [ -d "${OUTPUTDIR}" ];
 then
-  StatsNewDir=`find "${OUTPUTDIR}" -type f | wc -l`
-  StatsOrigDir=`find "${ORIGDIR}" -type f | wc -l`
-  StatsDoneDir=`find "${DONEDIR}" -type f | wc -l`
-  StatsDontlikeDir=`find "${DONTLIKEDIR}" -type f | wc -l`
-  StatsErrorDir=`find "${ERRORDIR}" -type f | wc -l`
-  StatsDoubleDir=`find "${DOUBLEDIR}" -type f | wc -l`
+  StatsNewDir=`ls -1 "${OUTPUTDIR}" | wc -l`
+  StatsOrigDir=`ls -1 "${ORIGDIR}"  | wc -l`
+  StatsDoneDir=`ls -1 "${DONEDIR}"  | wc -l`
+  StatsDontlikeDir=`ls -1 "${DONTLIKEDIR}"  | wc -l`
+  StatsErrorDir=`ls -1 "${ERRORDIR}"  | wc -l`
+  StatsDoubleDir=`ls -1 "${DOUBLEDIR}"  | wc -l`
   logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
 fi
 }
