@@ -314,19 +314,19 @@ do
   
   Fnew=$(filerename $F)
   if [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
-    logging -i "$F already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
+    logging -i "File already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
     move_file "$F" "$DOUBLEDIR"
     continue
   fi
 
   if [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
-    logging -i "$F already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
+    logging -i "File already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
     move_file "$F" "$DOUBLEDIR"
     continue
   fi
 
   if [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
-    logging -i "$F already exists in $DONTLIKEDIR -> deleting ..."
+    logging -i "I don't like. File exists in $DONTLIKEDIR -> deleting ..."
     rm "$F"
     continue
   fi
