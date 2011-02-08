@@ -1,3 +1,9 @@
+fadecut 0.0.2
+-------------
+  * removed repetition of unnessesary logging
+  * libsox-fmt-mp3 is needed on debian/ubuntu
+  * removed -m method
+
 fadecut 0.0.1
 -------------
   * Initial release
