@@ -1,6 +1,8 @@
-fadecut (0.0.1-2) UNRELEASED; urgency=low
+fadecut (0.0.2-1) UNRELEASED; urgency=low
 
   * Adding missing Depends on id3v2
+  * Removed repetition of unnessesary logging
+  * Removed -m method
 
  -- Marco Balmer <marco@balmer.name>  Thu, 03 Feb 2011 15:58:26 +0100
 
