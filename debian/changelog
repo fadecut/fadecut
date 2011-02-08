@@ -1,10 +1,10 @@
-fadecut (0.0.2-1) UNRELEASED; urgency=low
+fadecut (0.0.2-1) unstable; urgency=low
 
   * New 0.0.2 upstream release
   * Adding missing Depends on id3v2
   * Changed complete packaging to tiny (debian/*.install,examples,manpages)
 
- -- Marco Balmer <marco@balmer.name>  Thu, 03 Feb 2011 15:58:26 +0100
+ -- Marco Balmer <marco@balmer.name>  Tue, 08 Feb 2011 15:00:17 +0100
 
 fadecut (0.0.1-1) unstable; urgency=low
 
