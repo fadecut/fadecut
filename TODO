@@ -14,7 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License               
 along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-# --- 2nd release --------------------------------------------------------------
+# --- 0.1.0 release ------------------------------------------------------------
 * marco Testframework, which will auto-test all ENCODING and METHOD's, before
 	releasing.
 * tinu  provide testfiles *.mp3 to marco for using in the testframework
