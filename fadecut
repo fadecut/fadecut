@@ -24,7 +24,7 @@ DEBUG=0
 VERBOSE=0
 
 # loop interval in seconds
-LOOP_INTERVAL=120
+LOOP_INTERVAL=10
 
 # restart interval streamripper
 RESTART_STREAMRIPPER_INTERVAL=900
@@ -38,9 +38,6 @@ PWD=`pwd`
 # prefered destination fileformat. (ogg/mp3)
 ENCODING=ogg
 
-# preferred fadecut method. <sox|split>
-METHOD=sox
-
 # trim start- and endpoint of cut in seconds
 TRIM_BEGIN=0
 TRIM_END=0
@@ -51,11 +48,11 @@ FADE_IN=1
 # seconds to fade out
 FADE_OUT=4
 
-# fadecut's profil dir
-PROFILDIR="${HOME}/.fadecut"
+# fadecut's profile dir
+PROFILEDIR="${HOME}/.fadecut" 
 
-# fadcut's workdir
-WORKDIR="${PWD}/workdir"
+# fadecut's workdir
+WORKDIR="${PWD}"
 
 # where to put fadecut'ted files
 OUTPUTDIR="${PWD}/new"
@@ -101,7 +98,7 @@ BIN_ID3V2=$(which id3v2)
 BIN_LAME=$(which lame)
 
 # streamripper options
-STREAMRIPPER_OPTS="--quiet -o always -T"
+STREAMRIPPER_OPTS="-o always -T"
 
 # Variables --------------------------------------------------------------------
 PidStreamripper="-1"
@@ -122,7 +119,6 @@ OPTIONS:
   -e    edit profile <profilename>
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
   -h	Show this message
-  -m    Method <sox|split>
   -p    Profile <profilename>
   -q	Quiet
   -s    Stream (and rip), start streamripper
@@ -146,22 +142,30 @@ logging()
  stderr=-1
 
  case $1 in
-   -e)     prefix="Error:   " stderr=1;;
-   -i)     prefix="Info:    " stderr=0;;
-   -n)     prefix="Notice:  " stderr=0;;
-   -s)     prefix="Success: " stderr=0;;
-   -w)     prefix="Warning: " stderr=1;;
-   -d)     prefix="Debug:   " stderr=1;;
-   -a)     prefix="         " stderr=1;;
+   -e)     prefix="Error:   " stderr=1 verbose=0;;
+   -i)     prefix="Info:    " stderr=0 verbose=0;;
+   -n)     prefix="Notice:  " stderr=0 verbose=1;;
+   -s)     prefix="Success: " stderr=0 verbose=0;;
+   -w)     prefix="Warning: " stderr=1 verbose=1;;
+   -d)     prefix="Debug:   " stderr=1 verbose=2;;
+   -a)     prefix="         " stderr=1 verbose=0;;
+   -r)     prefix="Stream:  " stderr=0 verbose=0;;
  esac
  shift
 
- if [ "${stderr}" -eq 1 ];
- then
+if [ ${verbose} -ge 1 ] && [ ${VERBOSE} -ge 1 ] ; then 
+ if [ "${stderr}" -eq 1 ]; then
    echo "${time} ${prefix}" ${1} >&2
  else
    echo "${time} ${prefix}" ${1}
  fi
+elif [ ${verbose} -eq 0 ] ; then
+ if [ "${stderr}" -eq 1 ]; then
+   echo "${time} ${prefix}" ${1} >&2
+ else
+   echo "${time} ${prefix}" ${1}
+ fi
+fi
 }
 
 createDirs()
@@ -170,36 +174,8 @@ createDirs()
 if [ ${DEBUG} -ge 2 ]; then set -x
 fi
 
-if [ ! -d "${PROFILDIR}/profiles" ]; then
-  mkdir -p "${PROFILDIR}/profiles"
-fi
-
-if [ ! -d "$OUTPUTDIR" ]; then
-  mkdir -p "$OUTPUTDIR"
-fi
-
-if [ ! -d "$ORIGDIR" ]; then
-  mkdir -p "$ORIGDIR"
-fi
-
-if [ ! -d "$DONEDIR" ]; then
-  mkdir -p "$DONEDIR"
-fi
-
-if [ ! -d "$DONTLIKEDIR" ]; then
-  mkdir -p "$DONTLIKEDIR"
-fi
-
-if [ ! -d "$ERRORDIR" ]; then
-  mkdir -p "$ERRORDIR"
-fi
-
-if [ ! -d "$DOUBLEDIR" ]; then
-  mkdir -p "$DOUBLEDIR"
-fi
-
-if [ ! -d "$WORKDIR" ]; then
-  mkdir -p "$WORKDIR"
+if [ ! -d "${PROFILEDIR}/profiles" ]; then
+  mkdir -p "${PROFILEDIR}/profiles"
 fi
 
 return 0
@@ -218,18 +194,13 @@ if [ ! -x ${BIN_STREAMRIPPER} ]; then
   shutdown_fadecut
 fi
 
-if [ ${VERBOSE} -ge 1 ];
-then
-  # opposite of quiet
-  STREAMRIPPER_OPTS="-o always -T"
-fi
-
 if [ ! "$(pidof streamripper)" ] && [ "$STREAMRIPPER_START" == "1" ];
 then
   ${BIN_STREAMRIPPER} ${STREAM_URL} -d . \
                       --codeset-filesys=utf8 \
                       --codeset-id3=ISO-8859-1 \
-                      -s ${STREAMRIPPER_OPTS} & 
+                      -s ${STREAMRIPPER_OPTS} \
+                      > /tmp/fadecutstream.log 2>&1 & 
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
 else
@@ -273,6 +244,9 @@ if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 shutdown_streamripper
 showStats
+if [ -f /tmp/fadecutstream.log ] ; then
+  rm /tmp/fadecutstream.log
+fi
 logging -i "Shutting down fadecut..."
 exit $?
 }
@@ -340,19 +314,19 @@ do
   
   Fnew=$(filerename $F)
   if [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
-    logging -i "$F already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
-    mv "$F" "$DOUBLEDIR"
+    logging -i "File already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
+    move_file "$F" "$DOUBLEDIR"
     continue
   fi
 
   if [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
-    logging -i "$F already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
-    mv "$F" "$DOUBLEDIR"
+    logging -i "File already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
+    move_file "$F" "$DOUBLEDIR"
     continue
   fi
 
   if [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
-    logging -i "$F already exists in $DONTLIKEDIR -> deleting ..."
+    logging -i "I don't like. File exists in $DONTLIKEDIR -> deleting ..."
     rm "$F"
     continue
   fi
@@ -372,14 +346,7 @@ do
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
-  logging -i "Encoding to ${ENCODING} with method ${METHOD}"
-  if [ "$METHOD" == "split" ]; then
-    splitting "${F}"
-  fi
-
-  # Only for information:
-  # if [ "$METHOD" == "sox" ]; then
-  # fi
+  splitting "${F}"
 
   if [ "${ENCODING}" == "mp3" ]; then
     mp3Encoding "${F}"
@@ -391,9 +358,9 @@ do
   if [ "${RetLoop}" -eq "0" ]; then
     logging -s "Ready for listening:"
     logging -a "$Fdst"
-    mv "$F" "$ORIGDIR"
+    move_file "$F" "$ORIGDIR"
   else
-    mv "$F" "$ERRORDIR"
+    move_file "$F" "$ERRORDIR"
       # when sox or lame are receiving SIGINT they exit with return-code > 0
       # the ctrl_c function does not catch this case, so we have to break here
     logging -n "loop_fadecut(): Oops! Something was wrong."
@@ -402,8 +369,8 @@ do
   fi
   set +o pipefail
 
-queueSong
-showStats
+  queueSong
+  showStats
 done
 cd "${PWD}"
 }
@@ -413,18 +380,18 @@ load_profile()
 createDirs
 logging -i "Loading profile file(s):"
 
-if [ -r "${PROFILDIR}/fadecutrc" ]; then
-  logging -a "${PROFILDIR}/fadecutrc"
-  . "${PROFILDIR}/fadecutrc"
+if [ -r "${PROFILEDIR}/fadecutrc" ]; then
+  logging -a "${PROFILEDIR}/fadecutrc"
+  . "${PROFILEDIR}/fadecutrc"
 fi
 
-if [ ! -r "${PROFILDIR}/profiles/${PROFILE}" ]; then
-  logging -e "Can't not load profile ${PROFILDIR}/profiles/${PROFILE}"
+if [ ! -r "${PROFILEDIR}/profiles/${PROFILE}" ]; then
+  logging -e "Can't not load profile ${PROFILEDIR}/profiles/${PROFILE}"
   exit 1
 fi
 
-logging -a "${PROFILDIR}/profiles/${PROFILE}"
-. "${PROFILDIR}/profiles/${PROFILE}"
+logging -a "${PROFILEDIR}/profiles/${PROFILE}"
+. "${PROFILEDIR}/profiles/${PROFILE}"
 
 check_profile
 }
@@ -442,16 +409,16 @@ COMMENT=\"Your Comment\"
 FADE_IN=1
 FADE_OUT=4
 # TRIM_BEGIN=0
-# TRIM_END=0" > "${PROFILDIR}/profiles/${NEW}"
+# TRIM_END=0" > "${PROFILEDIR}/profiles/${NEW}"
 logging -i "Starting vim editor"
-vi "${PROFILDIR}/profiles/${NEW}"
+vi "${PROFILEDIR}/profiles/${NEW}"
 logging -i "Now start: fadecut -p ${NEW} -s"
 }
 
 edit_profile()
 # creating a profile
 {
-vi "${PROFILDIR}/profiles/${1}"
+vi "${PROFILEDIR}/profiles/${1}"
 }
 
 check_profile()
@@ -487,7 +454,7 @@ fi
 
 if [ ${RetCheckProfile} -eq 1 ]; 
 then 
-  logging -e "${PROFILDIR}/profiles/${PROFILE}:"
+  logging -e "${PROFILEDIR}/profiles/${PROFILE}:"
   logging -a "${MissingVar} not defined"
   shutdown_fadecut
 fi
@@ -499,12 +466,12 @@ showStats()
 # show statistics only, if all directories are existing
 if [ -d "${OUTPUTDIR}" ];
 then
-  StatsNewDir=`find "${OUTPUTDIR}" -type f | wc -l`
-  StatsOrigDir=`find "${ORIGDIR}" -type f | wc -l`
-  StatsDoneDir=`find "${DONEDIR}" -type f | wc -l`
-  StatsDontlikeDir=`find "${DONTLIKEDIR}" -type f | wc -l`
-  StatsErrorDir=`find "${ERRORDIR}" -type f | wc -l`
-  StatsDoubleDir=`find "${DOUBLEDIR}" -type f | wc -l`
+  StatsNewDir=`ls -1 "${OUTPUTDIR}" | wc -l`
+  StatsOrigDir=`ls -1 "${ORIGDIR}"  | wc -l`
+  StatsDoneDir=`ls -1 "${DONEDIR}"  | wc -l`
+  StatsDontlikeDir=`ls -1 "${DONTLIKEDIR}"  | wc -l`
+  StatsErrorDir=`ls -1 "${ERRORDIR}"  | wc -l`
+  StatsDoubleDir=`ls -1 "${DOUBLEDIR}"  | wc -l`
   logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
 fi
 }
@@ -538,7 +505,6 @@ nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 splitting()
 # split files using silence detection
 {
-logging -i "splitting with mp3splt ..."
 F="$*"
 Fwoext=$(echo $F | sed 's/.mp3//g')
 if [ ${DEBUG} -ge 1 ]; then 
@@ -602,10 +568,21 @@ fi
 return 0
 }
 
+move_file()
+#checks if directory exists, creates it if necessary and moves file to it
+# $1 = file
+# $2 = destination directory
+{
+if [ ! -d "$2" ]; then
+  mkdir -p "$2"
+fi
+mv "$1" "$2"
+}
+
 # Main  ------------------------------------------------------------------------
 
 
-while getopts ":d:hm:p:c:e:qsv" OPTION
+while getopts ":d:hp:c:e:qsv" OPTION
 do
 # When you need an argument that needs a value, you put the ":" right after 
 # the argument in the optstring. If your var is just a flag, withou any 
@@ -617,15 +594,6 @@ do
     h)
       usage
       exit 1
-      ;;
-    m)
-      METHOD=$OPTARG
-      if [[ $METHOD != sox ]] && [[ $METHOD != split ]]
-      then
-        logging -e "Option -m needs 'sox' or 'split' as an argument." >&2
-        usage
-        exit 1
-      fi
       ;;
     p)
       PROFILE=$OPTARG
@@ -656,11 +624,11 @@ do
     \?)
       logging -e "Invalid option: -$OPTARG" >&2
       usage
-      exit 1
+      shutdown_fadecut
       ;;
     :)
       logging -e "Option -$OPTARG requires an argument." >&2
-      exit 1
+      shutdown_fadecut
       ;;
   esac
 done
@@ -670,11 +638,18 @@ if [ -z $PROFILE ] ; then
   exit 1
 fi
 
+StreamInfo=""
+StreamInfo2=""
 while true
 do
   startStream
   loop_fadecut
-  if [ ${VERBOSE} -ge 1 ]; then logging -n "Main(): Loop until we're finished"
+  logging -n "Main(): Loop until we're finished"
+  sleep 2
+  StreamInfo=$(tail -1 /tmp/fadecutstream.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+  if [ "$StreamInfo" != "$StreamInfo2" ] ; then
+    logging -r "${StreamInfo}"
+    StreamInfo2="$StreamInfo"
   fi
   sleep ${LOOP_INTERVAL}
 done

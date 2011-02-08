@@ -14,16 +14,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License               
 along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-# --- 2nd release --------------------------------------------------------------
+# --- 0.1.0 release ------------------------------------------------------------
 * marco Testframework, which will auto-test all ENCODING and METHOD's, before
 	releasing.
 * tinu  provide testfiles *.mp3 to marco for using in the testframework
 * tinu  history/statistics
         in debug mode: write how much files were splitted with mp3splt
+* marco -i -o options for custom input/output directories
+* tinu  dontlike/ folder + manpage documentation
+
+# --- later --------------------------------------------------------------------
 * tinu  cross correlation with well known ad files
 * tinu  maybe we could use ffmpeg instead of sox/lame 
-* marco -i -o options for custom input/output directories
-* tinu  change functionality of -m option
-* tinu  standard output files is `pwd` from which fadecut was started (workdir)
-* tinu  dontlike/ folder + manpage documentation
-* tinu  create error/ folder if needed
+
