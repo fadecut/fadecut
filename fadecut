@@ -472,16 +472,25 @@ showStats()
 # Show file statistics
 {
 # show statistics only, if all directories are existing
-if [ -d "${OUTPUTDIR}" ];
-then
+if [ -d "${OUTPUTDIR}" ]; then
   StatsNewDir=`ls -1 "${OUTPUTDIR}" | wc -l`
-  StatsOrigDir=`ls -1 "${ORIGDIR}"  | wc -l`
-  StatsDoneDir=`ls -1 "${DONEDIR}"  | wc -l`
-  StatsDontlikeDir=`ls -1 "${DONTLIKEDIR}"  | wc -l`
-  StatsErrorDir=`ls -1 "${ERRORDIR}"  | wc -l`
-  StatsDoubleDir=`ls -1 "${DOUBLEDIR}"  | wc -l`
-  logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
 fi
+if [ -d "${ORIGDIR}" ]; then
+  StatsOrigDir=`ls -1 "${ORIGDIR}"  | wc -l`
+fi
+if [ -d "${DONEDIR}" ]; then
+  StatsDoneDir=`ls -1 "${DONEDIR}"  | wc -l`
+fi
+if [ -d "${DONTLIKEDIR}" ]; then
+  StatsDontlikeDir=`ls -1 "${DONTLIKEDIR}"  | wc -l`
+fi
+if [ -d "${ERRORDIR}" ]; then
+  StatsErrorDir=`ls -1 "${ERRORDIR}"  | wc -l`
+fi
+if [ -d "${DOUBLEDIR}" ]; then
+  StatsDoubleDir=`ls -1 "${DOUBLEDIR}"  | wc -l`
+fi
+  logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
 }
 
 writeStats()
