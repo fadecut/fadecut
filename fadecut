@@ -495,7 +495,7 @@ title="$2"
 genre="$3"
 profile="$4"
 status="$5"
-echo '$date;$time;$artist;$title;$genre;$profile;$status' >> "$PROFILEDIR"/statslog.csv
+echo "$date;$time;$artist;$title;$genre;$profile;$status" >> "$PROFILEDIR"/statslog.csv
 }
 
 oggEncoding()
