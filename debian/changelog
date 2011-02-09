@@ -1,12 +1,13 @@
-fadecut (0.0.2-1) UNRELEASED; urgency=low
+fadecut (0.0.2-1) unstable; urgency=low
 
   * New 0.0.2 upstream release
   * Adding missing Depends on id3v2
   * Changed packaging towards tiny debhelper style
   * debian/fadecut.dirs: removed, because it is no longer necessary
   * debian/watch: Fixed regular expression
+  * debian/dirs: usr/sbin removed, because it is not necessary
 
- -- Marco Balmer <marco@balmer.name>  Wed, 09 Feb 2011 13:45:24 +0100
+ -- Marco Balmer <marco@balmer.name>  Wed, 09 Feb 2011 14:02:11 +0100
 
 fadecut (0.0.1-1) unstable; urgency=low
 
