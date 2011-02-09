@@ -1,10 +1,12 @@
-fadecut (0.0.2-1) unstable; urgency=low
+fadecut (0.0.2-1) UNRELEASED; urgency=low
 
   * New 0.0.2 upstream release
   * Adding missing Depends on id3v2
-  * Changed complete packaging to tiny (debian/*.install,examples,manpages)
+  * Changed packaging towards tiny debhelper style
+  * debian/fadecut.dirs: removed, because it is no longer necessary
+  * debian/watch: Fixed regular expression
 
- -- Marco Balmer <marco@balmer.name>  Tue, 08 Feb 2011 15:00:17 +0100
+ -- Marco Balmer <marco@balmer.name>  Wed, 09 Feb 2011 13:45:24 +0100
 
 fadecut (0.0.1-1) unstable; urgency=low
 
