@@ -504,6 +504,9 @@ oggEncoding()
 Fsrc="$*"
 Ftmp=$(echo $Fsrc | sed 's/.mp3/.ogg/g')
 Fdst=$(filerename $Ftmp)
+if [ ! -d "$OUTPUTDIR" ]; then
+  mkdir -p "$OUTPUTDIR"
+fi
 nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
@@ -518,6 +521,9 @@ mp3Encoding()
 {
 Fsrc="$*"
 Fdst=$(filerename $Fsrc)
+if [ ! -d "$OUTPUTDIR" ]; then
+  mkdir -p "$OUTPUTDIR"
+fi
 nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
