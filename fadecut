@@ -312,23 +312,24 @@ do
   logging -i "Processing:"
   logging -a "$F"
   
+  Fstatus=processing
   Fnew=$(filerename $F)
   if [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
     move_file "$F" "$DOUBLEDIR"
-    continue
+    Fstatus=double
   fi
 
   if [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
     move_file "$F" "$DOUBLEDIR"
-    continue
+    Fstatus=double
   fi
 
   if [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
     logging -i "I don't like. File exists in $DONTLIKEDIR -> deleting ..."
     rm "$F"
-    continue
+    Fstatus=dontlike
   fi
 
   # not needed anymore?
@@ -343,6 +344,13 @@ do
     logging -e "ARTIST: $ARTIST / TITLE: $TITLE / LENGTH: $LENGTH"
     shutdown_fadecut
   fi
+
+  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus"
+
+  if [ $Fstatus != processing ] ; then
+    continue
+  fi
+
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
@@ -474,6 +482,20 @@ then
   StatsDoubleDir=`ls -1 "${DOUBLEDIR}"  | wc -l`
   logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
 fi
+}
+
+writeStats()
+# Write statistics log
+# writeStats "artist" "title" "genre" "profile"
+{
+date=`date +%d.%m.%Y`
+time=`date +%H:%M:%S`
+artist="$1"
+title="$2"
+genre="$3"
+profile="$4"
+status="$5"
+echo '$date;$time;$artist;$title;$genre;$profile;$status' >> "$PROFILEDIR"/statslog.csv
 }
 
 oggEncoding()
