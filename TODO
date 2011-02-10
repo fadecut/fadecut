@@ -23,6 +23,8 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * marco -i -o options for custom input/output directories
 * tinu  dontlike/ folder + manpage documentation
 * marco stats, processed songs per hour
+* tinu  fadecut does no longer work in parallel because
+        of /tmp/fadecutstream.log
 
 # --- later --------------------------------------------------------------------
 * tinu  cross correlation with well known ad files
