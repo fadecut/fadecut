@@ -154,6 +154,7 @@ logging()
  esac
  shift
 
+# We need to document this better!
 if [ ${verbose} -ge 1 ] && [ ${VERBOSE} -ge 1 ] ; then 
  if [ "${stderr}" -eq 1 ]; then
    echo "${time} ${prefix}" ${1} >&2
@@ -343,8 +344,6 @@ do
     Fstatus=dontlike
   fi
 
-  # not needed anymore?
-  set -o pipefail
   
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus"
 
@@ -376,7 +375,6 @@ do
     logging -e "loop_fadecut(): returnvalue=$RetLoop"
     shutdown_fadecut
   fi
-  set +o pipefail
 
   queueSong
   showStats
@@ -525,10 +523,15 @@ Fdst=$(filerename $Ftmp)
 if [ ! -d "$OUTPUTDIR" ]; then
   mkdir -p "$OUTPUTDIR"
 fi
+# The Bash ‘-o pipefail’ option to set will cause a pipeline to return a 
+# failure status if any command fails. 
+set -o pipefail
 nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
 	-c "comment=$COMMENT" -o "$OUTPUTDIR"/"$Fdst" || RetLoop=3
+# Disable pipefail (default)
+set +o pipefail
 if [ ${VERBOSE} -ge 1 ];
 then
   ogginfo "$OUTPUTDIR"/"$Fdst" || RetLoop=3
@@ -542,10 +545,15 @@ Fdst=$(filerename $Fsrc)
 if [ ! -d "$OUTPUTDIR" ]; then
   mkdir -p "$OUTPUTDIR"
 fi
+# The Bash ‘-o pipefail’ option to set will cause a pipeline to return a 
+# failure status if any command fails. 
+set -o pipefail
 nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
   --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$Fdst" || RetLoop=3
+# Disable pipefail (default)
+set +o pipefail
 }
 
 splitting()
