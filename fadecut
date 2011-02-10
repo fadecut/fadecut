@@ -491,7 +491,15 @@ fi
 if [ -d "${DOUBLEDIR}" ]; then
   StatsDoubleDir=`ls -1 "${DOUBLEDIR}"  | wc -l`
 fi
-  logging -i "showStats: Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
+  logging -i "showStats:"
+  logging -a "Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
+
+if [ -f "${PROFILEDIR}"/statslog.csv ]; then
+  double=`grep double "${PROFILEDIR}"/statslog.csv | wc -l`
+  processed=`grep processing "${PROFILEDIR}"/statslog.csv | wc -l`
+  ratio=$(echo "scale=2; $processed/$double" | bc)
+  logging -a "stats log: double: ${double} processed: ${processed} processed/double-ratio: ${ratio}
+fi
 }
 
 writeStats()
