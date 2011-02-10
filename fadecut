@@ -97,6 +97,7 @@ BIN_MP3INFO=$(which mp3info)
 BIN_ID3V2=$(which id3v2)
 BIN_LAME=$(which lame)
 
+
 # streamripper options
 STREAMRIPPER_OPTS="-o always -T"
 
@@ -314,16 +315,26 @@ do
   
   Fstatus=processing
   Fnew=$(filerename $F)
+  ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
+  TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
+  LENGTH=`mp3info -p "%S" "$F"`
+  if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z LENGTH ]]
+  then
+    logging -e "could not get mp3 tags from source file."
+    logging -e "ARTIST: $ARTIST / TITLE: $TITLE / LENGTH: $LENGTH"
+    shutdown_fadecut
+  fi
+
   if [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
     move_file "$F" "$DOUBLEDIR"
-    Fstatus=double
+    Fstatus=double-done
   fi
 
   if [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
     move_file "$F" "$DOUBLEDIR"
-    Fstatus=double
+    Fstatus=double-output
   fi
 
   if [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
@@ -335,19 +346,9 @@ do
   # not needed anymore?
   set -o pipefail
   
-  ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
-  TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
-  LENGTH=`mp3info -p "%S" "$F"`
-  if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z LENGTH ]]
-  then
-    logging -e "could not get mp3 tags from source file."
-    logging -e "ARTIST: $ARTIST / TITLE: $TITLE / LENGTH: $LENGTH"
-    shutdown_fadecut
-  fi
-
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus"
 
-  if [ $Fstatus != processing ] ; then
+  if [[ $Fstatus != processing ]] ; then
     continue
   fi
 
