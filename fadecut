@@ -118,6 +118,8 @@ usage: $0 -p <profilename> [other options]
 OPTIONS:
   -c    create profile <profilename>
   -e    edit profile <profilename>
+  -i    optional input directory
+  -o    optional output directory
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
   -h	Show this message
   -p    Profile <profilename>
@@ -319,7 +321,7 @@ do
   ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
   LENGTH=`mp3info -p "%S" "$F"`
-  if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z LENGTH ]]
+  if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z $LENGTH ]]
   then
     logging -e "could not get mp3 tags from source file."
     logging -e "ARTIST: $ARTIST / TITLE: $TITLE / LENGTH: $LENGTH"
@@ -628,7 +630,7 @@ mv "$1" "$2"
 # Main  ------------------------------------------------------------------------
 
 
-while getopts ":d:hp:c:e:qsv" OPTION
+while getopts ":d:hp:c:e:i:o:qsv" OPTION
 do
 # When you need an argument that needs a value, you put the ":" right after 
 # the argument in the optstring. If your var is just a flag, withou any 
@@ -654,6 +656,24 @@ do
     e)
       edit_profile $OPTARG
       exit 0
+      ;;
+    i)
+      WORKDIR=${OPTARG}
+      if [ ! -d "${WORKDIR}" ];
+      then
+        logging -e "${WORKDIR}: Input directory does not exist"
+        shutdown_fadecut
+      fi
+      logging -n "Using for input: ${WORKDIR}"
+      ;;
+    o)
+      OUTPUTDIR=${OPTARG}
+      if [ ! -d "${OUTPUTDIR}" ];
+      then
+        logging -e "${OUTPUTDIR}: Output directory does not exist"
+        shutdown_fadecut
+      fi
+      logging -n "Using for output: ${OUTPUTDIR}"
       ;;
     q)
       DEBUG=0

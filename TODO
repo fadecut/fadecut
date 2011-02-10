@@ -20,7 +20,6 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * tinu  provide testfiles *.mp3 to marco for using in the testframework
 * tinu  history/statistics
         in debug mode: write how much files were splitted with mp3splt
-* marco -i -o options for custom input/output directories
 * tinu  dontlike/ folder + manpage documentation
 * marco stats, processed songs per hour
 * tinu  fadecut does no longer work in parallel because
