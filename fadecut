@@ -273,7 +273,7 @@ if [ $ENQUEUE -eq "1" ]; then
   then
     # enqueue to vlc player if in one instance mode (default disabled)
     logging -i "vlc is running, adding to playlist"
-    vlc --playlist-enqueue "$OUTPUTDIR"/"$Fdst"
+    vlc --playlist-enqueue "$OUTPUTDIR"/"$Fdst" > /dev/null 2>&1
   fi
 fi
 }
@@ -323,6 +323,9 @@ do
   
   Fstatus=processing
   Fnew=$(filerename $F)
+  if id3v2 -C "$F" > /dev/null 2>&1; then
+    logging -i "Converted tags from id3v1 to id3v2"
+  fi
   ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
   LENGTH=`mp3info -p "%S" "$F"`
