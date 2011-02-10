@@ -20,6 +20,9 @@
 # Debug level 0-3
 DEBUG=0
 
+# fadecut's pid
+PID=$$
+
 # Verbosity level
 VERBOSE=0
 
@@ -48,6 +51,8 @@ FADE_IN=1
 # seconds to fade out
 FADE_OUT=4
 
+# fadecut's logdir
+LOGDIR=/tmp
 # fadecut's profile dir
 PROFILEDIR="${HOME}/.fadecut" 
 
@@ -198,13 +203,13 @@ if [ ! -x ${BIN_STREAMRIPPER} ]; then
   shutdown_fadecut
 fi
 
-if [ ! "$(pidof streamripper)" ] && [ "$STREAMRIPPER_START" == "1" ];
+if [ ! -d "/proc/${PidStreamripper}" ] && [ "$STREAMRIPPER_START" == "1" ];
 then
   ${BIN_STREAMRIPPER} ${STREAM_URL} -d . \
                       --codeset-filesys=utf8 \
                       --codeset-id3=ISO-8859-1 \
                       -s ${STREAMRIPPER_OPTS} \
-                      > /tmp/fadecutstream.log 2>&1 & 
+                      > ${LOGDIR}/fadecutstream-${PID}.log 2>&1 & 
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
 else
@@ -248,8 +253,8 @@ if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 shutdown_streamripper
 showStats
-if [ -f /tmp/fadecutstream.log ] ; then
-  rm /tmp/fadecutstream.log
+if [ -f "${LOGDIR}/fadecutstream-${PID}.log" ] ; then
+  rm ${LOGDIR}/fadecutstream-${PID}.log
 fi
 logging -i "Shutting down fadecut..."
 exit $?
@@ -712,7 +717,7 @@ do
   loop_fadecut
   logging -n "Main(): Loop until we're finished"
   sleep 2
-  StreamInfo=$(tail -1 /tmp/fadecutstream.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+  StreamInfo=$(tail -1 ${LOGDIR}/fadecutstream-${PID}.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
   if [ "$StreamInfo" != "$StreamInfo2" ] ; then
     logging -r "${StreamInfo}"
     StreamInfo2="$StreamInfo"

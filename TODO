@@ -22,8 +22,6 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
         in debug mode: write how much files were splitted with mp3splt
 * tinu  dontlike/ folder + manpage documentation
 * marco stats, processed songs per hour
-* tinu  fadecut does no longer work in parallel because
-        of /tmp/fadecutstream.log
 
 # --- later --------------------------------------------------------------------
 * tinu  cross correlation with well known ad files
