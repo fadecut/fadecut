@@ -337,7 +337,8 @@ do
   then
     logging -e "could not get mp3 tags from source file."
     logging -e "ARTIST: $ARTIST / TITLE: $TITLE / LENGTH: $LENGTH"
-    shutdown_fadecut
+    move_file "$F" "$ERRORDIR"
+    Fstatus=error-notags
   fi
 
   # check if file already exists and set status
