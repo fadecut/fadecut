@@ -340,19 +340,18 @@ do
     shutdown_fadecut
   fi
 
+  # check if file already exists and set status
+  # status will be written to statslog
+  # depending on status the processing will continue or will skipped to next file
   if [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
     move_file "$F" "$DOUBLEDIR"
     Fstatus=double-done
-  fi
-
-  if [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
+  elif [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
     move_file "$F" "$DOUBLEDIR"
     Fstatus=double-output
-  fi
-
-  if [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
+  elif [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
     logging -i "I don't like. File exists in $DONTLIKEDIR -> deleting ..."
     rm "$F"
     Fstatus=dontlike
