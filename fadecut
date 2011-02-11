@@ -348,8 +348,12 @@ do
     move_file "$F" "$DOUBLEDIR"
     Fstatus=double-done
   elif [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
-    logging -i "File already exists in $OUTPUTDIR -> moving to $DOUBLEDIR ..."
-    move_file "$F" "$DOUBLEDIR"
+    logging -i "File already exists in $OUTPUTDIR -> remember as double and deleting ..."
+    if [ ! -d "$DOUBLEDIR" ]; then
+      mkdir -p "$DOUBLEDIR"
+    fi
+    touch "$DOUBLEDIR"/"$Fnew"
+    rm "$F"
     Fstatus=double-output
   elif [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
     logging -i "I don't like. File exists in $DONTLIKEDIR -> deleting ..."
