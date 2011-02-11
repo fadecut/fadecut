@@ -577,11 +577,11 @@ splitting()
 F="$*"
 Fwoext=$(echo $F | sed 's/.mp3//g')
 if [ ${DEBUG} -ge 1 ]; then 
-  mp3splt -N -s -p nt=3 "$F" 
+  mp3splt -N -s -p rm,nt=3 "$F" 
 elif [ ${VERBOSE} -ge 1 ]; then
-  mp3splt -q -N -s -p nt=3 "$F"
+  mp3splt -q -N -s -p rm,nt=3 "$F"
 else
-  mp3splt -q -N -s -p nt=3 "$F" > /dev/null 2>&1
+  mp3splt -q -N -s -p rm,nt=3 "$F" > /dev/null 2>&1
 fi
 Ftmp=`ls -1S "$Fwoext"* | head -1`
 if [ "$Ftmp" != "$F" ] ; then
