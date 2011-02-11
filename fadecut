@@ -338,17 +338,17 @@ do
   ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
   LENGTH=`mp3info -p "%S" "$F"`
+
+  # do some checks, check if file already exists and set status
+  # status will be written to statslog
+  # depending on status the processing will continue or will skipped to next file
   if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z $LENGTH ]]
   then
     logging -e "could not get mp3 tags from source file."
     logging -e "ARTIST: $ARTIST / TITLE: $TITLE / LENGTH: $LENGTH"
-    shutdown_fadecut
-  fi
-
-  # check if file already exists and set status
-  # status will be written to statslog
-  # depending on status the processing will continue or will skipped to next file
-  if [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
+    move_file "$F" "$ERRORDIR"
+    Fstatus=error-notags
+  elif [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $DONEDIR -> remember as double and deleting ..."
     double_file "$F" "$DOUBLEDIR"
     Fstatus=double-done
