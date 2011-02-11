@@ -343,7 +343,6 @@ do
     rm "$F"
     Fstatus=dontlike
   fi
-
   
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus"
 
@@ -496,7 +495,7 @@ if [ -f "${PROFILEDIR}"/statslog.csv ]; then
   double=`grep double "${PROFILEDIR}"/statslog.csv | wc -l`
   processed=`grep processing "${PROFILEDIR}"/statslog.csv | wc -l`
   ratio=$(echo "scale=2; $processed/$double" | bc)
-  logging -a "stats log: double: ${double} processed: ${processed} processed/double-ratio: ${ratio}
+  logging -a "stats log: double:${double} processed:${processed} processed/double-ratio:${ratio}"
 fi
 }
 
