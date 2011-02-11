@@ -20,6 +20,9 @@
 # Debug level 0-3
 DEBUG=0
 
+# fadecut's pid
+PID=$$
+
 # Verbosity level
 VERBOSE=0
 
@@ -48,6 +51,8 @@ FADE_IN=1
 # seconds to fade out
 FADE_OUT=4
 
+# fadecut's logdir
+LOGDIR=/tmp
 # fadecut's profile dir
 PROFILEDIR="${HOME}/.fadecut" 
 
@@ -118,6 +123,8 @@ usage: $0 -p <profilename> [other options]
 OPTIONS:
   -c    create profile <profilename>
   -e    edit profile <profilename>
+  -i    optional input directory
+  -o    optional output directory
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
   -h	Show this message
   -p    Profile <profilename>
@@ -196,13 +203,13 @@ if [ ! -x ${BIN_STREAMRIPPER} ]; then
   shutdown_fadecut
 fi
 
-if [ ! "$(pidof streamripper)" ] && [ "$STREAMRIPPER_START" == "1" ];
+if [ ! -d "/proc/${PidStreamripper}" ] && [ "$STREAMRIPPER_START" == "1" ];
 then
   ${BIN_STREAMRIPPER} ${STREAM_URL} -d . \
                       --codeset-filesys=utf8 \
                       --codeset-id3=ISO-8859-1 \
                       -s ${STREAMRIPPER_OPTS} \
-                      > /tmp/fadecutstream.log 2>&1 & 
+                      > ${LOGDIR}/fadecutstream-${PID}.log 2>&1 & 
   PidStreamripper=$!
   logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
 else
@@ -246,8 +253,8 @@ if [ ${DEBUG} -ge 1 ]; then set -x
 fi
 shutdown_streamripper
 showStats
-if [ -f /tmp/fadecutstream.log ] ; then
-  rm /tmp/fadecutstream.log
+if [ -f "${LOGDIR}/fadecutstream-${PID}.log" ] ; then
+  rm ${LOGDIR}/fadecutstream-${PID}.log
 fi
 logging -i "Shutting down fadecut..."
 exit $?
@@ -266,7 +273,7 @@ if [ $ENQUEUE -eq "1" ]; then
   then
     # enqueue to vlc player if in one instance mode (default disabled)
     logging -i "vlc is running, adding to playlist"
-    vlc --playlist-enqueue "$OUTPUTDIR"/"$Fdst"
+    vlc --playlist-enqueue "$OUTPUTDIR"/"$Fdst" > /dev/null 2>&1
   fi
 fi
 }
@@ -316,10 +323,13 @@ do
   
   Fstatus=processing
   Fnew=$(filerename $F)
+  if id3v2 -C "$F" > /dev/null 2>&1; then
+    logging -i "Converted tags from id3v1 to id3v2"
+  fi
   ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
   LENGTH=`mp3info -p "%S" "$F"`
-  if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z LENGTH ]]
+  if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z $LENGTH ]]
   then
     logging -e "could not get mp3 tags from source file."
     logging -e "ARTIST: $ARTIST / TITLE: $TITLE / LENGTH: $LENGTH"
@@ -635,7 +645,7 @@ mv "$1" "$2"
 # Main  ------------------------------------------------------------------------
 
 
-while getopts ":d:hp:c:e:qsv" OPTION
+while getopts ":d:hp:c:e:i:o:qsv" OPTION
 do
 # When you need an argument that needs a value, you put the ":" right after 
 # the argument in the optstring. If your var is just a flag, withou any 
@@ -661,6 +671,24 @@ do
     e)
       edit_profile $OPTARG
       exit 0
+      ;;
+    i)
+      WORKDIR=${OPTARG}
+      if [ ! -d "${WORKDIR}" ];
+      then
+        logging -e "${WORKDIR}: Input directory does not exist"
+        shutdown_fadecut
+      fi
+      logging -n "Using for input: ${WORKDIR}"
+      ;;
+    o)
+      OUTPUTDIR=${OPTARG}
+      if [ ! -d "${OUTPUTDIR}" ];
+      then
+        logging -e "${OUTPUTDIR}: Output directory does not exist"
+        shutdown_fadecut
+      fi
+      logging -n "Using for output: ${OUTPUTDIR}"
       ;;
     q)
       DEBUG=0
@@ -699,7 +727,7 @@ do
   loop_fadecut
   logging -n "Main(): Loop until we're finished"
   sleep 2
-  StreamInfo=$(tail -1 /tmp/fadecutstream.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+  StreamInfo=$(tail -1 ${LOGDIR}/fadecutstream-${PID}.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
   if [ "$StreamInfo" != "$StreamInfo2" ] ; then
     logging -r "${StreamInfo}"
     StreamInfo2="$StreamInfo"
