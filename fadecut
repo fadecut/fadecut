@@ -344,16 +344,12 @@ do
   # status will be written to statslog
   # depending on status the processing will continue or will skipped to next file
   if [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
-    logging -i "File already exists in $DONEDIR -> moving to $DOUBLEDIR ..."
-    move_file "$F" "$DOUBLEDIR"
+    logging -i "File already exists in $DONEDIR -> remember as double and deleting ..."
+    double_file "$F" "$DOUBLEDIR"
     Fstatus=double-done
   elif [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $OUTPUTDIR -> remember as double and deleting ..."
-    if [ ! -d "$DOUBLEDIR" ]; then
-      mkdir -p "$DOUBLEDIR"
-    fi
-    touch "$DOUBLEDIR"/"$Fnew"
-    rm "$F"
+    double_file "$F" "$DOUBLEDIR"
     Fstatus=double-output
   elif [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
     logging -i "I don't like. File exists in $DONTLIKEDIR -> deleting ..."
@@ -650,6 +646,18 @@ if [ ! -d "$2" ]; then
   mkdir -p "$2"
 fi
 mv "$1" "$2"
+}
+
+double_file()
+#checks if directory exists, creates it if necessary and creates 0bytes file
+# $1 = file
+# $2 = destination directory
+{
+if [ ! -d "$2" ]; then
+  mkdir -p "$2"
+fi
+touch "$2"/"$1"
+rm "$1"
 }
 
 # Main  ------------------------------------------------------------------------
