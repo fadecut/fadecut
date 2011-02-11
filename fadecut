@@ -327,9 +327,9 @@ do
   
   Fstatus=processing
   Fnew=$(filerename $F)
-  if id3v2 -C "$F" > /dev/null 2>&1; then
-    logging -i "Converted tags from id3v1 to id3v2"
-  fi
+  # Converting id3v1->id3v2 tags, if necessary. Must be before `id3v2 -l`
+  # command.
+  id3v2 -C "$F" > /dev/null 2>&1
   ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
   LENGTH=`mp3info -p "%S" "$F"`
