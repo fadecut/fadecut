@@ -587,7 +587,7 @@ elif [ ${VERBOSE} -ge 1 ]; then
 else
   mp3splt -q -N -s -p nt=3 "$F" > /dev/null 2>&1
 fi
-Ftmp=`ls -1t "$Fwoext"* | head -1`
+Ftmp=`ls -1S "$Fwoext"* | head -1`
 if [ "$Ftmp" != "$F" ] ; then
   mv "$Ftmp" "$F"
 fi
