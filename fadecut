@@ -776,6 +776,13 @@ if [ -z $PROFILE ] ; then
   exit 1
 fi
 
+if [ "${OUTPUTDIR}" = "${WORKDIR}" ];
+then
+  logging -e "Output and input directory can not be equal!"
+  usage
+  exit 1
+fi
+
 StreamInfo=""
 StreamInfo2=""
 while true
