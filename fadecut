@@ -180,7 +180,7 @@ fi
 createDirs()
 # create necessary directories
 {
-if [ ${DEBUG} -ge 2 ]; then set -x
+if [ ${DEBUG} -ge 3 ]; then set -x
 fi
 
 if [ ! -d "${PROFILEDIR}/profiles" ]; then
@@ -193,7 +193,7 @@ return 0
 startStream()
 # fork a stream process
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ ${DEBUG} -ge 3 ]; then set -x
 fi
 
 cd "${WORKDIR}"
@@ -226,6 +226,7 @@ shutdown_streamripper()
 {
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
+
 TmpPid=$(pidof streamripper)
 
 if [ -z ${TmpPid} ]; then return 0
@@ -251,6 +252,7 @@ shutdown_fadecut()
 {
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
+
 shutdown_streamripper
 showStats
 if [ -f "${LOGDIR}/fadecutstream-${PID}.log" ] ; then
@@ -263,6 +265,9 @@ exit $?
 queueSong()
 # queue song to music players
 {
+if [ ${DEBUG} -ge 2 ]; then set -x
+fi
+
 if [ $ENQUEUE -eq "1" ]; then
   if [ "$(pidof rhythmbox)" ];
   then
@@ -281,18 +286,18 @@ fi
 control_c()
 # run if user hits control-c
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ ${DEBUG} -ge 3 ]; then set -x
 fi
-  logging -n "CTRL-C catched"
-  shutdown_fadecut
+
+logging -n "CTRL-C catched"
+shutdown_fadecut
 }
-# trap keyboard interrupt (control-c)
-trap control_c SIGINT
 
 loop_fadecut()
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ ${DEBUG} -ge 3 ]; then set -x
 fi
+
 RetLoop=0
 
 cd "${WORKDIR}"
@@ -399,6 +404,9 @@ cd "${PWD}"
 
 load_profile()
 {
+if [ ${DEBUG} -ge 2 ]; then set -x
+fi
+
 createDirs
 logging -i "Loading profile file(s):"
 
@@ -421,6 +429,9 @@ check_profile
 create_profile()
 # creating a profile
 {
+if [ ${DEBUG} -ge 2 ]; then set -x
+fi
+
 NEW=${1}
 
 echo \
@@ -446,6 +457,9 @@ vi "${PROFILEDIR}/profiles/${1}"
 check_profile()
 # Check profile, we need all variables to work
 {
+if [ ${DEBUG} -ge 2 ]; then set -x
+fi
+
 RetCheckProfile=0
 MissingVar=""
 
@@ -485,6 +499,9 @@ fi
 showStats()
 # Show file statistics
 {
+if [ ${DEBUG} -ge 3 ]; then set -x
+fi
+
 # show statistics only, if all directories are existing
 if [ -d "${OUTPUTDIR}" ]; then
   StatsNewDir=`ls -1 "${OUTPUTDIR}" | wc -l`
@@ -519,6 +536,9 @@ writeStats()
 # Write statistics log
 # writeStats "artist" "title" "genre" "profile"
 {
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+
 date=`date +%d.%m.%Y`
 time=`date +%H:%M:%S`
 artist=`echo "$1" | iconv -f ISO-8859-1 -t UTF-8`
@@ -532,6 +552,9 @@ echo "$date;$time;$artist;$title;$genre;$profile;$status" >> "$PROFILEDIR"/stats
 oggEncoding()
 # Encoding to ogg
 {
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+
 Fsrc="$*"
 Ftmp=$(echo $Fsrc | sed 's/.mp3/.ogg/g')
 Fdst=$(filerename $Ftmp)
@@ -552,9 +575,13 @@ then
   ogginfo "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 fi
 }
+
 mp3Encoding()
 # Encoding to mp3
 {
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+
 Fsrc="$*"
 Fdst=$(filerename $Fsrc)
 if [ ! -d "$OUTPUTDIR" ]; then
@@ -593,6 +620,9 @@ rm -f "$Fwoext"_silence_*.*
 filerename()
 # rename filenames
 {
+if [ ${DEBUG} -ge 2 ]; then set -x
+fi
+
 Fnold="$*"
 Fnnew=$(echo $Fnold | sed -e 's/ /_/g' -e 's/\(.*\)/\L\1/')
 echo $Fnnew
@@ -601,8 +631,9 @@ echo $Fnnew
 checkRequirements()
 # Check if all necessary tools and binaries are available
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ ${DEBUG} -ge 3 ]; then set -x
 fi
+
 logging -d "Checking fadecut requirements"
 if [ -z ${BIN_STREAMRIPPER} ]; then RequirementsMsg=streamripper
 fi
@@ -642,6 +673,9 @@ move_file()
 # $1 = file
 # $2 = destination directory
 {
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+
 if [ ! -d "$2" ]; then
   mkdir -p "$2"
 fi
@@ -653,6 +687,9 @@ double_file()
 # $1 = file
 # $2 = destination directory
 {
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+
 if [ ! -d "$2" ]; then
   mkdir -p "$2"
 fi
@@ -662,6 +699,8 @@ rm "$1"
 
 # Main  ------------------------------------------------------------------------
 
+# trap keyboard interrupt (control-c)
+trap control_c SIGINT
 
 while getopts ":d:hp:c:e:i:o:qsv" OPTION
 do
