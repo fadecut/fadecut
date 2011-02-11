@@ -1,7 +1,8 @@
 fadecut (0.0.3-1) UNRELEASED; urgency=low
 
   * New 0.0.3 upstream release
-  * Changed debian/copyright according to DEP-5
+  * debian/copyright: Changed according to DEP-5
+  * debian/control: Vcs-Git added
 
  -- Marco Balmer <marco@balmer.name>  Fri, 11 Feb 2011 10:13:43 +0100
 
