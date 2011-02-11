@@ -298,6 +298,8 @@ RetLoop=0
 cd "${WORKDIR}"
 for F in $FILES
 do
+  # if there are no more files to process, go to idle state or clean up
+  # and shutdown fadecut.
   if [ "$F" == "$FILES" ]; then
     let IdleCounter=$((IdleCounter+1))
     let IdleSeconds=$((IdleCounter*LOOP_INTERVAL))
@@ -318,14 +320,13 @@ do
   fi
   IdleCounter=0
 
+  # Checking part of loop_fadecut()
+  # check next file 
   logging -i "Processing:"
   logging -a "$F"
   
   Fstatus=processing
   Fnew=$(filerename $F)
-  if id3v2 -C "$F" > /dev/null 2>&1; then
-    logging -i "Converted tags from id3v1 to id3v2"
-  fi
   ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
   LENGTH=`mp3info -p "%S" "$F"`
@@ -356,8 +357,15 @@ do
   
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus"
 
+  # skip processing of current file if it is "double" or "don't like"
   if [[ $Fstatus != processing ]] ; then
     continue
+  fi
+
+  # Processing part of loop_fadecut()
+
+  if id3v2 -C "$F" > /dev/null 2>&1; then
+    logging -i "Converted tags from id3v1 to id3v2"
   fi
 
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
