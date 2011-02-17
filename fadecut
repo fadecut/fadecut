@@ -617,11 +617,8 @@ elif [ ${VERBOSE} -ge 1 ]; then
 else
   mp3splt -q -N -2 -s -p rm,nt=3 "$F" > /dev/null 2>&1
 fi
-if [ -f "$Fwoext"_silence_* ] ; then
-  Fcount=`ls -1 "$Fwoext"_silence_* | wc -l`
-else
-  Fcount=0
-fi
+# count splitted files, if there's no file, the error of ls is grep'd out
+Fcount=`ls -1 "$Fwoext"_silence_* 2>&1 | grep -v ls: | wc -l`
 if [ $Fcount -ge 1 ] ; then
   logging -i "mp3splt found silence and splitted..."
   Ftmp=`ls -1S "$Fwoext"_silence_* | head -1`
