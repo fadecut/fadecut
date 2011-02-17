@@ -628,6 +628,7 @@ if [ $Fcount -ge 1 ] ; then
   mv "$Ftmp" "$F"
   rm -f "$Fwoext"_silence_*.*
   id3v2 --TPE1 "$ARTIST" --TIT2 "$TITLE" --TCON "$GENRE" --COMM "$COMMENT" "$F"
+  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "mp3split"
 fi
 }
 
