@@ -610,11 +610,17 @@ elif [ ${VERBOSE} -ge 1 ]; then
 else
   mp3splt -q -N -s -p rm,nt=3 "$F" > /dev/null 2>&1
 fi
-Ftmp=`ls -1S "$Fwoext"* | head -1`
-if [ "$Ftmp" != "$F" ] ; then
-  mv "$Ftmp" "$F"
+if [ -f "$Fwoext"_silence_* ] ; then
+  Fcount=`ls -1 "$Fwoext"_silence_* | wc -l`
+else
+  Fcount=0
 fi
-rm -f "$Fwoext"_silence_*.*
+if [ $Fcount -ge 1 ] ; then
+  logging -i "mp3splt found silence and splitted..."
+  Ftmp=`ls -1S "$Fwoext"_silence_* | head -1`
+  mv "$Ftmp" "$F"
+  rm -f "$Fwoext"_silence_*.*
+fi
 }
 
 filerename()
