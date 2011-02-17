@@ -371,10 +371,13 @@ do
 
   # Processing part of loop_fadecut()
 
+  # first make sure we save the original file
+  copy_file "$F" "$ORIGDIR"
+
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
-  splitting "${F}"
+  splitting "${F}" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
 
   if [ "${ENCODING}" == "mp3" ]; then
     mp3Encoding "${F}"
@@ -386,7 +389,6 @@ do
   if [ "${RetLoop}" -eq "0" ]; then
     logging -s "Ready for listening:"
     logging -a "$Fdst"
-    move_file "$F" "$ORIGDIR"
   else
     move_file "$F" "$ERRORDIR"
       # when sox or lame are receiving SIGINT they exit with return-code > 0
@@ -601,14 +603,19 @@ set +o pipefail
 splitting()
 # split files using silence detection
 {
-F="$*"
+F="$1"
+ARTIST="$2"
+TITLE="$3"
+GENRE="$4"
+COMMENT="$5"
+
 Fwoext=$(echo $F | sed 's/.mp3//g')
 if [ ${DEBUG} -ge 1 ]; then 
-  mp3splt -N -s -p rm,nt=3 "$F" 
+  mp3splt -N -2 -s -p rm,nt=3 "$F" 
 elif [ ${VERBOSE} -ge 1 ]; then
-  mp3splt -q -N -s -p rm,nt=3 "$F"
+  mp3splt -q -N -2 -s -p rm,nt=3 "$F"
 else
-  mp3splt -q -N -s -p rm,nt=3 "$F" > /dev/null 2>&1
+  mp3splt -q -N -2 -s -p rm,nt=3 "$F" > /dev/null 2>&1
 fi
 if [ -f "$Fwoext"_silence_* ] ; then
   Fcount=`ls -1 "$Fwoext"_silence_* | wc -l`
@@ -620,6 +627,7 @@ if [ $Fcount -ge 1 ] ; then
   Ftmp=`ls -1S "$Fwoext"_silence_* | head -1`
   mv "$Ftmp" "$F"
   rm -f "$Fwoext"_silence_*.*
+  id3v2 --TPE1 "$ARTIST" --TIT2 "$TITLE" --TCON "$GENRE" --COMM "$COMMENT" "$F"
 fi
 }
 
@@ -672,6 +680,20 @@ then
   return 1
 fi
 return 0
+}
+
+copy_file()
+#checks if directory exists, creates it if necessary and copy file to it
+# $1 = file
+# $2 = destination directory
+{
+if [ ${DEBUG} -ge 1 ]; then set -x
+fi
+
+if [ ! -d "$2" ]; then
+  mkdir -p "$2"
+fi
+cp "$1" "$2"
 }
 
 move_file()
