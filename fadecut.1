@@ -1,3 +1,10 @@
+.\"
+.\" File Name macro.  This used to be `.PN', for Path Name,
+.\" but Sun doesn't seem to like that very much.
+.\"
+.de FN
+\fI\|\\$1\|\fP
+..
 .TH "fadecut" "1" "0.0.1"
 .SH NAME
 fadecut \- Radio livestream to ogg/mp3 tool
@@ -148,5 +155,24 @@ Only cut and fade in\-/out without ripping from livestream
 .RS
 fadecut \-p test
 .RE
+.PP
+.SH SEE ALSO
+.Xr id3v2 1 ,
+.Xr streamripper 1
+.PP
 .SH FILES
+.PD 0
+.TP 
+.FN ~/.fadecut/fadecutrc
+The main fadecut configuration file, executed with every start of fadecut
+.TP
+.FN ~/.fadecut/statslog.csv
+The statistics file
+.TP
+.FN ~/.fadecut/profiles
+The folder where all profiles are located
+.PD
+.SH RESOURCES
+.TP
+fadecut git website 
 https://github.com/micressor/fadecut
