@@ -129,7 +129,7 @@ OPTIONS:
   -h	Show this message
   -p    Profile <profilename>
   -q	Quiet
-  -s    Stream (and rip), start streamripper
+  -r    Stream (and rip), start streamripper
   -v	Verbose
 
 EOF
@@ -749,7 +749,7 @@ rm "$1"
 # trap keyboard interrupt (control-c)
 trap control_c SIGINT
 
-while getopts ":d:hp:c:e:i:o:qsv" OPTION
+while getopts ":d:hp:c:e:i:o:qrv" OPTION
 do
 # When you need an argument that needs a value, you put the ":" right after 
 # the argument in the optstring. If your var is just a flag, withou any 
@@ -800,7 +800,7 @@ do
       # add LOGGING variable and change logging function to be able to turn 
       # all output off
       ;;
-    s)
+    r)
       STREAMRIPPER_START=1 
       ;;
     v)
