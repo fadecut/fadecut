@@ -1,3 +1,7 @@
+fadecut 0.0.3
+-------------
+  * Ripping option -s changed to -r
+
 fadecut 0.0.2
 -------------
   * removed repetition of unnessesary logging
