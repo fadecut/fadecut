@@ -349,15 +349,14 @@ do
   id3v2 -C "$F" > /dev/null 2>&1
   ARTIST=`id3v2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`id3v2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
-  LENGTH=`mp3info -p "%S" "$F"`
 
   # do some checks, check if file already exists and set status
   # status will be written to statslog
   # depending on status the processing will continue or will skipped to next file
-  if [[ -z $ARTIST ]] || [[ -z $TITLE ]] || [[ -z $LENGTH ]]
+  if [[ -z $ARTIST ]] || [[ -z $TITLE ]] 
   then
     logging -e "could not get mp3 tags from source file."
-    logging -e "ARTIST: $ARTIST / TITLE: $TITLE / LENGTH: $LENGTH"
+    logging -e "ARTIST: $ARTIST / TITLE: $TITLE"
     move_file "$F" "$ERRORDIR"
     Fstatus=error-notags
   elif [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
@@ -386,10 +385,11 @@ do
   # first make sure we save the original file
   copy_file "$F" "$ORIGDIR"
 
+  newsplitting "${F}" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
+
+  LENGTH=`sox "$TMPDIR"/"$F" -n stat 2>&1 | grep Length | sed -e 's/.* //' -e 's/\..*//'`
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
-
-  splitting "${F}" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
 
   if [ "${ENCODING}" == "mp3" ]; then
     mp3Encoding "${F}"
@@ -401,7 +401,7 @@ do
   if [ "${RetLoop}" -eq "0" ]; then
     logging -s "Ready for listening:"
     logging -a "$Fdst"
-    rm "$F"
+    rm "$TMPDIR"/"$F"
   else
     move_file "$F" "$ERRORDIR"
       # when sox or lame are receiving SIGINT they exit with return-code > 0
@@ -585,7 +585,7 @@ fi
 # The Bash ‘-o pipefail’ option to set will cause a pipeline to return a 
 # failure status if any command fails. 
 set -o pipefail
-nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
+nice -15 sox -V1 "$TMPDIR"/"$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   silence -l 1 0.5 0.1% -1 0.5 0.1% \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
@@ -612,7 +612,7 @@ fi
 # The Bash ‘-o pipefail’ option to set will cause a pipeline to return a 
 # failure status if any command fails. 
 set -o pipefail
-nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
+nice -15 sox -V1 "$TMPDIR"/"$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   silence -l 1 0.5 0.1% -1 0.5 0.1% \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
@@ -633,9 +633,11 @@ COMMENT="$5"
 sox -V1 "$F" -t wav "$TMPDIR"/"$F".wav silence 1 0.50 0.1% 1 0.5 0.1% : newfile : restart
 Fcount=`ls -1 "$TMPDIR"/"$F"* | wc -l`
 #choose biggest file of sox output as we think this will be the wanted main part
-Ftmp=`ls -1S "$TMPDIR"/"$F"* | head -1`
+Ftmp=`ls -1S "$TMPDIR"/"$F"* | sed -e 's/.*\///g' | head -1`
+mv "$TMPDIR"/"$Ftmp" "$TMPDIR"/"$F"
 if [ $Fcount -ge 2 ] ; then
   logging -i "sox found silence and splitted..."
+  rm "$TMPDIR"/"$F"00*
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "soxsplit into $Fcount files"
 fi
 }
@@ -652,7 +654,9 @@ COMMENT="$5"
 # future method for splitting will be with sox
 # sox -V1 "$F" -t wav "$F".wav silence 1 0.50 0.1% 1 0.5 0.1% : newfile : restart
 # output is then "$F"001.wav and if silence found additional "$F"002.wav, ...
-Fwoext=$(echo $F | sed 's/.mp3//g') if [ ${DEBUG} -ge 1 ]; then 
+
+Fwoext=$(echo $F | sed 's/.mp3//g') 
+if [ ${DEBUG} -ge 1 ]; then 
   mp3splt -N -2 -s -p rm,nt=3,min=0.2 "$F" 
 elif [ ${VERBOSE} -ge 1 ]; then
   mp3splt -q -N -2 -s -p rm,nt=3,min=0.2 "$F"
@@ -664,10 +668,12 @@ Fcount=`ls -1 "$Fwoext"_silence_* 2>&1 | grep -v ls: | wc -l`
 if [ $Fcount -ge 1 ] ; then
   logging -i "mp3splt found silence and splitted..."
   Ftmp=`ls -1S "$Fwoext"_silence_* | head -1`
-  mv "$Ftmp" "$F"
+  mv "$Ftmp" "$TMPDIR"/"$F"
   rm -f "$Fwoext"_silence_*.*
   id3v2 --TPE1 "$ARTIST" --TIT2 "$TITLE" --TCON "$GENRE" --COMM "$COMMENT" "$F"
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "mp3split into $Fcount files"
+else
+  mv "$F" "$TMPDIR"/"$F"
 fi
 }
 
