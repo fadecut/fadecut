@@ -17,7 +17,6 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 # --- 0.1.0 release ------------------------------------------------------------
 * marco Testframework, which will auto-test all ENCODING and METHOD's, before
 	releasing.
-* tinu  dontlike/ folder + manpage documentation
 
 # --- later --------------------------------------------------------------------
 * tinu  cross correlation with well known ad files
