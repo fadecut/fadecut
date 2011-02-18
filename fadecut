@@ -145,6 +145,9 @@ logging()
 # Std. Output:  Logging messages.
 #
 {
+ if [ ${DEBUG} -ge 3 ]; then set -x
+ fi
+
  time="$(date +%H):$(date +%M):$(date +%S)"
  prefix=""
  stderr=-1
@@ -200,7 +203,7 @@ cd "${WORKDIR}"
 
 if [ ! -x ${BIN_STREAMRIPPER} ]; then
   logging -e "Ooops! No streamripper found"
-  shutdown_fadecut
+  shutdown_fadecut 3
 fi
 
 if [ ! -d "/proc/${PidStreamripper}" ] && [ "$STREAMRIPPER_START" == "1" ];
@@ -252,14 +255,23 @@ shutdown_fadecut()
 {
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
-
+logging -n "Shutting down fadecut..."
+ExitCode=${1}
 shutdown_streamripper
 showStats
 if [ -f "${LOGDIR}/fadecutstream-${PID}.log" ] ; then
   rm ${LOGDIR}/fadecutstream-${PID}.log
 fi
-logging -i "Shutting down fadecut..."
-exit $?
+
+if [ $ExitCode -eq 0 ];
+then
+  logging -s "Fadecut stopped!"
+else
+  logging -e "Fadecut stopped unexpected!"
+  logging -a "Returnvalue=${ExitCode}"
+fi
+
+exit ${ShutdownExitCode}
 }
 
 queueSong()
@@ -290,7 +302,7 @@ if [ ${DEBUG} -ge 3 ]; then set -x
 fi
 
 logging -n "CTRL-C catched"
-shutdown_fadecut
+shutdown_fadecut 0
 }
 
 loop_fadecut()
@@ -311,7 +323,7 @@ do
     logging -n "no files to process, idle for ${IdleSeconds} seconds"
     if [ $STREAMRIPPER_START == "0" ];
     then 
-      shutdown_fadecut
+      shutdown_fadecut 0
     else
       if [ ${IdleSeconds} -ge ${RESTART_STREAMRIPPER_INTERVAL} ];
       then
@@ -396,7 +408,7 @@ do
       # the ctrl_c function does not catch this case, so we have to break here
     logging -n "loop_fadecut(): Oops! Something was wrong."
     logging -e "loop_fadecut(): returnvalue=$RetLoop"
-    shutdown_fadecut
+    shutdown_fadecut 3
   fi
 
   queueSong
@@ -495,7 +507,7 @@ if [ ${RetCheckProfile} -eq 1 ];
 then 
   logging -e "${PROFILEDIR}/profiles/${PROFILE}:"
   logging -a "${MissingVar} not defined"
-  shutdown_fadecut
+  shutdown_fadecut 1
 fi
 }
 
@@ -530,8 +542,14 @@ fi
 if [ -f "${PROFILEDIR}"/statslog.csv ]; then
   double=`grep double "${PROFILEDIR}"/statslog.csv | wc -l`
   processed=`grep processing "${PROFILEDIR}"/statslog.csv | wc -l`
-  ratio=$(echo "scale=2; $processed/$double" | bc)
-  logging -a "stats log: double:${double} processed:${processed} processed/double-ratio:${ratio}"
+  logging -d "double=$double processed=$processed"
+  # Print stats log only if we have more than 0 doubles
+  # (Divide by zero)
+  if [ ${double} -ne 0 ];
+  then
+    ratio=$(echo "scale=2; $processed/$double" | bc)
+    logging -a "stats log: double:${double} processed:${processed} processed/double-ratio:${ratio}"
+  fi
 fi
 }
 
@@ -613,11 +631,11 @@ COMMENT="$5"
 
 Fwoext=$(echo $F | sed 's/.mp3//g')
 if [ ${DEBUG} -ge 1 ]; then 
-  mp3splt -N -2 -s -p rm,nt=3 "$F" 
+  mp3splt -N -2 -s -p rm,nt=3,min=0.2 "$F" 
 elif [ ${VERBOSE} -ge 1 ]; then
-  mp3splt -q -N -2 -s -p rm,nt=3 "$F"
+  mp3splt -q -N -2 -s -p rm,nt=3,min=0.2 "$F"
 else
-  mp3splt -q -N -2 -s -p rm,nt=3 "$F" > /dev/null 2>&1
+  mp3splt -q -N -2 -s -p rm,nt=3,min=0.2 "$F" > /dev/null 2>&1
 fi
 # count splitted files, if there's no file, the error of ls is grep'd out
 Fcount=`ls -1 "$Fwoext"_silence_* 2>&1 | grep -v ls: | wc -l`
@@ -746,7 +764,7 @@ do
     p)
       PROFILE=$OPTARG
       load_profile
-      if ! checkRequirements; then shutdown_fadecut
+      if ! checkRequirements; then shutdown_fadecut 1
       fi
       ;;
     c)
@@ -762,7 +780,7 @@ do
       if [ ! -d "${WORKDIR}" ];
       then
         logging -e "${WORKDIR}: Input directory does not exist"
-        shutdown_fadecut
+        shutdown_fadecut 3
       fi
       logging -n "Using for input: ${WORKDIR}"
       ;;
@@ -771,7 +789,7 @@ do
       if [ ! -d "${OUTPUTDIR}" ];
       then
         logging -e "${OUTPUTDIR}: Output directory does not exist"
-        shutdown_fadecut
+        shutdown_fadecut 3
       fi
       logging -n "Using for output: ${OUTPUTDIR}"
       ;;
@@ -790,11 +808,11 @@ do
     \?)
       logging -e "Invalid option: -$OPTARG" >&2
       usage
-      shutdown_fadecut
+      shutdown_fadecut 1
       ;;
     :)
       logging -e "Option -$OPTARG requires an argument." >&2
-      shutdown_fadecut
+      shutdown_fadecut 1
       ;;
   esac
 done
