@@ -630,6 +630,10 @@ TITLE="$3"
 GENRE="$4"
 COMMENT="$5"
 
+# future method for splitting will be with sox
+# sox -V1 "$F" -t wav "$F".wav silence 1 0.50 0.1% 1 0.5 0.1% : newfile : restart
+# output is then "$F"001.wav and if silence found additional "$F"002.wav, ...
+
 Fwoext=$(echo $F | sed 's/.mp3//g')
 if [ ${DEBUG} -ge 1 ]; then 
   mp3splt -N -2 -s -p rm,nt=3,min=0.2 "$F" 
