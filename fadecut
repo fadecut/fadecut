@@ -402,6 +402,7 @@ do
     logging -s "Ready for listening:"
     logging -a "$Fdst"
     rm "$TMPDIR"/"$F"
+    rm "$F"
   else
     move_file "$F" "$ERRORDIR"
       # when sox or lame are receiving SIGINT they exit with return-code > 0
