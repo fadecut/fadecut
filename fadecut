@@ -542,8 +542,14 @@ fi
 if [ -f "${PROFILEDIR}"/statslog.csv ]; then
   double=`grep double "${PROFILEDIR}"/statslog.csv | wc -l`
   processed=`grep processing "${PROFILEDIR}"/statslog.csv | wc -l`
-  ratio=$(echo "scale=2; $processed/$double" | bc)
-  logging -a "stats log: double:${double} processed:${processed} processed/double-ratio:${ratio}"
+  logging -d "double=$double processed=$processed"
+  # Print stats log only if we have more than 0 doubles
+  # (Divide by zero)
+  if [ ${double} -ne 0 ];
+  then
+    ratio=$(echo "scale=2; $processed/$double" | bc)
+    logging -a "stats log: double:${double} processed:${processed} processed/double-ratio:${ratio}"
+  fi
 fi
 }
 
