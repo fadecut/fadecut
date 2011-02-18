@@ -865,10 +865,14 @@ do
   loop_fadecut
   logging -n "Main(): Loop until we're finished"
   sleep 2
-  StreamInfo=$(tail -1 ${LOGDIR}/fadecutstream-${PID}.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
-  if [ "$StreamInfo" != "$StreamInfo2" ] ; then
-    logging -r "${StreamInfo}"
-    StreamInfo2="$StreamInfo"
+  # if streamripper is working then show info about it
+  if [ $STREAMRIPPER_START == "1" ] && [ -f ${LOGDIR}/fadecutstream-${PID}.log ];
+  then
+    StreamInfo=$(tail -1 ${LOGDIR}/fadecutstream-${PID}.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+    if [ "$StreamInfo" != "$StreamInfo2" ] ; then
+      logging -r "${StreamInfo}"
+      StreamInfo2="$StreamInfo"
+    fi
   fi
   sleep ${LOOP_INTERVAL}
 done
