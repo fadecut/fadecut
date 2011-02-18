@@ -613,7 +613,8 @@ fi
 # failure status if any command fails. 
 set -o pipefail
 nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
-  fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
+  fade t $FADE_IN $FADE_OUT_START $FADE_OUT \
+  silence -l 1 00:00:00.5 -35d -1 00:00:00.5 -35d | \
   lame --quiet --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
   --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 # Disable pipefail (default)
