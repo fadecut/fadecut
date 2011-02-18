@@ -621,6 +621,25 @@ nice -15 sox -V1 "$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 set +o pipefail
 }
 
+newsplitting()
+# split files using silence detection of sox
+{
+F="$1"
+ARTIST="$2"
+TITLE="$3"
+GENRE="$4"
+COMMENT="$5"
+
+sox -V1 "$F" -t wav "$TMPDIR"/"$F".wav silence 1 0.50 0.1% 1 0.5 0.1% : newfile : restart
+Fcount=`ls -1 "$TMPDIR"/"$F"* | wc -l`
+#choose biggest file of sox output as we think this will be the wanted main part
+Ftmp=`ls -1S "$TMPDIR"/"$F"* | head -1`
+if [ $Fcount -ge 2 ] ; then
+  logging -i "sox found silence and splitted..."
+  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "soxsplit into $Fcount files"
+fi
+}
+
 splitting()
 # split files using silence detection
 {
@@ -633,9 +652,7 @@ COMMENT="$5"
 # future method for splitting will be with sox
 # sox -V1 "$F" -t wav "$F".wav silence 1 0.50 0.1% 1 0.5 0.1% : newfile : restart
 # output is then "$F"001.wav and if silence found additional "$F"002.wav, ...
-
-Fwoext=$(echo $F | sed 's/.mp3//g')
-if [ ${DEBUG} -ge 1 ]; then 
+Fwoext=$(echo $F | sed 's/.mp3//g') if [ ${DEBUG} -ge 1 ]; then 
   mp3splt -N -2 -s -p rm,nt=3,min=0.2 "$F" 
 elif [ ${VERBOSE} -ge 1 ]; then
   mp3splt -q -N -2 -s -p rm,nt=3,min=0.2 "$F"
@@ -650,7 +667,7 @@ if [ $Fcount -ge 1 ] ; then
   mv "$Ftmp" "$F"
   rm -f "$Fwoext"_silence_*.*
   id3v2 --TPE1 "$ARTIST" --TIT2 "$TITLE" --TCON "$GENRE" --COMM "$COMMENT" "$F"
-  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "mp3split"
+  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "mp3split into $Fcount files"
 fi
 }
 
