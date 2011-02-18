@@ -568,7 +568,8 @@ fi
 # failure status if any command fails. 
 set -o pipefail
 nice -15 sox -V1 "$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
-  fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
+  fade t $FADE_IN $FADE_OUT_START $FADE_OUT \
+  silence -l 1 00:00:00.5 -35d -1 00:00:00.5 -35d | \
   oggenc - --quiet -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
 	-c "comment=$COMMENT" -o "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 # Disable pipefail (default)
