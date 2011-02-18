@@ -165,12 +165,14 @@ logging()
  shift
 
 # We need to document this better!
+# if VERBOSE mode is set, then show all messages, which we want to show in verbose mode
 if [ ${verbose} -ge 1 ] && [ ${VERBOSE} -ge 1 ] ; then 
  if [ "${stderr}" -eq 1 ]; then
    echo "${time} ${prefix}" ${1} >&2
  else
    echo "${time} ${prefix}" ${1}
  fi
+# else show only messages which are defined to show in non-verbose mode
 elif [ ${verbose} -eq 0 ] ; then
  if [ "${stderr}" -eq 1 ]; then
    echo "${time} ${prefix}" ${1} >&2
@@ -202,7 +204,7 @@ fi
 cd "${WORKDIR}"
 
 if [ ! -x ${BIN_STREAMRIPPER} ]; then
-  logging -e "Ooops! No streamripper found"
+  logging -e "Ooops! Streamripper not found"
   shutdown_fadecut 3
 fi
 
@@ -248,6 +250,8 @@ then
 else
   logging -n "Another streamripper is still running"
 fi
+
+return 0
 }
 
 shutdown_fadecut()
@@ -255,6 +259,7 @@ shutdown_fadecut()
 {
 if [ ${DEBUG} -ge 1 ]; then set -x
 fi
+
 logging -n "Shutting down fadecut..."
 ExitCode=${1}
 shutdown_streamripper
@@ -293,6 +298,8 @@ if [ $ENQUEUE -eq "1" ]; then
     vlc --playlist-enqueue "$OUTPUTDIR"/"$Fdst" > /dev/null 2>&1
   fi
 fi
+
+return 0
 }
 
 control_c()
