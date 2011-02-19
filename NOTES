@@ -45,12 +45,12 @@ we are following the coding styles of
 
 Testframework
 * list of testfiles needed:
-  cut correct - end 01.mp3
-  cut correct - begin 01.mp3
-  cut correct - begin and end 01.mp3
-  error - no tag artist.mp3
-  error - no tag title.mp3
-  error - no mp3 file.mp3
+  [done] cut correct - end 01.mp3
+  [done] cut correct - begin 01.mp3
+  [done] cut correct - begin and end 01.mp3
+  [done] error - no tag artist.mp3
+  [done] error - no tag title.mp3
+  [done] error - no mp3 file.mp3
 
 * Tests:
   outputfiles (cut correct*.*) correct (check binary, length, size, tags)
