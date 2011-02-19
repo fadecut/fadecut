@@ -33,13 +33,15 @@ another command line tagging tool, which reads and writes also id3v2:
 
 Coding Style Guide
 we are following the coding styles of 
+ . the GNU Coding Standards
+      http://www.gnu.org/prep/standards/html_node/index.html
  . the Bash Reference Manual
-   http://www.gnu.org/software/bash/manual/bashref.html
+      http://www.gnu.org/software/bash/manual/bashref.html
  . Advanced Bash Scripting Guide
-   http://tldp.org/LDP/abs/html/index.html
+      http://tldp.org/LDP/abs/html/index.html
  . Bash Style Guide and Coding Standards
-   [german]  http://www3.fh-swf.de/fbin/mehner/download/StyleGuideShell.pdf
-   [english] http://lug.fh-swf.de/vim/vim-bash/StyleGuideShell.en.pdf
+      [german]  http://www3.fh-swf.de/fbin/mehner/download/StyleGuideShell.pdf
+      [english] http://lug.fh-swf.de/vim/vim-bash/StyleGuideShell.en.pdf
 
 Testframework
 * list of testfiles needed:
