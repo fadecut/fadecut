@@ -108,7 +108,6 @@ BIN_SOX=$(which sox)
 BIN_MP3SPLT=$(which mp3splt)
 BIN_OGGINFO=$(which ogginfo)
 BIN_OGGENC=$(which oggenc)
-BIN_MP3INFO=$(which mp3info)
 BIN_ID3V2=$(which id3v2)
 BIN_LAME=$(which lame)
 
@@ -858,8 +857,6 @@ fi
 if [ -z $BIN_SOX ]; then RequirementsMsg=sox
 fi
 if [ -z $BIN_MP3SPLT ]; then RequirementsMsg=mp3splt
-fi
-if [ -z $BIN_MP3INFO ]; then RequirementsMsg=mp3info
 fi
 if [ -z $BIN_ID3V2 ]; then RequirementsMsg=id3v2
 fi

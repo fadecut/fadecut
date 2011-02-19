@@ -59,7 +59,6 @@ werden dann ebenfalls nicht mehr weiter verarbeitet.
 * bash - The GNU Bourne Again SHell
 * sox - the Swiss army knife of sound processing
 * vorbis-tools - several Ogg Vorbis tools
-* mp3info - a MP3 technical info viewer and ID3 1.x tag editor
 * id3v2 - A command line id3v2 tag editor
 
 optional, for mp3 encoding:
