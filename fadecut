@@ -16,10 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-# Coding Style
-# we are following the coding styles of the Bash Reference Manual
-# http://www.gnu.org/software/bash/manual/bashref.html
-
 # Constants --------------------------------------------------------------------
 # you may overwrite all this constants in 
 #   ~/.fadecut/fadecutrc 
