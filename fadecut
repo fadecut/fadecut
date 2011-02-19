@@ -105,7 +105,6 @@ STREAMRIPPER_START=0
 # define all binaries
 BIN_STREAMRIPPER=$(which streamripper)
 BIN_SOX=$(which sox)
-BIN_MP3SPLT=$(which mp3splt)
 BIN_OGGINFO=$(which ogginfo)
 BIN_OGGENC=$(which oggenc)
 BIN_ID3V2=$(which id3v2)
@@ -453,7 +452,7 @@ do
   # first make sure we save the original file
   copy_file "$F" "$ORIGDIR"
 
-  newsplitting "$F" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
+  splitting "$F" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
 
   LENGTH=`sox "$TMPDIR"/"$F" -n stat 2>&1 | grep Length | sed -e 's/.* //' -e 's/\..*//'`
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
@@ -747,7 +746,7 @@ nice -15 sox -V1 "$TMPDIR"/"$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 set +o pipefail
 }
 
-newsplitting()
+splitting()
 #
 # Description:  split files using silence detection of sox
 # 
@@ -775,45 +774,6 @@ if [ $Fcount -ge 2 ] ; then
   logging -i "sox found silence and splitted..."
   rm "$TMPDIR"/"$F"00*
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "soxsplit into $Fcount files"
-fi
-
-return 0
-}
-
-splitting()
-#
-# Description:  split files using silence detection
-# 
-# Parameter  :  none
-#
-# Output     :  none
-#
-{
-F="$1"
-ARTIST="$2"
-TITLE="$3"
-GENRE="$4"
-COMMENT="$5"
-
-Fwoext=$(echo $F | sed 's/.mp3//g') 
-if [ $DEBUG -ge 1 ]; then 
-  mp3splt -N -2 -s -p rm,nt=3,min=0.2 "$F" 
-elif [ $VERBOSE -ge 1 ]; then
-  mp3splt -q -N -2 -s -p rm,nt=3,min=0.2 "$F"
-else
-  mp3splt -q -N -2 -s -p rm,nt=3,min=0.2 "$F" > /dev/null 2>&1
-fi
-# count splitted files, if there's no file, the error of ls is grep'd out
-Fcount=`ls -1 "$Fwoext"_silence_* 2>&1 | grep -v ls: | wc -l`
-if [ $Fcount -ge 1 ] ; then
-  logging -i "mp3splt found silence and splitted..."
-  Ftmp=`ls -1S "$Fwoext"_silence_* | head -1`
-  mv "$Ftmp" "$TMPDIR"/"$F"
-  rm -f "$Fwoext"_silence_*.*
-  id3v2 --TPE1 "$ARTIST" --TIT2 "$TITLE" --TCON "$GENRE" --COMM "$COMMENT" "$F"
-  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "mp3split into $Fcount files"
-else
-  mv "$F" "$TMPDIR"/"$F"
 fi
 
 return 0
@@ -855,8 +815,6 @@ logging -d "Checking fadecut requirements"
 if [ -z $BIN_STREAMRIPPER ]; then RequirementsMsg=streamripper
 fi
 if [ -z $BIN_SOX ]; then RequirementsMsg=sox
-fi
-if [ -z $BIN_MP3SPLT ]; then RequirementsMsg=mp3splt
 fi
 if [ -z $BIN_ID3V2 ]; then RequirementsMsg=id3v2
 fi
