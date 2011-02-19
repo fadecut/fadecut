@@ -106,7 +106,6 @@ BIN_OGGENC=$(which oggenc)
 BIN_ID3V2=$(which id3v2)
 BIN_LAME=$(which lame)
 
-
 # streamripper options
 STREAMRIPPER_OPTS="-o always -T"
 
@@ -160,7 +159,7 @@ logging()
  if [ $DEBUG -ge 3 ]; then set -x
  fi
 
- time="$(date +%H):$(date +%M):$(date +%S)"
+ logtime="$(date +%H):$(date +%M):$(date +%S)"
  prefix=""
  stderr=-1
 
@@ -181,16 +180,16 @@ logging()
 # if VERBOSE mode is set, then show all messages, which we want to show in verbose mode
 if [ $verbose -ge 1 ] && [ $VERBOSE -ge 1 ] ; then 
  if [ "$stderr" -eq 1 ]; then
-   echo "$time $prefix" $1 >&2
+   echo "$logtime $prefix" $1 >&2
  else
-   echo "$time $prefix" $1
+   echo "$logtime $prefix" $1
  fi
 # else show only messages which are defined to show in non-verbose mode
 elif [ $verbose -eq 0 ] ; then
  if [ "$stderr" -eq 1 ]; then
-   echo "$time $prefix" $1 >&2
+   echo "$logtime $prefix" $1 >&2
  else
-   echo "$time $prefix" $1
+   echo "$logtime $prefix" $1
  fi
 fi
 }
