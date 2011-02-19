@@ -16,7 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
+# Coding Style
+# we are following the coding styles of the Bash Reference Manual
+# http://www.gnu.org/software/bash/manual/bashref.html
+
 # Constants --------------------------------------------------------------------
+# you may overwrite all this constants in 
+#   ~/.fadecut/fadecutrc 
+# and/or
+#   ~/.fadecut/profiles/<profile>
+#
+
 # Debug level 0-3
 DEBUG=0
 
@@ -36,9 +46,9 @@ RESTART_STREAMRIPPER_INTERVAL=900
 FILES=*.mp3
 
 # Main directory of fadecut
-PWD=`pwd`
+PWD=$(pwd)
 
-# prefered destination fileformat. (ogg/mp3)
+# prefered destination fileformat. [ogg/mp3]
 ENCODING=ogg
 
 # trim start- and endpoint of cut in seconds
@@ -54,31 +64,31 @@ FADE_OUT=4
 # fadecut's logdir
 LOGDIR=/tmp
 # fadecut's profile dir
-PROFILEDIR="${HOME}/.fadecut" 
+PROFILEDIR="$HOME/.fadecut" 
 
 # fadecut's workdir
-WORKDIR="${PWD}"
+WORKDIR="$PWD"
 
 # where to put fadecut'ted files
-OUTPUTDIR="${PWD}/new"
+OUTPUTDIR="$PWD/new"
 
 # where to put the uncutted original files
-ORIGDIR="${PWD}/orig"
+ORIGDIR="$PWD/orig"
 
 # here are the already fadecut'ted files, which are tested and we listened to 
 # already
-DONEDIR="${PWD}/done"
+DONEDIR="$PWD/done"
 
 # here we put songs which we don't like
-DONTLIKEDIR="${PWD}/dontlike"
+DONTLIKEDIR="$PWD/dontlike"
 
 # here are the files, with which we got an error
 # in same folder i put files, which i was listening to and found advertisement 
 # or bad cutting
-ERRORDIR="${PWD}/error"
+ERRORDIR="$PWD/error"
 
 # here will be the files which we have already downloaded and which we got again
-DOUBLEDIR="${PWD}/double"
+DOUBLEDIR="$PWD/double"
 
 # where to put temporary files
 TMPDIR=/tmp
@@ -115,6 +125,13 @@ Fdst=""
 # Functions --------------------------------------------------------------------
 
 usage()
+#
+# Description:  shows help text
+# 
+# Parameter  :  none
+#
+# Output     :  shows help text
+#
 {
 cat << EOF
 
@@ -133,6 +150,7 @@ OPTIONS:
   -v	Verbose
 
 EOF
+return 0
 }
 
 logging()
@@ -145,7 +163,7 @@ logging()
 # Std. Output:  Logging messages.
 #
 {
- if [ ${DEBUG} -ge 3 ]; then set -x
+ if [ $DEBUG -ge 3 ]; then set -x
  fi
 
  time="$(date +%H):$(date +%M):$(date +%S)"
@@ -164,88 +182,107 @@ logging()
  esac
  shift
 
-# We need to document this better!
+# marco: We need to document this better!
+# tinu: good enough now? :-)
 # if VERBOSE mode is set, then show all messages, which we want to show in verbose mode
-if [ ${verbose} -ge 1 ] && [ ${VERBOSE} -ge 1 ] ; then 
- if [ "${stderr}" -eq 1 ]; then
-   echo "${time} ${prefix}" ${1} >&2
+if [ $verbose -ge 1 ] && [ $VERBOSE -ge 1 ] ; then 
+ if [ "$stderr" -eq 1 ]; then
+   echo "$time $prefix" $1 >&2
  else
-   echo "${time} ${prefix}" ${1}
+   echo "$time $prefix" $1
  fi
 # else show only messages which are defined to show in non-verbose mode
-elif [ ${verbose} -eq 0 ] ; then
- if [ "${stderr}" -eq 1 ]; then
-   echo "${time} ${prefix}" ${1} >&2
+elif [ $verbose -eq 0 ] ; then
+ if [ "$stderr" -eq 1 ]; then
+   echo "$time $prefix" $1 >&2
  else
-   echo "${time} ${prefix}" ${1}
+   echo "$time $prefix" $1
  fi
 fi
 }
 
 createDirs()
-# create necessary directories
+#
+# Description:  creates needed directories
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 3 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
-if [ ! -d "${PROFILEDIR}/profiles" ]; then
-  mkdir -p "${PROFILEDIR}/profiles"
+if [ ! -d "$PROFILEDIR/profiles" ]; then
+  mkdir -p "$PROFILEDIR/profiles"
 fi
 
 return 0
 }
 
 startStream()
-# fork a stream process
+#
+# Description:  forks the streamripper process
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 3 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
-cd "${WORKDIR}"
+cd "$WORKDIR"
 
-if [ ! -x ${BIN_STREAMRIPPER} ]; then
+if [ ! -x $BIN_STREAMRIPPER ]; then
   logging -e "Ooops! Streamripper not found"
   shutdown_fadecut 3
 fi
 
-if [ ! -d "/proc/${PidStreamripper}" ] && [ "$STREAMRIPPER_START" == "1" ];
+if [ ! -d "/proc/$PidStreamripper" ] && [ "$STREAMRIPPER_START" == "1" ];
 then
-  ${BIN_STREAMRIPPER} ${STREAM_URL} -d . \
+  $BIN_STREAMRIPPER $STREAM_URL -d . \
                       --codeset-filesys=utf8 \
                       --codeset-id3=ISO-8859-1 \
-                      -s ${STREAMRIPPER_OPTS} \
-                      > ${LOGDIR}/fadecutstream-${PID}.log 2>&1 & 
+                      -s $STREAMRIPPER_OPTS \
+                      > $LOGDIR/fadecutstream-$PID.log 2>&1 & 
   PidStreamripper=$!
-  logging -s "${BIN_STREAMRIPPER} started pid=${PidStreamripper}"
+  logging -s "$BIN_STREAMRIPPER started pid=$PidStreamripper"
 else
-  logging -n "${BIN_STREAMRIPPER} running pid=${PidStreamripper}"
+  logging -n "$BIN_STREAMRIPPER running pid=$PidStreamripper"
 fi
 
-cd "${PWD}"
+cd "$PWD"
 
 return 0
 }
 
 shutdown_streamripper()
-# Shutting down streamripper
+#
+# Description:  shutting down streamripper
+# 
+# Parameter  :  none
+#
+# Output     :  logging
+#
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 TmpPid=$(pidof streamripper)
 
-if [ -z ${TmpPid} ]; then return 0
+if [ -z $TmpPid ]; then return 0
 fi
 
 if [ $TmpPid -eq $PidStreamripper ];
 then
   logging -i "Shuting down streamripper" 
-  kill ${PidStreamripper} 
+  kill $PidStreamripper 
   sleep 1
   if [ "$(pidof streamripper)" ];
   then
     logging -w "Streamripper still here, killing it!"
-    kill -9 ${PidStreamripper}
+    kill -9 $PidStreamripper
   fi
 else
   logging -n "Another streamripper is still running"
@@ -255,17 +292,23 @@ return 0
 }
 
 shutdown_fadecut()
-# shutting down fadecut
+#
+# Description:  shutting down fadecut and cleaning up
+# 
+# Parameter  :  none
+#
+# Output     :  logging
+#
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 logging -n "Shutting down fadecut..."
-ExitCode=${1}
+ExitCode=$1
 shutdown_streamripper
 showStats
-if [ -f "${LOGDIR}/fadecutstream-${PID}.log" ] ; then
-  rm ${LOGDIR}/fadecutstream-${PID}.log
+if [ -f "$LOGDIR/fadecutstream-$PID.log" ] ; then
+  rm $LOGDIR/fadecutstream-$PID.log
 fi
 
 if [ $ExitCode -eq 0 ];
@@ -273,16 +316,22 @@ then
   logging -s "Fadecut stopped!"
 else
   logging -e "Fadecut stopped unexpected!"
-  logging -a "Returnvalue=${ExitCode}"
+  logging -a "Returnvalue=$ExitCode"
 fi
 
-exit ${ShutdownExitCode}
+exit $ShutdownExitCode
 }
 
 queueSong()
-# queue song to music players
+#
+# Description:  queue song to music player
+# 
+# Parameter  :  none
+#
+# Output     :  logging
+#
 {
-if [ ${DEBUG} -ge 2 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 if [ $ENQUEUE -eq "1" ]; then
@@ -303,9 +352,15 @@ return 0
 }
 
 control_c()
-# run if user hits control-c
+#
+# Description:  run if user hits control-c
+# 
+# Parameter  :  none
+#
+# Output     :  logging
+#
 {
-if [ ${DEBUG} -ge 3 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 logging -n "CTRL-C catched"
@@ -313,13 +368,20 @@ shutdown_fadecut 0
 }
 
 loop_fadecut()
+#
+# Description:  main processing function of fadecut
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 3 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 RetLoop=0
 
-cd "${WORKDIR}"
+cd "$WORKDIR"
 for F in $FILES
 do
   # if there are no more files to process, go to idle state or clean up
@@ -327,12 +389,12 @@ do
   if [ "$F" == "$FILES" ]; then
     let IdleCounter=$((IdleCounter+1))
     let IdleSeconds=$((IdleCounter*LOOP_INTERVAL))
-    logging -n "no files to process, idle for ${IdleSeconds} seconds"
+    logging -n "no files to process, idle for $IdleSeconds seconds"
     if [ $STREAMRIPPER_START == "0" ];
     then 
       shutdown_fadecut 0
     else
-      if [ ${IdleSeconds} -ge ${RESTART_STREAMRIPPER_INTERVAL} ];
+      if [ $IdleSeconds -ge $RESTART_STREAMRIPPER_INTERVAL ];
       then
         logging -w "Oops! Seems to hang, restarting it"
 	shutdown_streamripper
@@ -349,7 +411,7 @@ do
   logging -i "Processing:"
   logging -a "$F"
   
-  Fstatus=processing
+  Fstatus="processing"
   Fnew=$(filerename $F)
   # Converting id3v1->id3v2 tags, if necessary. Must be before `id3v2 -l`
   # command.
@@ -365,25 +427,25 @@ do
     logging -e "could not get mp3 tags from source file."
     logging -e "ARTIST: $ARTIST / TITLE: $TITLE"
     move_file "$F" "$ERRORDIR"
-    Fstatus=error-notags
+    Fstatus="error-notags"
   elif [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $DONEDIR -> remember as double and deleting ..."
     double_file "$F" "$DOUBLEDIR"
-    Fstatus=double-done
+    Fstatus="double-done"
   elif [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $OUTPUTDIR -> remember as double and deleting ..."
     double_file "$F" "$DOUBLEDIR"
-    Fstatus=double-output
+    Fstatus="double-output"
   elif [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
     logging -i "I don't like. File exists in $DONTLIKEDIR -> deleting ..."
     rm "$F"
-    Fstatus=dontlike
+    Fstatus="dontlike"
   fi
   
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus"
 
   # skip processing of current file if it is "double" or "don't like"
-  if [[ $Fstatus != processing ]] ; then
+  if [[ $Fstatus != "processing" ]] ; then
     continue
   fi
 
@@ -392,20 +454,20 @@ do
   # first make sure we save the original file
   copy_file "$F" "$ORIGDIR"
 
-  newsplitting "${F}" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
+  newsplitting "$F" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
 
   LENGTH=`sox "$TMPDIR"/"$F" -n stat 2>&1 | grep Length | sed -e 's/.* //' -e 's/\..*//'`
   let TRIMLENGTH=$((LENGTH-TRIM_BEGIN-TRIM_END))
   let FADE_OUT_START=$((TRIMLENGTH-FADE_OUT))
 
-  if [ "${ENCODING}" == "mp3" ]; then
-    mp3Encoding "${F}"
+  if [ "$ENCODING" == "mp3" ]; then
+    mp3Encoding "$F"
   fi
-  if [ "${ENCODING}" == "ogg" ]; then
-    oggEncoding "${F}"
+  if [ "$ENCODING" == "ogg" ]; then
+    oggEncoding "$F"
   fi
   
-  if [ "${RetLoop}" -eq "0" ]; then
+  if [ "$RetLoop" -eq "0" ]; then
     logging -s "Ready for listening:"
     logging -a "$Fdst"
     rm "$TMPDIR"/"$F"
@@ -422,40 +484,53 @@ do
   queueSong
   showStats
 done
-cd "${PWD}"
+cd "$PWD"
 }
 
 load_profile()
+#
+# Description:  loading fadecutrc and profile file
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 2 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 createDirs
 logging -i "Loading profile file(s):"
 
-if [ -r "${PROFILEDIR}/fadecutrc" ]; then
-  logging -a "${PROFILEDIR}/fadecutrc"
-  . "${PROFILEDIR}/fadecutrc"
+if [ -r "$PROFILEDIR/fadecutrc" ]; then
+  logging -a "$PROFILEDIR/fadecutrc"
+  . "$PROFILEDIR/fadecutrc"
 fi
 
-if [ ! -r "${PROFILEDIR}/profiles/${PROFILE}" ]; then
-  logging -e "Can't not load profile ${PROFILEDIR}/profiles/${PROFILE}"
+if [ ! -r "$PROFILEDIR/profiles/$PROFILE" ]; then
+  logging -e "Can't not load profile $PROFILEDIR/profiles/$PROFILE"
   exit 1
 fi
 
-logging -a "${PROFILEDIR}/profiles/${PROFILE}"
-. "${PROFILEDIR}/profiles/${PROFILE}"
+logging -a "$PROFILEDIR/profiles/$PROFILE"
+. "$PROFILEDIR/profiles/$PROFILE"
 
 check_profile
 }
 
 create_profile()
-# creating a profile
+#
+# Description:  creates a new profile
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 2 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
-NEW=${1}
+NEW=$1
 
 echo \
 "STREAM_URL=\"http://radiostream\"
@@ -465,22 +540,35 @@ COMMENT=\"Your Comment\"
 FADE_IN=1
 FADE_OUT=4
 # TRIM_BEGIN=0
-# TRIM_END=0" > "${PROFILEDIR}/profiles/${NEW}"
+# TRIM_END=0" > "$PROFILEDIR/profiles/$NEW"
 logging -i "Starting vim editor"
-vi "${PROFILEDIR}/profiles/${NEW}"
-logging -i "Now start: fadecut -p ${NEW} -s"
+vi "$PROFILEDIR/profiles/$NEW"
+logging -i "Now start: fadecut -p $NEW -s"
 }
 
 edit_profile()
-# creating a profile
+#
+# Description:  edit an existing profile
+# 
+# Parameter  :  $1  profile name
+#
+# Output     :  none
+#
 {
-vi "${PROFILEDIR}/profiles/${1}"
+vi "$PROFILEDIR/profiles/$1"
 }
 
 check_profile()
-# Check profile, we need all variables to work
+#
+# Description:  check existing profile
+#               we need all variables to work
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 2 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 RetCheckProfile=0
@@ -492,80 +580,99 @@ if [ -z "$STREAM_URL" ]; then
 fi
 if [ -z "$COMMENT" ]; then 
   RetCheckProfile=1
-  MissingVar="COMMENT"
+  MissingVar="COMMENT $MissingVar"
 fi
 if [ -z "$TRIM_BEGIN" ]; then 
   RetCheckProfile=1
-  MissingVar="TRIM_BEGIN"
+  MissingVar="TRIM_BEGIN $MissingVar"
 fi
 if [ -z "$TRIM_END" ]; then 
   RetCheckProfile=1
-  MissingVar="TRIM_END"
+  MissingVar="TRIM_END $MissingVar"
 fi
 if [ -z "$FADE_IN" ]; then 
   RetCheckProfile=1
-  MissingVar="FADE_IN"
+  MissingVar="FADE_IN $MissingVar"
 fi
 if [ -z "$FADE_OUT" ]; then 
   RetCheckProfile=1
-  MissingVar="FADE_OUT"
+  MissingVar="FADE_OUT $MissingVar"
 fi
 
-if [ ${RetCheckProfile} -eq 1 ]; 
+if [ $RetCheckProfile -eq 1 ]; 
 then 
-  logging -e "${PROFILEDIR}/profiles/${PROFILE}:"
-  logging -a "${MissingVar} not defined"
+  logging -e "$PROFILEDIR/profiles/$PROFILE:"
+  logging -a "$MissingVar not defined"
   shutdown_fadecut 1
 fi
+
+return 0
 }
 
 showStats()
-# Show file statistics
+#
+# Description:  shows file statistics
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 3 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 # show statistics only, if all directories are existing
-if [ -d "${OUTPUTDIR}" ]; then
-  StatsNewDir=`ls -1 "${OUTPUTDIR}" | wc -l`
+if [ -d "$OUTPUTDIR" ]; then
+  StatsNewDir=`ls -1 "$OUTPUTDIR" | wc -l`
 fi
-if [ -d "${ORIGDIR}" ]; then
-  StatsOrigDir=`ls -1 "${ORIGDIR}"  | wc -l`
+if [ -d "$ORIGDIR" ]; then
+  StatsOrigDir=`ls -1 "$ORIGDIR"  | wc -l`
 fi
-if [ -d "${DONEDIR}" ]; then
-  StatsDoneDir=`ls -1 "${DONEDIR}"  | wc -l`
+if [ -d "$DONEDIR" ]; then
+  StatsDoneDir=`ls -1 "$DONEDIR"  | wc -l`
 fi
-if [ -d "${DONTLIKEDIR}" ]; then
-  StatsDontlikeDir=`ls -1 "${DONTLIKEDIR}"  | wc -l`
+if [ -d "$DONTLIKEDIR" ]; then
+  StatsDontlikeDir=`ls -1 "$DONTLIKEDIR"  | wc -l`
 fi
-if [ -d "${ERRORDIR}" ]; then
-  StatsErrorDir=`ls -1 "${ERRORDIR}"  | wc -l`
+if [ -d "$ERRORDIR" ]; then
+  StatsErrorDir=`ls -1 "$ERRORDIR"  | wc -l`
 fi
-if [ -d "${DOUBLEDIR}" ]; then
-  StatsDoubleDir=`ls -1 "${DOUBLEDIR}"  | wc -l`
+if [ -d "$DOUBLEDIR" ]; then
+  StatsDoubleDir=`ls -1 "$DOUBLEDIR"  | wc -l`
 fi
   logging -i "showStats:"
-  logging -a "Output:${StatsNewDir} Orig:${StatsOrigDir} Done:${StatsDoneDir} Dontlike:${StatsDontlikeDir} Error:${StatsErrorDir} Double:${StatsDoubleDir}"
+  logging -a "Output:$StatsNewDir Orig:$StatsOrigDir Done:$StatsDoneDir Dontlike:$StatsDontlikeDir Error:$StatsErrorDir Double:$StatsDoubleDir"
 
-if [ -f "${PROFILEDIR}"/statslog.csv ]; then
-  double=`grep double "${PROFILEDIR}"/statslog.csv | wc -l`
-  processed=`grep processing "${PROFILEDIR}"/statslog.csv | wc -l`
+if [ -f "$PROFILEDIR"/statslog.csv ]; then
+  double=`grep double "$PROFILEDIR"/statslog.csv | wc -l`
+  processed=`grep processing "$PROFILEDIR"/statslog.csv | wc -l`
   logging -d "double=$double processed=$processed"
   # Print stats log only if we have more than 0 doubles
   # (Divide by zero)
-  if [ ${double} -ne 0 ];
+  if [ $double -ne 0 ];
   then
     ratio=$(echo "scale=2; $processed/$double" | bc)
-    logging -a "stats log: double:${double} processed:${processed} processed/double-ratio:${ratio}"
+    logging -a "stats log: double:$double processed:$processed processed/double-ratio:$ratio"
   fi
 fi
 }
 
 writeStats()
-# Write statistics log
-# writeStats "artist" "title" "genre" "profile"
+#
+# Description:  writes statistics log
+# 
+# Parameter  :  $1  "artist"
+#               $2  "title"
+#               $3  "genre"
+#               $4  "profile"
+#               $5  "status"
+#
+# Usage      :  writeStats "artist" "title" "genre" "profile" "status"
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 date=`date +%d.%m.%Y`
@@ -579,9 +686,15 @@ echo "$date;$time;$artist;$title;$genre;$profile;$status" >> "$PROFILEDIR"/stats
 }
 
 oggEncoding()
-# Encoding to ogg
+#
+# Description:  encoding to ogg
+# 
+# Parameter  :  $1  filename
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 Fsrc="$*"
@@ -600,16 +713,22 @@ nice -15 sox -V1 "$TMPDIR"/"$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 	-c "comment=$COMMENT" -o "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 # Disable pipefail (default)
 set +o pipefail
-if [ ${VERBOSE} -ge 1 ];
+if [ $VERBOSE -ge 1 ];
 then
   ogginfo "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 fi
 }
 
 mp3Encoding()
-# Encoding to mp3
+#
+# Description:  encoding to mp3
+# 
+# Parameter  :  $1  filename
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 Fsrc="$*"
@@ -630,7 +749,17 @@ set +o pipefail
 }
 
 newsplitting()
-# split files using silence detection of sox
+#
+# Description:  split files using silence detection of sox
+# 
+# Parameter  :  $1  filename
+#               $2  "artist"
+#               $3  "title"
+#               $4  "genre"
+#               $5  "comment"
+#
+# Output     :  none
+#
 {
 F="$1"
 ARTIST="$2"
@@ -648,10 +777,18 @@ if [ $Fcount -ge 2 ] ; then
   rm "$TMPDIR"/"$F"00*
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "soxsplit into $Fcount files"
 fi
+
+return 0
 }
 
 splitting()
-# split files using silence detection
+#
+# Description:  split files using silence detection
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
 {
 F="$1"
 ARTIST="$2"
@@ -659,14 +796,10 @@ TITLE="$3"
 GENRE="$4"
 COMMENT="$5"
 
-# future method for splitting will be with sox
-# sox -V1 "$F" -t wav "$F".wav silence 1 0.50 0.1% 1 0.5 0.1% : newfile : restart
-# output is then "$F"001.wav and if silence found additional "$F"002.wav, ...
-
 Fwoext=$(echo $F | sed 's/.mp3//g') 
-if [ ${DEBUG} -ge 1 ]; then 
+if [ $DEBUG -ge 1 ]; then 
   mp3splt -N -2 -s -p rm,nt=3,min=0.2 "$F" 
-elif [ ${VERBOSE} -ge 1 ]; then
+elif [ $VERBOSE -ge 1 ]; then
   mp3splt -q -N -2 -s -p rm,nt=3,min=0.2 "$F"
 else
   mp3splt -q -N -2 -s -p rm,nt=3,min=0.2 "$F" > /dev/null 2>&1
@@ -683,93 +816,131 @@ if [ $Fcount -ge 1 ] ; then
 else
   mv "$F" "$TMPDIR"/"$F"
 fi
+
+return 0
 }
 
 filerename()
-# rename filenames
+#
+# Description:  rename filenames
+# 
+# Parameter  :  $1  old filename
+#
+# Output     :  new filename
+#
 {
-if [ ${DEBUG} -ge 2 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 Fnold="$*"
 Fnnew=$(echo $Fnold | sed -e 's/ /_/g' -e 's/\(.*\)/\L\1/')
 echo $Fnnew
+
+return 0
 }
 
 checkRequirements()
-# Check if all necessary tools and binaries are available
+#
+# Description:  Check if all necessary tools and binaries are available
+# 
+# Parameter  :  none
+#
+# Output     :  logging
+#               forces an error if a needed binary is not available
+#
 {
-if [ ${DEBUG} -ge 3 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 logging -d "Checking fadecut requirements"
-if [ -z ${BIN_STREAMRIPPER} ]; then RequirementsMsg=streamripper
+if [ -z $BIN_STREAMRIPPER ]; then RequirementsMsg=streamripper
 fi
-if [ -z ${BIN_SOX} ]; then RequirementsMsg=sox
+if [ -z $BIN_SOX ]; then RequirementsMsg=sox
 fi
-if [ -z ${BIN_MP3SPLT} ]; then RequirementsMsg=mp3splt
+if [ -z $BIN_MP3SPLT ]; then RequirementsMsg=mp3splt
 fi
-if [ -z ${BIN_MP3INFO} ]; then RequirementsMsg=mp3info
+if [ -z $BIN_MP3INFO ]; then RequirementsMsg=mp3info
 fi
-if [ -z ${BIN_ID3V2} ]; then RequirementsMsg=id3v2
-fi
-
-if [ "${ENCODING}" == "ogg" ];
-then
-  if [ -z ${BIN_OGGINFO} ]; then RequirementsMsg=ogginfo
-  fi
-  if [ -z ${BIN_OGGENC} ]; then RequirementsMsg=oggenc
-  fi
+if [ -z $BIN_ID3V2 ]; then RequirementsMsg=id3v2
 fi
 
-if [ "${ENCODING}" == "mp3" ];
+if [ "$ENCODING" == "ogg" ];
 then
-  if [ -z ${BIN_LAME} ]; then RequirementsMsg=lame
+  if [ -z $BIN_OGGINFO ]; then RequirementsMsg=ogginfo
+  fi
+  if [ -z $BIN_OGGENC ]; then RequirementsMsg=oggenc
   fi
 fi
 
-if [ ! -z ${RequirementsMsg} ];
+if [ "$ENCODING" == "mp3" ];
 then
-  logging -e "Program ${RequirementsMsg} not installed or not in PATH"
+  if [ -z $BIN_LAME ]; then RequirementsMsg=lame
+  fi
+fi
+
+if [ ! -z $RequirementsMsg ];
+then
+  logging -e "Program $RequirementsMsg not installed or not in PATH"
   return 1
 fi
+
 return 0
 }
 
 copy_file()
-#checks if directory exists, creates it if necessary and copy file to it
-# $1 = file
-# $2 = destination directory
+#
+# Description:  checks if directory exists, creates it if necessary and copy file to it
+# 
+# Parameter  :  $1  file
+#               $2  destination directory
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 if [ ! -d "$2" ]; then
   mkdir -p "$2"
 fi
 cp "$1" "$2"
+
+return 0
 }
 
 move_file()
-#checks if directory exists, creates it if necessary and moves file to it
-# $1 = file
-# $2 = destination directory
+#
+# Description:  checks if directory exists, creates it if necessary and moves file to it
+# 
+# Parameter  :  $1  file
+#               $2  destination directory
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 if [ ! -d "$2" ]; then
   mkdir -p "$2"
 fi
 mv "$1" "$2"
+
+return 0
 }
 
 double_file()
-#checks if directory exists, creates it if necessary and creates 0bytes file
-# $1 = file
-# $2 = destination directory
+#
+# Description:  checks if directory exists, creates it if necessary and 
+#               creates 0 byte size file
+# 
+# Parameter  :  $1  file
+#               $2  destination directory
+#
+# Output     :  none
+#
 {
-if [ ${DEBUG} -ge 1 ]; then set -x
+if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 if [ ! -d "$2" ]; then
@@ -777,6 +948,8 @@ if [ ! -d "$2" ]; then
 fi
 touch "$2"/"$1"
 rm "$1"
+
+return 0
 }
 
 # Main  ------------------------------------------------------------------------
@@ -812,22 +985,22 @@ do
       exit 0
       ;;
     i)
-      WORKDIR=${OPTARG}
-      if [ ! -d "${WORKDIR}" ];
+      WORKDIR=$OPTARG
+      if [ ! -d "$WORKDIR" ];
       then
-        logging -e "${WORKDIR}: Input directory does not exist"
+        logging -e "$WORKDIR: Input directory does not exist"
         shutdown_fadecut 3
       fi
-      logging -n "Using for input: ${WORKDIR}"
+      logging -n "Using for input: $WORKDIR"
       ;;
     o)
-      OUTPUTDIR=${OPTARG}
-      if [ ! -d "${OUTPUTDIR}" ];
+      OUTPUTDIR=$OPTARG
+      if [ ! -d "$OUTPUTDIR" ];
       then
-        logging -e "${OUTPUTDIR}: Output directory does not exist"
+        logging -e "$OUTPUTDIR: Output directory does not exist"
         shutdown_fadecut 3
       fi
-      logging -n "Using for output: ${OUTPUTDIR}"
+      logging -n "Using for output: $OUTPUTDIR"
       ;;
     q)
       DEBUG=0
@@ -858,7 +1031,7 @@ if [ -z $PROFILE ] ; then
   exit 1
 fi
 
-if [ "${OUTPUTDIR}" = "${WORKDIR}" ];
+if [ "$OUTPUTDIR" = "$WORKDIR" ];
 then
   logging -e "Output and input directory can not be equal!"
   usage
@@ -874,13 +1047,15 @@ do
   logging -n "Main(): Loop until we're finished"
   sleep 2
   # if streamripper is working then show info about it
-  if [ $STREAMRIPPER_START == "1" ] && [ -f ${LOGDIR}/fadecutstream-${PID}.log ];
+  if [ $STREAMRIPPER_START == "1" ] && [ -f $LOGDIR/fadecutstream-$PID.log ];
   then
-    StreamInfo=$(tail -1 ${LOGDIR}/fadecutstream-${PID}.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+    StreamInfo=$(tail -1 $LOGDIR/fadecutstream-$PID.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
     if [ "$StreamInfo" != "$StreamInfo2" ] ; then
-      logging -r "${StreamInfo}"
+      logging -r "$StreamInfo"
       StreamInfo2="$StreamInfo"
     fi
   fi
-  sleep ${LOOP_INTERVAL}
+  sleep $LOOP_INTERVAL
 done
+
+
