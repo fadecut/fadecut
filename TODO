@@ -15,9 +15,8 @@ You should have received a copy of the GNU General Public License
 along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 # --- 0.1.0 release ------------------------------------------------------------
-* marco Testframework, which will auto-test all ENCODING and METHOD's, before
-	releasing.
 * tinu  update ChangeLog 0.0.3->0.1.0 & wichtigste änderungen zum upstream code
+* marco review code, docs according to debian policies and rules.
 
 # --- later --------------------------------------------------------------------
 * tinu  change to getopt(1) to be able to parse --long-options
@@ -25,3 +24,5 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * tinu  maybe we could use ffmpeg instead of sox/lame 
 * marco stats, processed songs per hour
 * team  statistics reporting
+* marco Testframework: Take testing upstream code directly from git,
+	add more tests.
