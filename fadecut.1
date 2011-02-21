@@ -1,25 +1,80 @@
-.TH "fadecut" "1" "0.0.1"
+.\"
+.\" File Name macro.  This used to be `.PN', for Path Name,
+.\" but Sun doesn't seem to like that very much.
+.\"
+.de FN
+\fI\|\\$1\|\fP
+..
+.TH "fadecut" "1" "0.1.0"
 .SH NAME
-fadecut \- Radio livestream to ogg/mp3 tool
+fadecut \- Toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
 .SH SYNOPSIS
-fadecut \-p [
-.I profile
-] [
+fadecut \-p <profile> [
 .I OPTIONS
 ]
 .SH DESCRIPTION
-This script handle mp3 files (\-ripped by streamripper), fade in and            
-out. It set stream tags: artist, title and your own decided genre.             
-If you have songs you do not like, move the ripped file to dontlike/ folder,
-so fadecut will no longer convert this song, if it was read on the livestream. 
-All processed files of fadecut are in new/ folder. The original files of     
-streamripper are in the orig/ folder after processing. 
+fadecut is a script to rip audio files from a livestream (using streamripper) and
+to process them automatically. Beginning and ending fo the audio files will be 
+cut and faded in/out. So logos and advertising of radio stations will be 
+automatically removed.
+.PP
+In streaming mode fadecut is ripping audio files using streamripper. The
+downloaded audio files are cutted using silence detection and then faded in and
+out. Subsequently, the files are encoded to either ogg or mp3 and tagged with
+tags (title, artist, genre and comment provided).
+.PP
+In file mode fadecut is just processing already ripped audio files.
+.PP
+An audio file which has already been processed is detected and will not be
+processed again. Not desired songs can be stored in a separate directory. This
+files are not processed anymore too.
+.SH FOLDERS
+fadecut is working with some standard folders. You may change them in your
+profile or fadecutrc
+.PP
+.B done/
+here you put all your songs which were already processed by fadecut and which
+you want to keep. See also new/ folder.
+.PP
+.B dontlike/
+in this folder you may put songs which you don't like. Fadecut is checking this
+folder before it is processing new files in the working folder. Null size files
+are ok. 
+.PP
+.B double/
+fadecut creates null byte size files in this folder whenever it is processing a
+file which is already in done/ or new/ folder.
+.PP
+.B error/
+whenever an error occurs while fadecut is processing a file, that file is moved
+to the error folder for later examining.
+.PP
+.B incomplete/
+this folder is created by streamripper. All not fully ripped songs are saved 
+here.
+.PP
+.B new/
+processed songs are going here. Usually you may rip and process files with
+fadecut, they are going in to new/ folder, you listen to them and put good songs
+to the done/ folder.
+.PP
+.B orig/
+if you want to keep the original file (which is ripped by streamripper), you may
+use the \-k option. fadecut is putting the ripped files untouched into that
+folder.
+.PP
 .SH OPTIONS
 .B \-c
 Create a new profile <profilename>
 .PP
 .B \-e
 Edit an existing profile <profilename>
+.PP
+.B \-i
+optional input <directory>
+.PP
+.B \-o
+optional output <directory>
 .PP
 .B \-d
 Debug: \-d 0|1|2|3 (level 0 is standard, \-d without number is like 1)
@@ -33,7 +88,7 @@ Profile <profilename>
 .B \-q
 Quiet
 .PP
-.B \-s
+.B \-r
 Stream (and rip), start streamripper
 .PP
 .B \-v
@@ -61,12 +116,12 @@ Processed files will get the above comment.
 .PP
 TRIM_BEGIN=0
 .RS
-trim?
+cut <n> seconds off the file in the beginning.
 .RE
 .PP
 TRIM_END=0
 .RS
-trim?
+cut <n> seconds off the file at the end.
 .RE
 .PP
 FADE_IN=1
@@ -91,12 +146,31 @@ fadecut \-e test
 .PP
 Rip, cut and fade in\-/out with profile test
 .RS
-fadecut \-p test \-s
+fadecut \-p test \-r
 .RE
 .PP
 Only cut and fade in\-/out without ripping from livestream
 .RS
 fadecut \-p test
 .RE
+.PP
+.SH SEE ALSO
+\fBid3v2\fR(1), \fBoggenc\fR(1), \fBsox\fR(1), \fBstreamripper\fR(1),
+\fBlame\fR(1)
+.PP
 .SH FILES
+.PD 0
+.TP 
+.FN ~/.fadecut/fadecutrc
+The main fadecut configuration file, executed with every start of fadecut
+.TP
+.FN ~/.fadecut/statslog.csv
+The statistics file
+.TP
+.FN ~/.fadecut/profiles
+The folder where all profiles are located
+.PD
+.SH RESOURCES
+.TP
+fadecut git website 
 https://github.com/micressor/fadecut

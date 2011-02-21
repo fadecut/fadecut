@@ -1,3 +1,15 @@
+fadecut 0.1.0
+-------------
+  * ripping option -s changed to -r
+  * write log to ~/.fadecut/statslog.csv for statistics
+  * autoconverting tags from id3v1 to id3v2
+  * double files are now 0 byte size
+  * removed mp3info, now using sox to get information about audio file
+  * removed mp3splt, now using sox to split audio files
+  * improve shutdown behaviour. All exit codes and logging messages justified.
+  * added silence cutting. no more long silence at beginning and end of files.
+  * Testframework, first tests added
+
 fadecut 0.0.2
 -------------
   * removed repetition of unnessesary logging
@@ -6,4 +18,4 @@ fadecut 0.0.2
 
 fadecut 0.0.1
 -------------
-  * Initial release
+  * initial release
