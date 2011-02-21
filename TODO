@@ -24,6 +24,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * tinu  maybe we could use ffmpeg instead of sox/lame 
 * marco stats, processed songs per hour
 * team  statistics reporting
+* team  discuss about sense of DOUBLEDIR, maybe not needed anymore
 * marco Testframework: 
 	  Take testing upstream code directly from git,
 	  add more tests.
