@@ -131,15 +131,15 @@ cat << EOF
 usage: $0 -p <profilename> [other options]
 
 OPTIONS:
+  -p    Profile <profilename>
+  -r    Stream (and rip), start streamripper
   -c    create profile <profilename>
   -e    edit profile <profilename>
   -i    optional input directory
   -o    optional output directory
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
   -h	Show this message
-  -p    Profile <profilename>
   -q	Quiet
-  -r    Stream (and rip), start streamripper
   -v	Verbose
 
 EOF
