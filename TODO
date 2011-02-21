@@ -17,6 +17,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 # --- 0.1.0 release ------------------------------------------------------------
 * marco Testframework, which will auto-test all ENCODING and METHOD's, before
 	releasing.
+* tinu  update ChangeLog 0.0.3->0.1.0 & wichtigste änderungen zum upstream code
 
 # --- later --------------------------------------------------------------------
 * tinu  change to getopt(1) to be able to parse --long-options
