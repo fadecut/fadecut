@@ -8,6 +8,7 @@ fadecut 0.1.0
   * removed mp3splt, now using sox to split audio files
   * improve shutdown behaviour. All exit codes and logging messages justified.
   * added silence cutting. no more long silence at beginning and end of files.
+  * Testframework, first tests added
 
 fadecut 0.0.2
 -------------
