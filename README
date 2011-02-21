@@ -57,9 +57,10 @@ werden dann ebenfalls nicht mehr weiter verarbeitet.
 
 --- Requirements ---------------------------------------------------------------
 * bash - The GNU Bourne Again SHell
-* sox - the Swiss army knife of sound processing
-* vorbis-tools - several Ogg Vorbis tools
 * id3v2 - A command line id3v2 tag editor
+* sox - the Swiss army knife of sound processing
+* streamripper - download online streams into audio files
+* vorbis-tools - several Ogg Vorbis tools
 
 optional, for mp3 encoding:
 * lame, An MP3 encoding library (frontend)
