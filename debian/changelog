@@ -1,10 +1,10 @@
-fadecut (0.0.3-1) UNRELEASED; urgency=low
+fadecut (0.1.0-1) unstable; urgency=low
 
-  * New 0.0.3 upstream release
+  * New 0.1.0 upstream release
   * debian/copyright: Changed according to DEP-5
   * debian/control: Vcs-Git added
 
- -- Marco Balmer <marco@balmer.name>  Fri, 11 Feb 2011 10:13:43 +0100
+ -- Marco Balmer <marco@balmer.name>  Mon, 21 Feb 2011 18:13:13 +0100
 
 fadecut (0.0.2-1) unstable; urgency=low
 
