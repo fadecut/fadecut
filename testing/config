@@ -1,0 +1,4 @@
+PWD=`pwd` 
+LOCKFILE=/tmp/fadecuttesting.lk
+HOME_FADECUT=${HOME}/.fadecut
+RECIPES="${PWD}/recipes"
