@@ -38,12 +38,14 @@ mkdir ${HOME_FADECUT}
 cd ${RECIPES}
 for Recipe in *.sh
 do
-  if ./$Recipe;
+  echo ./$Recipe $TESTFOLDER
+  ./$Recipe $TESTFOLDER
+  if [ $? -ge 1 ]; 
   then
-    echo "$Recipe: Sucess!"
-  else
     echo "$Recipe: Failed!"
     retMain=1
+  else
+    echo "$Recipe: Sucess!"
   fi
 done
 cd -

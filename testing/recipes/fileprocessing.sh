@@ -16,11 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
+# Marco: die Variablen aus 'config' sind hier nicht sichtbar
+HOME_FADECUT=${HOME}/.fadecut
+MYFOLDER="$(readlink -f $(dirname $0))"
+BIN_FADECUT="$MYFOLDER"/../../fadecut
+
+
 main()
 {
+pushd .
 TestFolder="$1"
-cp "$TestFolder"/../testfiles/test_source/*.mp3 .
-mkdir -p "$PROFILEDIR/profiles/"
+cd "$TestFolder"/testdir
+cp "$TestFolder"/testfiles/test_source/*.mp3 .
+mkdir -p "$HOME_FADECUT"/profiles/
 echo \
 "STREAM_URL=\"http://fctest_fileproc_mp3\"
 GENRE=\"fadecut testgenre\"
@@ -29,10 +37,18 @@ COMMENT=\"fadecut test fileprocessing mp3\"
 FADE_IN=1
 FADE_OUT=4
 TRIM_BEGIN=0
-TRIM_END=0" > "$PROFILEDIR/profiles/fctest_fileproc_mp3"
-$BIN_FADECUT -p fstest_fileproc_mp3
+TRIM_END=0" > "$HOME_FADECUT"/profiles/fctest_fileproc_mp3
+$BIN_FADECUT -p fctest_fileproc_mp3
+popd
 return 0
 }
-if ! main; then exit 1
+
+
+
+main "$1"
+if [ $? -ge 1 ]; then 
+  exit 1
+else
+  exit 0
 fi
-exit 0
+

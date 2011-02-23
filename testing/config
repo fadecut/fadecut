@@ -1,4 +1,11 @@
-PWD=`pwd` 
+
+# -----------------------------------------------------------------------------
+MYSELF="$(readlink -f $0)"                      # will use it to fork myself
+TESTFOLDER="$(readlink -f $(dirname $0))"       # where testscript is located
+PWD=$(pwd)                                      # working folder
+
 LOCKFILE=/tmp/fadecuttesting.lk
 HOME_FADECUT=${HOME}/.fadecut
-RECIPES="${PWD}/recipes"
+BIN_FADECUT="$TESTFOLDER"/../fadecut
+RECIPES="$TESTFOLDER/recipes"
+
