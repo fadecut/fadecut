@@ -18,10 +18,17 @@
 
 main()
 {
-echo "dummy test $0"
+#set -x
+echo "--> Check display of help menu"
+$BIN_FADECUT | grep -q OPTIONS
+Ret=$?
+
+if [ $Ret -eq 0 ]; then return 0
+fi
+#set +x
 return 1
 }
 
-if ! main; then exit 0
+if ! main; then exit 1
 fi
 exit 0

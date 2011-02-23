@@ -1,4 +1,5 @@
-PWD=`pwd` 
-LOCKFILE=/tmp/fadecuttesting.lk
-HOME_FADECUT=${HOME}/.fadecut
-RECIPES="${PWD}/recipes"
+export PWD=`pwd` 
+export LOCKFILE=/tmp/fadecuttesting.lk
+export HOME_FADECUT=${HOME}/.fadecut
+export BIN_FADECUT="../../fadecut"
+export RECIPES="${PWD}/recipes"

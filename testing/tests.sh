@@ -20,6 +20,7 @@
 . ./config || exit 1
 # --- Main --------------------------------------------------------------------
 retMain=0
+set -o pipefail
 
 if [ -e ${LOCKFILE} ];
 then

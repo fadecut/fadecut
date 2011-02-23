@@ -33,6 +33,7 @@ FADE_OUT=4
 $BIN_FADECUT -p testfadecut
 return 0
 }
+# temporary exit
 exit 0
 if ! main; then exit 1
 fi
