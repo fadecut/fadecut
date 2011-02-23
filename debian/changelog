@@ -3,8 +3,9 @@ fadecut (0.1.0-1) unstable; urgency=low
   * New 0.1.0 upstream release
   * debian/copyright: Changed according to DEP-5
   * debian/control: Vcs-Git added
+  * debian/control: Vcs-Browser added
 
- -- Marco Balmer <marco@balmer.name>  Mon, 21 Feb 2011 18:13:13 +0100
+ -- Marco Balmer <marco@balmer.name>  Wed, 23 Feb 2011 14:03:35 +0100
 
 fadecut (0.0.2-1) unstable; urgency=low
 
