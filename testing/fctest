@@ -27,7 +27,11 @@ then
   exit 1
 fi
 
-./prepare.sh || exit 1
+./prepare.sh
+if [ $? -ge 1 ]; then
+  echo "error while preparing test environment"
+  exit 1
+fi
 mkdir ${HOME_FADECUT}
 
 # loop ./recipts/*
@@ -43,6 +47,10 @@ do
   fi
 done
 cd -
-./cleanup.sh || exit 1
+./cleanup.sh
+if [ $? -ge 1 ]; then
+  echo "error while cleaning up test environment"
+  exit 1
+fi
 echo "returnvaule=${retMain}"
 exit ${retMain}

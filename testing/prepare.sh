@@ -25,7 +25,8 @@ retMain=0
 touch ${LOCKFILE} || exit 3
 
 if [ -d "${HOME_FADECUT}" ];
-then
+then					# if there is already an existing
+                                        # fadecut homedir, then safe it
   if tar cf /tmp/fadecut_${LOGNAME}.tar ${HOME_FADECUT};
   then
     rm -rf ${HOME_FADECUT}
@@ -35,8 +36,8 @@ then
     retMain=3
   fi
 else
-  retMain=3
+  #retMain=3
+  echo "no fadecut homedir, nothing to safe"
 fi
 
-#cp ../testfiles/*.mp3 .
 exit $retMain

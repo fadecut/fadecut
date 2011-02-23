@@ -19,21 +19,20 @@
 main()
 {
 TestFolder="$1"
-cp "$TestFolder"/../testfiles/*.mp3 .
+cp "$TestFolder"/../testfiles/test_source/*.mp3 .
 mkdir -p "$PROFILEDIR/profiles/"
 echo \
-"STREAM_URL=\"http://testfadecut\"
-GENRE=\"testfadecut genre\"
-COMMENT=\"testfadecut comment\"
+"STREAM_URL=\"http://fctest_fileproc_mp3\"
+GENRE=\"fadecut testgenre\"
+COMMENT=\"fadecut test fileprocessing mp3\"
 # all values in seconds:
 FADE_IN=1
 FADE_OUT=4
-# TRIM_BEGIN=0
-# TRIM_END=0" > "$PROFILEDIR/profiles/testfadecut"
-$BIN_FADECUT -p testfadecut
+TRIM_BEGIN=0
+TRIM_END=0" > "$PROFILEDIR/profiles/fctest_fileproc_mp3"
+$BIN_FADECUT -p fstest_fileproc_mp3
 return 0
 }
-exit 0
 if ! main; then exit 1
 fi
 exit 0
