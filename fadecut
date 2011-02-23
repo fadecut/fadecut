@@ -536,7 +536,7 @@ FADE_OUT=4
 # TRIM_END=0" > "$PROFILEDIR/profiles/$NEW"
 logging -i "Starting vim editor"
 vi "$PROFILEDIR/profiles/$NEW"
-logging -i "Now start: fadecut -p $NEW -s"
+logging -i "Now start: fadecut -p $NEW [optional other options]"
 }
 
 edit_profile()
