@@ -4,6 +4,7 @@ fadecut (0.1.0-1) unstable; urgency=low
   * debian/copyright: Changed according to DEP-5
   * debian/control: Vcs-Git added
   * debian/control: Vcs-Browser added
+  * Removing Depends on mp3info, mp3splt
 
  -- Marco Balmer <marco@balmer.name>  Wed, 23 Feb 2011 14:03:35 +0100
 
