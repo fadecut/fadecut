@@ -32,8 +32,14 @@ FADE_IN=1
 FADE_OUT=4
 TRIM_BEGIN=0
 TRIM_END=0" > "$HOME_FADECUT"/profiles/fctest_fileproc_mp3
+# start test
 $BIN_FADECUT -p fctest_fileproc_mp3
+# eval test results
+# ... todo ...
+# cleanup
+rm -rf error new orig
 popd
+# if all ok, return with errorlevel 0
 return 0
 }
 

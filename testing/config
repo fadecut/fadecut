@@ -3,3 +3,4 @@ export LOCKFILE=/tmp/fadecuttesting.lk
 export HOME_FADECUT=${HOME}/.fadecut
 export BIN_FADECUT="../../fadecut"
 export RECIPES="${PWD}/recipes"
+export TESTFOLDER="$(readlink -f $(dirname $0))"
