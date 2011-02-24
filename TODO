@@ -29,3 +29,4 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 	  Take testing upstream code directly from git,
 	  add more tests.
 	  Testframework executed by dpkg-buildpackage.
+* marco Change ${vars} to $vars
