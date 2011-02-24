@@ -42,6 +42,8 @@ we are following the coding styles of
  . Bash Style Guide and Coding Standards
       [german]  http://www3.fh-swf.de/fbin/mehner/download/StyleGuideShell.pdf
       [english] http://lug.fh-swf.de/vim/vim-bash/StyleGuideShell.en.pdf
+ . A Guide to Unix Shell Quoting
+      http://www.mpi-inf.mpg.de/~uwe/lehre/unixffb/quoting-guide.html
 
 Testframework
 * list of testfiles needed:
