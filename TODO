@@ -15,7 +15,6 @@ You should have received a copy of the GNU General Public License
 along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 # --- 0.1.0 release ------------------------------------------------------------
-* tinu  update ChangeLog 0.0.3->0.1.0 & wichtigste änderungen zum upstream code
 * marco review code, docs according to debian policies and rules.
 
 # --- later --------------------------------------------------------------------
