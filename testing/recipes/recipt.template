@@ -18,8 +18,13 @@
 
 main()
 {
-echo "dummy test $0"
-return 0
+#set -x
+echo "template"
+#$BIN_FADECUT -h
+#Ret=$?
+#If [ $Ret -ne 0 ]; return 1
+#fi
+#return 0
 }
 
 if ! main; then exit 1

@@ -16,12 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-# Marco: die Variablen aus 'config' sind hier nicht sichtbar
-HOME_FADECUT=${HOME}/.fadecut
-MYFOLDER="$(readlink -f $(dirname $0))"
-BIN_FADECUT="$MYFOLDER"/../../fadecut
-
-
 main()
 {
 pushd .
@@ -42,7 +36,6 @@ $BIN_FADECUT -p fctest_fileproc_mp3
 popd
 return 0
 }
-
 
 
 main "$1"
