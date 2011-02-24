@@ -740,6 +740,7 @@ nice -15 sox -V1 "$TMPDIR"/"$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 # Disable pipefail (default)
 set +o pipefail
 # delete tag written by lame (TLEN is always the same and always wrong)
+# found with LAME 32bits version 3.98.4
 # this patch was made after a feedback of Jonas Schmid
 id3v2 --TLEN "" "$OUTPUTDIR"/"$Fdst"  
 }
