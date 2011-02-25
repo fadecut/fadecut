@@ -28,7 +28,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * tinu  cross correlation with well known ad files
 * tinu  maybe we could use ffmpeg instead of sox/lame 
 * team  statistics reporting
-* team  discuss about sense of DOUBLEDIR, maybe not needed anymore
+* tinu  remove DOUBLEDIR, use statslog.csv instead
 * tinu  write filename to statslog.csv and note errors
 * tinu  wishlist: put a file in $fadecuthome with a list of artist/titles
           start fadecut with special option (-w for example) and fadecut
@@ -36,4 +36,6 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
           this should work with many fadecut processes in parallel, to scan on
           many internet-radio stations in parallel to complete the wishlist as
           fast as possible
-
+* tinu  make origdir optional
+* tinu  give marco info about source of test songs
+* marco check license of songs and document if needed in copyrights
