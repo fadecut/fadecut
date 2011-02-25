@@ -29,3 +29,11 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 	  add more tests.
 	  Testframework executed by dpkg-buildpackage.
 * marco Change ${vars} to $vars
+* tinu  write filename to statslog.csv and note errors
+* tinu  wishlist: put a file in $fadecuthome with a list of artist/titles
+          start fadecut with special option (-w for example) and fadecut
+          will rip/process only files which are on the wishlist.
+          this should work with many fadecut processes in parallel, to scan on
+          many internet-radio stations in parallel to complete the wishlist as
+          fast as possible
+
