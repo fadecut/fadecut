@@ -16,6 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
+# Script exit codes ------------------------------------------------------------
+# Returnvalues  : 0 - successfully
+#                 1 - partionally unsuccuessfully
+#                 2 - function unexpected aborted
+#                 3 - action aborted
+#                 4 - syntax error
+#                 5 - couldn't read, write or find file
+#                 6 - invalid status
+#                 99 - undefinded error code
 # Constants --------------------------------------------------------------------
 # you may overwrite all this constants in 
 #   ~/.fadecut/fadecutrc 
