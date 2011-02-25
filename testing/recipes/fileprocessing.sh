@@ -34,13 +34,17 @@ TRIM_BEGIN=0
 TRIM_END=0" > "$HOME_FADECUT"/profiles/fctest_fileproc_mp3
 # start test
 $BIN_FADECUT -p fctest_fileproc_mp3
+Ret=$?
 # eval test results
+# Because we process files with no id tags, fadecut will return with exitcode 1
+# and that is that what we expect in this variation.
+if [ $Ret -eq 1 ]; then return 0 # if all ok, return with errorlevel 0
+fi
 # ... todo ...
 # cleanup
 rm -rf error new orig
 popd
-# if all ok, return with errorlevel 0
-return 0
+return 1
 }
 
 

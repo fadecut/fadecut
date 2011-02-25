@@ -124,6 +124,7 @@ IdleCounter=-1
 IdleSeconds=0
 MissingVar=""
 Fdst=""
+PostExit=0	# Used for delayed shutdown's
 # Functions --------------------------------------------------------------------
 
 usage()
@@ -313,15 +314,17 @@ if [ -f "$LOGDIR/fadecutstream-$PID.log" ] ; then
   rm $LOGDIR/fadecutstream-$PID.log
 fi
 
-if [ $ExitCode -eq 0 ];
-then
-  logging -s "Fadecut stopped!"
-else
-  logging -e "Fadecut stopped unexpected!"
-  logging -a "Returnvalue=$ExitCode"
-fi
+case $ExitCode in
+	0)
+	  logging -s "Fadecut stopped!"
+	;;
+	1)
+	  logging -w "Fadecut stopped partionally unsuccuessfull"
+	;;
+esac
+logging -a "Returnvalue=$ExitCode"
 
-exit $ShutdownExitCode
+exit $ExitCode
 }
 
 queueSong()
@@ -394,7 +397,7 @@ do
     logging -n "no files to process, idle for $IdleSeconds seconds"
     if [ $STREAMRIPPER_START == "0" ];
     then 
-      shutdown_fadecut 0
+      shutdown_fadecut ${PostExit}
     else
       if [ $IdleSeconds -ge $RESTART_STREAMRIPPER_INTERVAL ];
       then
@@ -430,6 +433,7 @@ do
     logging -e "ARTIST: $ARTIST / TITLE: $TITLE"
     move_file "$F" "$ERRORDIR"
     Fstatus="error-notags"
+    PostExit=1
   elif [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
     logging -i "File already exists in $DONEDIR -> remember as double and deleting ..."
     double_file "$F" "$DOUBLEDIR"
