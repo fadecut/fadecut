@@ -21,6 +21,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 	  add more tests.
 	  Testframework executed by dpkg-buildpackage.
 * marco stats, processed songs per hour
+* marco logging(): no warning output's, if no -v (verbose) is selected
 
 # --- later --------------------------------------------------------------------
 * tinu  change to getopt(1) to be able to parse --long-options
