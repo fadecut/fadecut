@@ -14,21 +14,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License               
 along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-# --- 0.1.0 release ------------------------------------------------------------
-* marco review code, docs according to debian policies and rules.
+# --- 0.2.0 release ------------------------------------------------------------
+* marco Change ${vars} to $vars
+* marco Testframework:
+	  Take testing upstream code directly from git,
+	  add more tests.
+	  Testframework executed by dpkg-buildpackage.
+* marco stats, processed songs per hour
 
 # --- later --------------------------------------------------------------------
 * tinu  change to getopt(1) to be able to parse --long-options
 * tinu  cross correlation with well known ad files
 * tinu  maybe we could use ffmpeg instead of sox/lame 
-* marco stats, processed songs per hour
 * team  statistics reporting
 * team  discuss about sense of DOUBLEDIR, maybe not needed anymore
-* marco Testframework: 
-	  Take testing upstream code directly from git,
-	  add more tests.
-	  Testframework executed by dpkg-buildpackage.
-* marco Change ${vars} to $vars
 * tinu  write filename to statslog.csv and note errors
 * tinu  wishlist: put a file in $fadecuthome with a list of artist/titles
           start fadecut with special option (-w for example) and fadecut
