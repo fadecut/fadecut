@@ -44,3 +44,10 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
           this should work with many fadecut processes in parallel, to scan on
           many internet-radio stations in parallel to complete the wishlist as
           fast as possible
+* team  catch such errors:
+	streamripper http://club-high.rautemusik.fm/listen.pls
+	Connecting...
+	error -6 [SR_ERROR_CANT_RESOLVE_HOSTNAME]
+	bye..
+	shutting down
+
