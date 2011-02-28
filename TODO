@@ -27,6 +27,8 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * tinu  give marco info about source of test songs
 * marco check license of songs and document if needed in copyrights
 * tinu  complete fileprocessing test in testframework
+* tinu  how to handle case of tags? camel, higher or lowercase?
+        decide and code it
 
 # --- later --------------------------------------------------------------------
 * tinu  change to getopt(1) to be able to parse --long-options
