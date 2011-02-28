@@ -25,87 +25,49 @@
 #                 5 - couldn't read, write or find file
 #                 6 - invalid status
 #                 99 - undefinded error code
+#
 # Constants --------------------------------------------------------------------
+#
 # you may overwrite all this constants in 
 #   ~/.fadecut/fadecutrc 
 # and/or
 #   ~/.fadecut/profiles/<profile>
 #
 
-# Debug level 0-3
-DEBUG=0
+FILES=*.mp3					# which files to work on
 
-# fadecut's pid
-PID=$$
+ENCODING=ogg					# target format [ogg/mp3]
+TRIM_BEGIN=0					# trim n seconds at beginning
+TRIM_END=0					# trim n seconds at end of song
+FADE_IN=1					# seconds to fade in
+FADE_OUT=4					# seconds to fade out
 
-# Verbosity level
-VERBOSE=0
+PWD=$(pwd)					# main directory of fadecut
+LOGDIR=/tmp					# where to write logfiles
+PROFILEDIR="$HOME/.fadecut" 			# profiledir
+WORKDIR="$PWD"					# workdir
+OUTPUTDIR="$PWD/new"				# where to put fadecut'ted files
+ORIGDIR="$PWD/orig"				# where to put original files
+DONEDIR="$PWD/done"				# here the user puts finished
+						# files, which are tested and
+						# listened
+DONTLIKEDIR="$PWD/dontlike"			# here are songs we don't like
+ERRORDIR="$PWD/error"				# files had an error
+DOUBLEDIR="$PWD/double"				# files we already ripped and
+ 						# got again
+TMPDIR=/tmp					# here to put temporary files
 
-# loop interval in seconds
-LOOP_INTERVAL=10
+ENQUEUE=0					# enqueue to rhythmbox or vlc
+KEEPORIG=0					# don't keep original files
+DEBUG=0						# debug level 0-3
+VERBOSE=0					# verbosity level
+LOOP_INTERVAL=10				# loop interval in seconds
+RESTART_STREAMRIPPER_INTERVAL=900		# restart interval streamripper
+STREAMRIPPER_START=0 				# start streamripper [0/1]
+STREAMRIPPER_OPTS="-o always -T"		# streamripper options
 
-# restart interval streamripper
-RESTART_STREAMRIPPER_INTERVAL=900
-
-# which files to work on
-FILES=*.mp3
-
-# Main directory of fadecut
-PWD=$(pwd)
-
-# prefered destination fileformat. [ogg/mp3]
-ENCODING=ogg
-
-# trim start- and endpoint of cut in seconds
-TRIM_BEGIN=0
-TRIM_END=0
-
-# seconds to fade in 
-FADE_IN=1
-
-# seconds to fade out
-FADE_OUT=4
-
-# fadecut's logdir
-LOGDIR=/tmp
-# fadecut's profile dir
-PROFILEDIR="$HOME/.fadecut" 
-
-# fadecut's workdir
-WORKDIR="$PWD"
-
-# where to put fadecut'ted files
-OUTPUTDIR="$PWD/new"
-
-# where to put the uncutted original files
-ORIGDIR="$PWD/orig"
-
-# here are the already fadecut'ted files, which are tested and we listened to 
-# already
-DONEDIR="$PWD/done"
-
-# here we put songs which we don't like
-DONTLIKEDIR="$PWD/dontlike"
-
-# here are the files, with which we got an error
-# in same folder i put files, which i was listening to and found advertisement 
-# or bad cutting
-ERRORDIR="$PWD/error"
-
-# here will be the files which we have already downloaded and which we got again
-DOUBLEDIR="$PWD/double"
-
-# where to put temporary files
-TMPDIR=/tmp
-
-# enqueue to rhythmbox or vlc player (0=false, 1=true)
-ENQUEUE=0
-
-# standard errorlevel definitions
-E_NOARGS=65
-
-# start streamripper
-STREAMRIPPER_START=0 
+E_NOARGS=65					# standard errorlevel definition
+PID=$$						# fadecut's pid
 
 # define all binaries
 BIN_STREAMRIPPER=$(which streamripper)
@@ -115,16 +77,14 @@ BIN_OGGENC=$(which oggenc)
 BIN_ID3V2=$(which id3v2)
 BIN_LAME=$(which lame)
 
-# streamripper options
-STREAMRIPPER_OPTS="-o always -T"
-
 # Variables --------------------------------------------------------------------
 PidStreamripper="-1"
 IdleCounter=-1
 IdleSeconds=0
 MissingVar=""
 Fdst=""
-PostExit=0	# Used for delayed shutdown's
+PostExit=0					# Used for delayed shutdown's
+
 # Functions --------------------------------------------------------------------
 
 usage()
@@ -147,6 +107,7 @@ OPTIONS:
   -e    edit profile <profilename>
   -i    optional input directory
   -o    optional output directory
+  -k    keep original file
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
   -h	Show this message
   -q	Quiet
@@ -457,8 +418,9 @@ do
 
   # Processing part of loop_fadecut()
 
-  # first make sure we save the original file
-  copy_file "$F" "$ORIGDIR"
+  if [ "$KEEPORIG" -eq "1" ]; then
+    copy_file "$F" "$ORIGDIR"
+  fi
 
   splitting "$F" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
 
@@ -924,32 +886,29 @@ return 0
 # trap keyboard interrupt (control-c)
 trap control_c SIGINT
 
-while getopts ":d:hp:c:e:i:o:qrv" OPTION
-do
 # When you need an argument that needs a value, you put the ":" right after 
 # the argument in the optstring. If your var is just a flag, withou any 
 # additional argument, just leave the var, without the ":" following it.
+#
+# please keep letters in alphabetic order
+#
+while getopts ":c:d:e:hi:ko:p:qrv" OPTION
+do
   case $OPTION in
-    d)
-      DEBUG=$OPTARG
-      ;;
-    h)
-      usage
-      exit 1
-      ;;
-    p)
-      PROFILE=$OPTARG
-      load_profile
-      if ! checkRequirements; then shutdown_fadecut 1
-      fi
-      ;;
     c)
       create_profile $OPTARG
       exit 0
       ;;
+    d)
+      DEBUG=$OPTARG
+      ;;
     e)
       edit_profile $OPTARG
       exit 0
+      ;;
+    h)
+      usage
+      exit 1
       ;;
     i)
       WORKDIR=$OPTARG
@@ -960,6 +919,9 @@ do
       fi
       logging -n "Using for input: $WORKDIR"
       ;;
+    k)
+      KEEPORIG=1				# keep original files
+      ;;
     o)
       OUTPUTDIR=$OPTARG
       if [ ! -d "$OUTPUTDIR" ];
@@ -968,6 +930,12 @@ do
         shutdown_fadecut 3
       fi
       logging -n "Using for output: $OUTPUTDIR"
+      ;;
+    p)
+      PROFILE=$OPTARG
+      load_profile
+      if ! checkRequirements; then shutdown_fadecut 1
+      fi
       ;;
     q)
       DEBUG=0
