@@ -53,4 +53,10 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 	error -6 [SR_ERROR_CANT_RESOLVE_HOSTNAME]
 	bye..
 	shutting down
+* tinu  mp3 normalization   
+* team  find tag on which we write something like 'prcoessed by fadecut vx.y.z'
+        incl date, version, time, encoder and its version, streamripper and version
+* team  define constant with version of fadecut
+* team  lyrics in tags
+* team  song/album title
 
