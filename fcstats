@@ -8,4 +8,4 @@
 # Option „-F\;“ heisst jeder Element der Zeile ist mit dem gesetzten 
 # Buchstaben getrennt)… Für den Rest… mal zusammen diskutieren…
 
-perl -F\; -alne '$tmp="$F[2]-$F[3]";$d{ $tmp } = [ map{ s/\s+$//; $_ } @F ]; $times{ $tmp }++; map{ $max[$_]=$max[$_] > length $F[$_] ? $max[$_] : length $F[$_] }0..$#F; next unless eof(); $pf=join"|", map{ " %-${_}s " }@max; map{ printf "|$pf| %3d |\n", @{ $d{ $_ } }, $times{ $_ } } sort keys %d' /home/maba/.fadecut/statslog.csv
+perl -F\; -alne '$tmp="$F[2]-$F[3]";$d{ $tmp } = [ map{ s/\s+$//; $_ } @F ]; $times{ $tmp }++; map{ $max[$_]=$max[$_] > length $F[$_] ? $max[$_] : length $F[$_] }0..$#F; next unless eof(); $pf=join"|", map{ " %-${_}s " }@max; map{ printf "|$pf| %3d |\n", @{ $d{ $_ } }, $times{ $_ } } sort keys %d' ~/.fadecut/statslog.csv
