@@ -16,7 +16,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 
 # --- bugs on master branch ----------------------------------------------------
-* New/ already exists recognition is broken, if destination files are ogg's
+* current no
 # --- 0.2.0 release ------------------------------------------------------------
 * marco Change ${vars} to $vars
 * marco Testframework:
