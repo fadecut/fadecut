@@ -26,7 +26,6 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * marco stats, processed songs per hour
 * marco logging(): no warning output's, if no -v (verbose) is selected
 * tinu  remove DOUBLEDIR, use statslog.csv instead
-* tinu  write filename to statslog.csv and note errors
 * tinu  give marco info about source of test songs
 * marco check license of songs and document if needed in copyrights
 * tinu  complete fileprocessing test in testframework

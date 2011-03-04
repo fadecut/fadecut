@@ -409,7 +409,7 @@ do
     Fstatus="dontlike"
   fi
   
-  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus"
+  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus" "$Fnew"
 
   # skip processing of current file if it is "double" or "don't like"
   if [[ $Fstatus != "processing" ]] ; then
@@ -634,8 +634,9 @@ writeStats()
 #               $3  "genre"
 #               $4  "profile"
 #               $5  "status"
+#		$6  "filename"
 #
-# Usage      :  writeStats "artist" "title" "genre" "profile" "status"
+# Usage      :  writeStats "artist" "title" "genre" "profile" "status" "filename"
 #
 # Output     :  none
 #
@@ -650,7 +651,8 @@ title=`echo "$2"  | iconv -f ISO-8859-1 -t UTF-8`
 genre="$3"
 profile="$4"
 status="$5"
-echo "$date;$time;$artist;$title;$genre;$profile;$status" >> "$PROFILEDIR"/statslog.csv
+filename="$6"
+echo "$date;$time;$artist;$title;$genre;$profile;$status;$filename" >> "$PROFILEDIR"/statslog.csv
 }
 
 oggEncoding()
@@ -746,7 +748,8 @@ mv "$TMPDIR"/"$Ftmp" "$TMPDIR"/"$F"
 if [ $Fcount -ge 2 ] ; then
   logging -i "sox found silence and splitted..."
   rm "$TMPDIR"/"$F"00*
-  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "soxsplit into $Fcount files"
+  Fnew=$(filerename $F)
+  writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "soxsplit into $Fcount files" "$Fnew"
 fi
 
 return 0
