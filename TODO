@@ -26,7 +26,22 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * marco stats, processed songs per hour
 * marco logging(): no warning output's, if no -v (verbose) is selected
 * tinu  remove DOUBLEDIR, use statslog.csv instead
+
 * tinu  give marco info about source of test songs
+	here you have:
+	apt-get install yofrankie
+	/usr/share/yofrankie-bge/audio
+	we took:
+	FrankieDeath.wav
+	frankie_dielava.wav
+	frankieloop2.wav
+        head /usr/share/doc/yofrankie/copyright:
+	Name: Yo Frankie!
+	Maintainer: Campbell Barton <ideasman42@gmail.com>
+	Source: http://www.yofrankie.org/
+	Copyright: 2008, Blender Foundation, www.blender.org
+	License: GPL-2+
+
 * marco check license of songs and document if needed in copyrights
 * tinu  complete fileprocessing test in testframework
 * tinu  how to handle case of tags? camel, higher or lowercase?
