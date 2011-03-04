@@ -25,9 +25,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 	  Testframework executed by dpkg-buildpackage.
 * marco stats, processed songs per hour
 * marco logging(): no warning output's, if no -v (verbose) is selected
-* tinu  remove DOUBLEDIR, use statslog.csv instead
-
-* tinu  give marco info about source of test songs
+* marco check license of songs and document if needed in copyrights
 	here you have:
 	apt-get install yofrankie
 	/usr/share/yofrankie-bge/audio
@@ -42,7 +40,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 	Copyright: 2008, Blender Foundation, www.blender.org
 	License: GPL-2+
 
-* marco check license of songs and document if needed in copyrights
+* tinu  remove DOUBLEDIR, use statslog.csv instead
 * tinu  complete fileprocessing test in testframework
 * tinu  how to handle case of tags? camel, higher or lowercase?
         decide and code it
