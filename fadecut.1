@@ -41,10 +41,6 @@ in this folder you may put songs which you don't like. Fadecut is checking this
 folder before it is processing new files in the working folder. Null size files
 are ok. 
 .PP
-.B double/
-fadecut creates null byte size files in this folder whenever it is processing a
-file which is already in done/ or new/ folder.
-.PP
 .B error/
 whenever an error occurs while fadecut is processing a file, that file is moved
 to the error folder for later examining.
@@ -75,6 +71,9 @@ optional input <directory>
 .PP
 .B \-o
 optional output <directory>
+.PP
+.B \-k
+optional to keep the untouched original song in the /orig folder
 .PP
 .B \-d
 Debug: \-d 0|1|2|3 (level 0 is standard, \-d without number is like 1)
