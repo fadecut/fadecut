@@ -53,8 +53,6 @@ DONEDIR="$PWD/done"				# here the user puts finished
 						# listened
 DONTLIKEDIR="$PWD/dontlike"			# here are songs we don't like
 ERRORDIR="$PWD/error"				# files had an error
-DOUBLEDIR="$PWD/double"				# files we already ripped and
- 						# got again
 TMPDIR=/tmp					# here to put temporary files
 
 ENQUEUE=0					# enqueue to rhythmbox or vlc
@@ -396,12 +394,12 @@ do
     Fstatus="error-notags"
     PostExit=1
   elif [ -f "$DONEDIR"/"$F" ] || [ -f "$DONEDIR"/"$Fnew" ] ; then
-    logging -i "File already exists in $DONEDIR -> remember as double and deleting ..."
-    double_file "$F" "$DOUBLEDIR"
+    logging -i "File already exists in $DONEDIR ..."
+    rm "$F"
     Fstatus="double-done"
   elif [ -f "$OUTPUTDIR"/"$F" ] || [ -f "$OUTPUTDIR"/"$Fnew" ] ; then
-    logging -i "File already exists in $OUTPUTDIR -> remember as double and deleting ..."
-    double_file "$F" "$DOUBLEDIR"
+    logging -i "File already exists in $OUTPUTDIR ..."
+    rm "$F"
     Fstatus="double-output"
   elif [ -f "$DONTLIKEDIR"/"$F" ] || [ -f "$DONTLIKEDIR"/"$Fnew" ] ; then
     logging -i "I don't like. File exists in $DONTLIKEDIR -> deleting ..."
@@ -605,23 +603,21 @@ fi
 if [ -d "$ERRORDIR" ]; then
   StatsErrorDir=`ls -1 "$ERRORDIR"  | wc -l`
 fi
-if [ -d "$DOUBLEDIR" ]; then
-  StatsDoubleDir=`ls -1 "$DOUBLEDIR"  | wc -l`
-fi
   logging -i "showStats:"
-  logging -a "Output:$StatsNewDir Orig:$StatsOrigDir Done:$StatsDoneDir Dontlike:$StatsDontlikeDir Error:$StatsErrorDir Double:$StatsDoubleDir"
+  logging -a "Output:$StatsNewDir Orig:$StatsOrigDir Done:$StatsDoneDir Dontlike:$StatsDontlikeDir Error:$StatsErrorDir"
 
 if [ -f "$PROFILEDIR"/statslog.csv ]; then
-  double=`grep double "$PROFILEDIR"/statslog.csv | wc -l`
-  processed=`grep processing "$PROFILEDIR"/statslog.csv | wc -l`
-  logging -d "double=$double processed=$processed"
-  # Print stats log only if we have more than 0 doubles
-  # (Divide by zero)
-  if [ $double -ne 0 ];
-  then
-    ratio=$(echo "scale=2; $processed/$double" | bc)
-    logging -a "stats log: double:$double processed:$processed processed/double-ratio:$ratio"
-  fi
+  double=$(grep ";double-" "$PROFILEDIR"/statslog.csv | \
+           grep ";$PROFILE;" | \
+           cut -d \; -f 4 | \
+           sort -u | \
+           wc -l)
+  processed=$(grep ";processing" "$PROFILEDIR"/statslog.csv | \
+              grep ";$PROFILE;" | \
+              cut -d \; -f 4 | \
+              sort -u | \
+              wc -l)
+  logging -a "Double:$double Processed:$processed"
 fi
 }
 
@@ -858,29 +854,6 @@ if [ ! -d "$2" ]; then
   mkdir -p "$2"
 fi
 mv "$1" "$2"
-
-return 0
-}
-
-double_file()
-#
-# Description:  checks if directory exists, creates it if necessary and 
-#               creates 0 byte size file
-# 
-# Parameter  :  $1  file
-#               $2  destination directory
-#
-# Output     :  none
-#
-{
-if [ $DEBUG -ge 1 ]; then set -x
-fi
-
-if [ ! -d "$2" ]; then
-  mkdir -p "$2"
-fi
-touch "$2"/"$1"
-rm "$1"
 
 return 0
 }

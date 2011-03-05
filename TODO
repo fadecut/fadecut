@@ -40,7 +40,6 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 	Copyright: 2008, Blender Foundation, www.blender.org
 	License: GPL-2+
 
-* tinu  remove DOUBLEDIR, use statslog.csv instead
 * tinu  complete fileprocessing test in testframework
 * tinu  how to handle case of tags? camel, higher or lowercase?
         decide and code it
