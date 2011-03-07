@@ -496,6 +496,8 @@ create_profile()
 if [ $DEBUG -ge 2 ]; then set -x
 fi
 
+createDirs
+
 NEW=$1
 
 echo \
