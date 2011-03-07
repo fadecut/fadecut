@@ -75,4 +75,5 @@ to define who will code this:
 * team  song/album title
 * team  add support for aacPlus Streams and *.aac files
         example: http://www.radioswissjazz.ch/live/aacp.m3u
+* team  maybe we need to use vbrfix on mp3 files? 
 
