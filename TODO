@@ -57,7 +57,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
           this should work with many fadecut processes in parallel, to scan on
           many internet-radio stations in parallel to complete the wishlist as
           fast as possible
-* tinu  mp3 normalization   
+* tinu  mp3 normalization / replaygain   
 * tinu  id3 tags umlaut are not correct on N900, wrong characterset
 
 to define who will code this:
