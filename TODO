@@ -51,26 +51,28 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * tinu  change to getopt(1) to be able to parse --long-options
 * tinu  cross correlation with well known ad files
 * tinu  maybe we could use ffmpeg instead of sox/lame 
-* team  statistics reporting
 * tinu  wishlist: put a file in $fadecuthome with a list of artist/titles
           start fadecut with special option (-w for example) and fadecut
           will rip/process only files which are on the wishlist.
           this should work with many fadecut processes in parallel, to scan on
           many internet-radio stations in parallel to complete the wishlist as
           fast as possible
+* tinu  mp3 normalization   
+* tinu  id3 tags umlaut are not correct on N900, wrong characterset
+
+to define who will code this:
+* team  statistics reporting
 * team  catch such errors:
 	streamripper http://club-high.rautemusik.fm/listen.pls
 	Connecting...
 	error -6 [SR_ERROR_CANT_RESOLVE_HOSTNAME]
 	bye..
 	shutting down
-* tinu  mp3 normalization   
 * team  find tag on which we write something like 'prcoessed by fadecut vx.y.z'
         incl date, version, time, encoder and its version, streamripper and version
 * team  define constant with version of fadecut
 * team  lyrics in tags
 * team  song/album title
-* tinu  id3 tags umlaut are not correct on N900, wrong characterset
 * team  add support for aacPlus Streams and *.aac files
         example: http://www.radioswissjazz.ch/live/aacp.m3u
 
