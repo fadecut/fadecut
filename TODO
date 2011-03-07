@@ -71,4 +71,6 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 * team  lyrics in tags
 * team  song/album title
 * tinu  id3 tags umlaut are not correct on N900, wrong characterset
+* team  add support for aacPlus Streams and *.aac files
+        example: http://www.radioswissjazz.ch/live/aacp.m3u
 
