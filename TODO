@@ -76,4 +76,6 @@ to define who will code this:
 * team  add support for aacPlus Streams and *.aac files
         example: http://www.radioswissjazz.ch/live/aacp.m3u
 * team  maybe we need to use vbrfix on mp3 files? 
-
+* team  auto download album art (when more than one: let user select / take newest / take that one with best quality)
+* team  auto download lyrics
+* team  auto download guitar tabs
