@@ -3,8 +3,9 @@ Upstream-Name: fadecut
 Source: git://github.com/micressor/fadecut.git
 
 Files: *
+
 Copyright: 2011 Martin Gafner <martin@gafner.name>
-	   2011 Marco Balmer <marco@balmer.name>
+Copyright: 2011 Marco Balmer <marco@balmer.name>
 
 License: GPL-3
  fadecut is free software: you can redistribute it and/or modify
