@@ -1,6 +1,7 @@
 fadecut (0.1.0-2) unstable; urgency=low
 
   * Update debian/copyright: Fix lintian warning
+  * Update debian/control: Standards-Version: 3.9.2
 
  -- Marco Balmer <marco@balmer.name>  Tue, 11 Oct 2011 11:48:27 +0200
 

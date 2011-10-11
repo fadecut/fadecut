@@ -1,13 +1,10 @@
 Format: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=166
 Upstream-Name: fadecut
 Source: git://github.com/micressor/fadecut.git
-
 Files: *
-
 Copyright: 2011 Martin Gafner <martin@gafner.name>
-Copyright: 2011 Marco Balmer <marco@balmer.name>
-
-License: GPL-3
+ 2011 Marco Balmer <marco@balmer.name>
+License: GPL
  fadecut is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
