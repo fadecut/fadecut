@@ -815,6 +815,12 @@ then
   return 1
 fi
 
+if [ ! -w "$WORKDIR" ];
+then
+  logging -e "Cannot write into $WORKDIR directory"
+  return 1
+fi
+
 return 0
 }
 
