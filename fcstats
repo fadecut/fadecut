@@ -1,0 +1,11 @@
+#!/bin/bash
+# Marc-Alain, 28.02.2011
+# Sortierung ist gerade aufgrund vom „< Artist >–< Titel >“ 
+# (Befehl: $tmp="$F[2]-$F[3]"). Gesamte Daten werden denn im %d Hash Array 
+# gespeichert, wo jeder Element einen Array mit allen Daten der Zeile 
+# (Befehl: $d{ $tmp } = [ map{ s/\s+$//; $_ } @F ]) beinhaltet (im Perl, 
+# Option „-a“ heisst: speichert jeder Element der Zeile im @F Array. Die 
+# Option „-F\;“ heisst jeder Element der Zeile ist mit dem gesetzten 
+# Buchstaben getrennt)… Für den Rest… mal zusammen diskutieren…
+
+perl -F\; -alne '$tmp="$F[2]-$F[3]";$d{ $tmp } = [ map{ s/\s+$//; $_ } @F ]; $times{ $tmp }++; map{ $max[$_]=$max[$_] > length $F[$_] ? $max[$_] : length $F[$_] }0..$#F; next unless eof(); $pf=join"|", map{ " %-${_}s " }@max; map{ printf "|$pf| %3d |\n", @{ $d{ $_ } }, $times{ $_ } } sort keys %d' ~/.fadecut/statslog.csv

@@ -42,6 +42,8 @@ we are following the coding styles of
  . Bash Style Guide and Coding Standards
       [german]  http://www3.fh-swf.de/fbin/mehner/download/StyleGuideShell.pdf
       [english] http://lug.fh-swf.de/vim/vim-bash/StyleGuideShell.en.pdf
+ . A Guide to Unix Shell Quoting
+      http://www.mpi-inf.mpg.de/~uwe/lehre/unixffb/quoting-guide.html
 
 Testframework
 * list of testfiles needed:
@@ -56,3 +58,21 @@ Testframework
   outputfiles (cut correct*.*) correct (check binary, length, size, tags)
   error handling when bad input files (error*.mp3) 
 
+ID3
+http://www.id3.org/Introduction
+ID3 tags were designed with the MP3 file format in mind. ID3v2 tags 
+will break formats which are container-based such as Ogg Vorbis and WMA.
+
+Vorbis I specification  
+http://www.xiph.org/vorbis/doc/Vorbis_I_spec.html#x1-810005
+
+VorbisComment
+http://wiki.xiph.org/VorbisComment
+is a base-level Metadata format initially created for use with Ogg Vorbis. 
+It has since been adopted in the specifications of Ogg encapsulations for 
+other Xiph.Org codecs including Theora, Speex and FLAC. 
+
+A very cute reference sound:
+http://www.xiph.org/vorbis/listen.html (not reachable)
+http://replay.waybackmachine.org/20090628120921/http://www.xiph.org/vorbis/listen.html
+http://replay.waybackmachine.org/20081004221732/http://www.xiph.org/vorbis/listen/41_30secOgg-b64M.wav
