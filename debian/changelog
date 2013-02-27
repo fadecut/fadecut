@@ -1,3 +1,10 @@
+fadecut (0.1.2-1) unstable; urgency=low
+
+  * New 0.1.2 upstream release 
+  * Closes github issue https://github.com/micressor/fadecut/issues/1
+
+ -- Marco Balmer <marco@balmer.name>  Wed, 27 Feb 2013 11:49:57 +0100
+
 fadecut (0.1.1-1) unstable; urgency=low
 
   * New 0.1.1 upstrem release (Closes: #645392)
