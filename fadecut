@@ -233,15 +233,15 @@ fi
 
 TmpPid=$(pidof streamripper)
 
-if [ -z $TmpPid ]; then return 0
+if [ -z "$TmpPid" ]; then return 0
 fi
 
-if [ $TmpPid -eq $PidStreamripper ];
+if [[ " $TmpPid " == *" $PidStreamripper "* ]];
 then
   logging -i "Shuting down streamripper" 
   kill $PidStreamripper 
   sleep 1
-  if [ "$(pidof streamripper)" ];
+  if [[ " $(pidof streamripper) " == *" $PidStreamripper "* ]];
   then
     logging -w "Streamripper still here, killing it!"
     kill -9 $PidStreamripper
