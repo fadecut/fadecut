@@ -2,11 +2,11 @@ Source: fadecut
 Section: sound
 Priority: extra
 Maintainer: Marco Balmer <marco@balmer.name>
-Build-Depends: debhelper (>= 7)
+Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.4
 Homepage: http://github.com/micressor/fadecut
 Vcs-Git: git://github.com/micressor/fadecut.git
-Vcs-Browser: http://github.com/micressor/fadecut
+Vcs-Browser: https://github.com/micressor/fadecut/tree/debian
 
 Package: fadecut
 Architecture: all

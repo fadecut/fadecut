@@ -1,8 +1,12 @@
-fadecut (0.1.2-1) unstable; urgency=low
+fadecut (0.1.2-1) experimental; urgency=low
 
   * New 0.1.2 upstream release 
-  * Closes github issue https://github.com/micressor/fadecut/issues/1
-  * Update debian/control: Standards-Version: 3.9.4
+  * Closes #1 at github: Fadecut had problems with two instances running
+    concurrently
+  * debian/control Standards-Version: 3.9.4
+  * debian/control Build-Depends changed to debhelper (>= 9)
+  * debian/compat Changed to 9
+  * debian/watch according to Bart Martens
 
  -- Marco Balmer <marco@balmer.name>  Wed, 27 Feb 2013 11:49:57 +0100
 
