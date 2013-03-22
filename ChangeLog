@@ -1,3 +1,9 @@
+fadecut 0.1.3
+-------------
+
+ * Fixed github.com issue #2 "add custom USER_AGENT" Thanks to
+   https://github.com/mitsukarenai
+
 fadecut 0.1.2
 -------------
 
