@@ -49,6 +49,7 @@ along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 # --- later --------------------------------------------------------------------
 * tinu  change to getopt(1) to be able to parse --long-options
+* tinu  add bpm tags (use of debian packet bpm-tools)
 * tinu  cross correlation with well known ad files
 * tinu  maybe we could use ffmpeg instead of sox/lame 
 * tinu  wishlist: put a file in $fadecuthome with a list of artist/titles
