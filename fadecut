@@ -84,6 +84,11 @@ MissingVar=""
 Fdst=""
 PostExit=0					# Used for delayed shutdown's
 
+Editor=vi
+if [ -n "$EDITOR" ]; then
+ Editor="$EDITOR"
+fi
+
 # Functions --------------------------------------------------------------------
 
 usage()
@@ -511,8 +516,8 @@ FADE_IN=1
 FADE_OUT=4
 # TRIM_BEGIN=0
 # TRIM_END=0" > "$PROFILEDIR/profiles/$NEW"
-logging -i "Starting vim editor"
-vi "$PROFILEDIR/profiles/$NEW"
+logging -i "Starting $Editor editor"
+$Editor "$PROFILEDIR/profiles/$NEW"
 logging -i "Now start: fadecut -p $NEW [optional other options]"
 }
 
@@ -525,7 +530,7 @@ edit_profile()
 # Output     :  none
 #
 {
-vi "$PROFILEDIR/profiles/$1"
+$Editor "$PROFILEDIR/profiles/$1"
 }
 
 check_profile()
@@ -971,7 +976,8 @@ do
   # if streamripper is working then show info about it
   if [ $STREAMRIPPER_START == "1" ] && [ -f $LOGDIR/fadecutstream-$PID.log ];
   then
-    StreamInfo=$(tail -1 $LOGDIR/fadecutstream-$PID.log | sed -e 's//\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+    StreamInfo=$(tail -1 $LOGDIR/fadecutstream-$PID.log | sed -e 's/
+/\n/g' | tail -1 | sed -e 's/ \[.*$//g')
     if [ "$StreamInfo" != "$StreamInfo2" ] ; then
       logging -r "$StreamInfo"
       StreamInfo2="$StreamInfo"
