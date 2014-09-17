@@ -1,3 +1,10 @@
+fadecut 0.1.4
+-------------
+
+ * Merged pull request from https://github.com/TobleMiner
+     Added custom editor selection. Script now considers $EDITOR environment
+     variable first, before choosing vi/vim
+
 fadecut 0.1.3
 -------------
 

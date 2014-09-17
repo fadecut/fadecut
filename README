@@ -77,6 +77,18 @@ apt-get install lame
 
 apt-get vorbis-tools sox libsox-fmt-mp3 streamripper id3v2
 
+
+--- Building Debian packages from source ---------------------------------------
+
+  cd /tmp
+  git clone https://github.com/micressor/fadecut
+  cd fadecut
+  git checkout debian
+  git archive --format=tar --prefix=fadecut-0.X.X/ 0.X.X | gzip > ../fadecut_0.X.X.orig.tar.gz
+  dpkg-buildpackage -us -uc
+  dpkg -i ../fadecut_*.deb
+
+
 --- Usage ----------------------------------------------------------------------
 1. Create a profile file
 fadecut -c myradiostation
