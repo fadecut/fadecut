@@ -1,3 +1,12 @@
+fadecut (0.1.4-1) unstable; urgency=low
+
+  * New 0.1.4 upstream release
+  * Closes pull request #5 at github.com
+  * Standards bumped to 3.9.5
+  * Fix lintian warnings in debian/copyright
+
+ -- Marco Balmer <marco@balmer.name>  Wed, 17 Sep 2014 12:11:46 +0200
+
 fadecut (0.1.3-1) unstable; urgency=low
 
   * New 0.1.3 upstream release

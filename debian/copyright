@@ -1,9 +1,12 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: fadecut
+Upstream-Contact: Marco Balmer <marco@balmer.name>
+ Martin Gafner <martin@gafner.name>
 Source: git://github.com/micressor/fadecut.git
+
 Files: *
-Copyright: 2011 Martin Gafner <martin@gafner.name>
- 2011 Marco Balmer <marco@balmer.name>
+Copyright: 2011 Martin Gafner
+  2011 Marco Balmer
 License: GPL
  fadecut is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
