@@ -1,12 +1,15 @@
 # useful info
 
 to change tags you may use lltag (writes only id3v1 tags):
+
 	lltag --yes -g SwissPop -c "Radio Swiss Pop" *.mp3
 
 to change filenames according to tags:
+
 	lltag --rename "%a_-_%t" --rename-min --rename-sep _ --yes *.mp3
 
 to change filenames with iso-8859 umlaut to utf8:
+
 	convmv -f iso-8859-15 -t utf8 -r *.mp3 --notest
 
 another command line tagging tool, which reads and writes also id3v2:
