@@ -9,6 +9,8 @@
 * logging(): no warning output's, if no -v (verbose) is selected
 * check license of songs and document if needed in copyrights. Here you have:
 
+## yo
+
 	apt-get install yofrankie
 	/usr/share/yofrankie-bge/audio
 	we took:
