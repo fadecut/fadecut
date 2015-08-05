@@ -1,6 +1,6 @@
 # Overview
 
-## synopsis/short description
+## Synopsis
 
 toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
 
@@ -23,7 +23,7 @@ files are not processed anymore too.
 
 ## long description (german)
 
-mit fadecut können Audio Dateien aus einem Livestream gerippt und automatisch 
+Mit fadecut können Audio Dateien aus einem Livestream gerippt und automatisch 
 verarbeitet werden. Anfang und Ende der Audiofiles werden geschnitten sowie ein-
 und ausgeblendet. Damit können Signete und Werbung von Radiostationen automatisch
 entfernt werden.
@@ -38,18 +38,21 @@ Ein bereits verarbeiteter Song wird erkannt und nicht neu verarbeitet. Nicht
 erwünschte Songs können in einem separaten Verzeichnis abgelegt werden. Diese 
 werden dann ebenfalls nicht mehr weiter verarbeitet.
 
-
 # Requirements
 
 * bash - The GNU Bourne Again SHell
+
 * id3v2 - A command line id3v2 tag editor
+
 * sox - the Swiss army knife of sound processing
+
 * streamripper - download online streams into audio files
+
 * vorbis-tools - several Ogg Vorbis tools
 
 optional, for mp3 encoding:
-* lame, An MP3 encoding library (frontend)
 
+* lame, An MP3 encoding library (frontend)
 
 # Ubuntu
 
@@ -62,7 +65,7 @@ for mp3 encoding:
 
 # Debian
 
-* lame (mp3 encoding) is official not available in debian.
+Lame (mp3 encoding) is official not available in debian.
 
 	apt-get vorbis-tools sox libsox-fmt-mp3 streamripper id3v2
 
