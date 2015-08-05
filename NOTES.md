@@ -46,7 +46,6 @@ We are following the coding styles of
 
 ## ID3
 
-
 [ID3](http://www.id3.org/Introduction) tags were designed with the MP3 file format in mind. ID3v2 tags will break formats which are container-based such as Ogg Vorbis and WMA.
 
 ## Vorbis
