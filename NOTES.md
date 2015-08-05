@@ -24,13 +24,14 @@ We are following the coding styles of
 
 * the [GNU Coding Standards](http://www.gnu.org/prep/standards/html_node/index.html)
 * the [Bash Reference Manual](http://www.gnu.org/software/bash/manual/bashref.html)
-* Advanced Bash Scripting Guide](http://tldp.org/LDP/abs/html/index.html)
+* [Advanced Bash Scripting Guide](http://tldp.org/LDP/abs/html/index.html)
 * Bash Style Guide and Coding Standards [german](http://www3.fh-swf.de/fbin/mehner/download/StyleGuideShell.pdf) / [english](http://lug.fh-swf.de/vim/vim-bash/StyleGuideShell.en.pdf)
 * A [Guide](http://www.mpi-inf.mpg.de/~uwe/lehre/unixffb/quoting-guide.html) to Unix Shell Quoting
 
 # Testframework
 
 * list of testfiles needed:
+
 	[done] cut correct - end 01.mp3
 	[done] cut correct - begin 01.mp3
 	[done] cut correct - begin and end 01.mp3
@@ -39,21 +40,19 @@ We are following the coding styles of
 	[done] error - no mp3 file.mp3
 
 * Tests:
+
 	outputfiles (cut correct*.*) correct (check binary, length, size, tags)
 	error handling when bad input files (error*.mp3) 
 
 ## ID3
 
-http://www.id3.org/Introduction
-ID3 tags were designed with the MP3 file format in mind. ID3v2 tags will break formats which are container-based such as Ogg Vorbis and WMA.
 
-## Vorbis I specification  
+[ID3](http://www.id3.org/Introduction) tags were designed with the MP3 file format in mind. ID3v2 tags will break formats which are container-based such as Ogg Vorbis and WMA.
 
-http://www.xiph.org/vorbis/doc/Vorbis_I_spec.html#x1-810005
+## Vorbis
 
-### VorbisComment
-
-http://wiki.xiph.org/VorbisComment
+* [Vorbis I specification](http://www.xiph.org/vorbis/doc/Vorbis_I_spec.html#x1-810005)
+* [VorbisComment](http://wiki.xiph.org/VorbisComment)
 
 is a base-level Metadata format initially created for use with Ogg Vorbis. 
 It has since been adopted in the specifications of Ogg encapsulations for 
