@@ -7,7 +7,18 @@
 	* Testframework executed by dpkg-buildpackage.
 * stats, processed songs per hour
 * logging(): no warning output's, if no -v (verbose) is selected
-* check license of songs and document if needed in copyrights. Here you have:
+* complete fileprocessing test in testframework
+* how to handle case of tags? camel, higher or lowercase? decide and code it
+
+## How to handle filenames like this
+
+	Gloria Estefan - 1 - 2 - 3.mp3 / gloria_estefan_-_1_-_2_-_3.mp3
+	PLATINUM - SIGNALS(GAUDINO & ROONEY EDIT).mp3 / platinum_-_signals(gaudino_&_rooney_edit).mp3
+	(for example put an underscore before paranthesis)
+
+## check license of songs and document if needed in copyrights
+
+Here you have:
 
 	apt-get install yofrankie
 	/usr/share/yofrankie-bge/audio
@@ -21,14 +32,6 @@
 	Source: http://www.yofrankie.org/
 	Copyright: 2008, Blender Foundation, www.blender.org
 	License: GPL-2+
-
-* complete fileprocessing test in testframework
-* how to handle case of tags? camel, higher or lowercase? decide and code it
-* how to handle filenames like this: 
-
-	Gloria Estefan - 1 - 2 - 3.mp3 / gloria_estefan_-_1_-_2_-_3.mp3
-	PLATINUM - SIGNALS(GAUDINO & ROONEY EDIT).mp3 / platinum_-_signals(gaudino_&_rooney_edit).mp3
-	(for example put an underscore before paranthesis)
 
 # Later
 
