@@ -99,7 +99,9 @@ Let's stream, rip and automatically fade & cut now
 
 # More useful documentation
 
-You may find it [here.](http://wiki.ubuntuusers.de/fadecut)
+* Fadecut at [ubuntuusers.de](http://wiki.ubuntuusers.de/fadecut)
+* [Notes.md](https://github.com/micressor/fadecut/blob/master/NOTES.md)
+* [TODO list](https://github.com/micressor/fadecut/blob/master/TODO.md)
 
 ### This file is part of fadecut
 
