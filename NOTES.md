@@ -60,9 +60,9 @@ other Xiph.Org codecs including Theora, Speex and FLAC.
 
 ## A very cute reference sound
 
-* http://www.xiph.org/vorbis/listen.html (not reachable)
-* http://replay.waybackmachine.org/20090628120921/http://www.xiph.org/vorbis/listen.html
-* http://replay.waybackmachine.org/20081004221732/http://www.xiph.org/vorbis/listen/41_30secOgg-b64M.wav
+* [Origin link not reachable](http://www.xiph.org/vorbis/listen.html (not reachable)
+* [Sound 1](http://replay.waybackmachine.org/20090628120921/http://www.xiph.org/vorbis/listen.html)
+* [Sounds 2](http://replay.waybackmachine.org/20081004221732/http://www.xiph.org/vorbis/listen/41_30secOgg-b64M.wav)
 
 ### This file is part of fadecut 
 https://github.com/micressor/fadecut                                            
