@@ -98,9 +98,9 @@ Edit variables:
 
 # More useful documentation
 
-You may find it [here](http://wiki.ubuntuusers.de/fadecut)
+You may find it [here.](http://wiki.ubuntuusers.de/fadecut)
 
-# This file is part of fadecut
+### This file is part of fadecut
 
 https://github.com/micressor/fadecut
 
