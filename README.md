@@ -1,21 +1,3 @@
-# This file is part of fadecut
-
-https://github.com/micressor/fadecut
-
-fadecut is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-fadecut is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
-
-
 # Overview
 
 ## synopsis/short description
@@ -71,7 +53,8 @@ optional, for mp3 encoding:
 
 # Ubuntu
 
-	apt-get install bash coreutils findutils nice sed sox libsox-fmt-mp3 streamripper vorbis-tools id3v2
+	apt-get install bash coreutils findutils nice sed sox libsox-fmt-mp3 \
+	  streamripper vorbis-tools id3v2
 
 for mp3 encoding:
 
@@ -99,11 +82,11 @@ for mp3 encoding:
 	fadecut -c myradiostation
 
 Edit variables:
-> STREAM_URL="http://streamurl"
-> GENRE="Pop"
-> COMMENT="Radio station comment"
-> FADE_IN=1
-> FADE_OUT=4
+	STREAM_URL="http://streamurl"
+	GENRE="Pop"
+	COMMENT="Radio station comment"
+	FADE_IN=1
+	FADE_OUT=4
 
 2. Let's stream, rip and automatically fade & cut now
 	fadecut -p myradiostation -r
@@ -112,4 +95,21 @@ Edit variables:
 
 # More useful documentation
 
-You may find it [here](http://wiki.ubuntuusers.de/fadecut]
+You may find it [here](http://wiki.ubuntuusers.de/fadecut)
+
+# This file is part of fadecut
+
+https://github.com/micressor/fadecut
+
+fadecut is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+fadecut is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
