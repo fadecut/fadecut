@@ -1,4 +1,5 @@
-This file is part of fadecut
+# This file is part of fadecut
+
 https://github.com/micressor/fadecut
 
 fadecut is free software: you can redistribute it and/or modify
@@ -15,13 +16,14 @@ You should have received a copy of the GNU General Public License
 along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
 
---- Overview -------------------------------------------------------------------
-synopsis/short description: 
----------------------------
+# Overview
+
+## synopsis/short description
+
 toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
 
-long description (english):
----------------------------
+## long description (english)
+
 fadecut is a script to rip audio files from a livestream and to process them 
 automatically. Beginning and ending fo the audio files will be cut and faded 
 in/out. So logos and advertising of radio stations will be automatically removed.
@@ -37,8 +39,8 @@ An audio file which has already been processed is detected and will not be
 processed again. Not desired songs can be stored in a separate directory. This 
 files are not processed anymore too.
 
-long description (german):
---------------------------
+## long description (german)
+
 mit fadecut können Audio Dateien aus einem Livestream gerippt und automatisch 
 verarbeitet werden. Anfang und Ende der Audiofiles werden geschnitten sowie ein-
 und ausgeblendet. Damit können Signete und Werbung von Radiostationen automatisch
@@ -55,7 +57,8 @@ erwünschte Songs können in einem separaten Verzeichnis abgelegt werden. Diese
 werden dann ebenfalls nicht mehr weiter verarbeitet.
 
 
---- Requirements ---------------------------------------------------------------
+# Requirements
+
 * bash - The GNU Bourne Again SHell
 * id3v2 - A command line id3v2 tag editor
 * sox - the Swiss army knife of sound processing
@@ -66,47 +69,47 @@ optional, for mp3 encoding:
 * lame, An MP3 encoding library (frontend)
 
 
---- Ubuntu ---------------------------------------------------------------------
-apt-get install bash coreutils findutils nice sed sox libsox-fmt-mp3 streamripper vorbis-tools id3v2
+# Ubuntu
+
+	apt-get install bash coreutils findutils nice sed sox libsox-fmt-mp3 streamripper vorbis-tools id3v2
 
 for mp3 encoding:
-apt-get install lame
 
---- Debian ---------------------------------------------------------------------
+	apt-get install lame
+
+# Debian
+
 * lame (mp3 encoding) is official not available in debian.
 
-apt-get vorbis-tools sox libsox-fmt-mp3 streamripper id3v2
+	apt-get vorbis-tools sox libsox-fmt-mp3 streamripper id3v2
 
+## Building Debian packages from source
 
---- Building Debian packages from source ---------------------------------------
+	cd /tmp
+	git clone https://github.com/micressor/fadecut
+	cd fadecut
+	git checkout debian
+	git archive --format=tar --prefix=fadecut-0.X.X/ 0.X.X | gzip > ../fadecut_0.X.X.orig.tar.gz
+	dpkg-buildpackage -us -uc
+	dpkg -i ../fadecut_*.deb
 
-  cd /tmp
-  git clone https://github.com/micressor/fadecut
-  cd fadecut
-  git checkout debian
-  git archive --format=tar --prefix=fadecut-0.X.X/ 0.X.X | gzip > ../fadecut_0.X.X.orig.tar.gz
-  dpkg-buildpackage -us -uc
-  dpkg -i ../fadecut_*.deb
+# Usage 
 
-
---- Usage ----------------------------------------------------------------------
 1. Create a profile file
-fadecut -c myradiostation
+	fadecut -c myradiostation
 
 Edit variables:
- STREAM_URL="http://streamurl"
- GENRE="Pop"
- COMMENT="Radio station comment"
- FADE_IN=1
- FADE_OUT=4
+> STREAM_URL="http://streamurl"
+> GENRE="Pop"
+> COMMENT="Radio station comment"
+> FADE_IN=1
+> FADE_OUT=4
 
 2. Let's stream, rip and automatically fade & cut now
-fadecut -p myradiostation -r
+	fadecut -p myradiostation -r
 
 3. man fadecut
 
---- More useful documentation --------------------------------------------------
+# More useful documentation
 
-You may find it at:
-
-  http://wiki.ubuntuusers.de/fadecut
+You may find it [here](http://wiki.ubuntuusers.de/fadecut]
