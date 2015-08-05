@@ -60,7 +60,7 @@ other Xiph.Org codecs including Theora, Speex and FLAC.
 
 ## A very cute reference sound
 
-* [Origin link not reachable](http://www.xiph.org/vorbis/listen.html (not reachable)
+* [Origin link not reachable](http://www.xiph.org/vorbis/listen.html) (not reachable)
 * [Sound 1](http://replay.waybackmachine.org/20090628120921/http://www.xiph.org/vorbis/listen.html)
 * [Sounds 2](http://replay.waybackmachine.org/20081004221732/http://www.xiph.org/vorbis/listen/41_30secOgg-b64M.wav)
 
