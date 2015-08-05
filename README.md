@@ -1,6 +1,4 @@
-# Overview
-
-## Synopsis
+# Overview / Synopsis
 
 toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
 
