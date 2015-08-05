@@ -30,7 +30,7 @@ We are following the coding styles of
 
 # Testframework
 
-## List of testfiles needed:
+## List of testfiles needed
 
 * cut correct - end 01.mp3
 * cut correct - begin 01.mp3
@@ -39,7 +39,7 @@ We are following the coding styles of
 * error - no tag title.mp3
 * error - no mp3 file.mp3
 
-## Tests:
+## Tests
 
 * outputfiles (cut correct\*.\*)
 * correct (check binary, length, size, tags)
