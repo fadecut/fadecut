@@ -80,9 +80,11 @@ Lame (mp3 encoding) is official not available in debian.
 # Usage 
 
 1. Create a profile file
+
 	fadecut -c myradiostation
 
 Edit variables:
+
 	STREAM_URL="http://streamurl"
 	GENRE="Pop"
 	COMMENT="Radio station comment"
@@ -90,6 +92,7 @@ Edit variables:
 	FADE_OUT=4
 
 2. Let's stream, rip and automatically fade & cut now
+
 	fadecut -p myradiostation -r
 
 3. man fadecut
