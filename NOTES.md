@@ -30,19 +30,20 @@ We are following the coding styles of
 
 # Testframework
 
-* list of testfiles needed:
+## List of testfiles needed:
 
-	[done] cut correct - end 01.mp3
-	[done] cut correct - begin 01.mp3
-	[done] cut correct - begin and end 01.mp3
-	[done] error - no tag artist.mp3
-	[done] error - no tag title.mp3
-	[done] error - no mp3 file.mp3
+* cut correct - end 01.mp3
+* cut correct - begin 01.mp3
+* cut correct - begin and end 01.mp3
+* error - no tag artist.mp3
+* error - no tag title.mp3
+* error - no mp3 file.mp3
 
-* Tests:
+## Tests:
 
-	outputfiles (cut correct*.*) correct (check binary, length, size, tags)
-	error handling when bad input files (error*.mp3) 
+* outputfiles (cut correct\*.\*)
+* correct (check binary, length, size, tags)
+* error handling when bad input files (error\*.mp3) 
 
 ## ID3
 
