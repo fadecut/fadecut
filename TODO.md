@@ -12,9 +12,12 @@
 
 ## How to handle filenames like this
 
-	Gloria Estefan - 1 - 2 - 3.mp3 / gloria_estefan_-_1_-_2_-_3.mp3
-	PLATINUM - SIGNALS(GAUDINO & ROONEY EDIT).mp3 / platinum_-_signals(gaudino_&_rooney_edit).mp3
-	(for example put an underscore before paranthesis)
+* Gloria Estefan - 1 - 2 - 3.mp3
+* gloria_estefan_-_1_-_2_-_3.mp3
+* PLATINUM - SIGNALS(GAUDINO & ROONEY EDIT).mp3
+* platinum_-_signals(gaudino_&_rooney_edit).mp3
+
+(for example put an underscore before paranthesis)
 
 ## check license of songs and document if needed in copyrights
 
