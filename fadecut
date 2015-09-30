@@ -523,7 +523,7 @@ FADE_OUT=4
 # TRIM_END=0" > "$PROFILEDIR/profiles/$NEW"
 logging -i "Starting $Editor editor"
 $Editor "$PROFILEDIR/profiles/$NEW"
-logging -i "Now start: fadecut -p $NEW [optional other options]"
+logging -i "Now start: fadecut -r -p $NEW [optional other options]"
 }
 
 edit_profile()
