@@ -38,11 +38,12 @@ Ret=$?
 # eval test results
 # Because we process files with no id tags, fadecut will return with exitcode 1
 # and that is that what we expect in this variation.
-if [ $Ret -eq 1 ]; then return 0 # if all ok, return with errorlevel 0
+if [ $Ret -eq 1 ];
+then
+  rm -rf $TestFolder/testdir/{error,new,orig}
+  return 0 # if all ok, return with errorlevel 0
 fi
-# ... todo ...
-# cleanup
-rm -rf error new orig *.mp3
+
 popd
 return 1
 }
