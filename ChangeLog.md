@@ -4,6 +4,7 @@
 - Fix wrong usage of $BIN_SOX
 - Fix wrong script usage of $BIN_ID3V2
 - Cleanup & fix test environment
+- Add autotesting for .opus encoding
 
 # fadecut 0.1.4
 

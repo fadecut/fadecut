@@ -49,7 +49,7 @@ return 1
 
 
 main "$1"
-if [ $? -ge 1 ]; then 
+if [ $? -ge 1 ]; then
   exit 1
 else
   exit 0
