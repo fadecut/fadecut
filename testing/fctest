@@ -18,23 +18,53 @@
 
 # --- Constants ---------------------------------------------------------------
 . ./config || exit 1
-# --- Main --------------------------------------------------------------------
-retMain=0
-set -o pipefail
 
-if [ -e ${LOCKFILE} ];
+# Functions
+
+function cleanup()
+{
+echo Cleanup...
+cd -
+
+if [ -d $HOME_FADECUT ] && [ -r /tmp/fadecut_${LOGNAME}.tar ];
 then
-  echo "${LOCKFILE}: exists already"
-  exit 1
+  rm -rf ${HOME_FADECUT}
+  cd /
+  echo "Restoring home"
+  tar xf /tmp/fadecut_${LOGNAME}.tar || retMain=3
+fi
+rm $LOCKFILE
+echo "returnvaule=${retMain}"
+exit ${retMain}
+}
+
+trap cleanup SIGHUP SIGINT SIGTERM
+
+function prepare()
+{
+
+touch ${LOCKFILE} || exit 3
+
+if [ -d $HOME_FADECUT ];
+then					# if there is already an existing
+  if tar cf /tmp/fadecut_${LOGNAME}.tar ${HOME_FADECUT};
+  then
+    rm -rf ${HOME_FADECUT}
+    echo "Home backed up and removed"
+  else
+    return 3
+  fi
+else
+  echo "no fadecut homedir, nothing to safe"
+  return 3
 fi
 
-./prepare.sh
-if [ $? -ge 1 ]; then
-  echo "error while preparing test environment"
-  exit 1
-fi
 mkdir ${HOME_FADECUT}
+return 0
+} # prepare
 
+function loop()
+{
 # loop ./recipts/*
 cd ${RECIPES}
 for Recipe in *.sh
@@ -49,13 +79,19 @@ do
     echo "$Recipe: Sucess!"
   fi
 done
-cd -
-./cleanup.sh
-if [ $? -ge 1 ]; then
-  echo "error while cleaning up test environment"
+}
+
+# Main
+
+retMain=0
+set -o pipefail
+
+if [ -e ${LOCKFILE} ];
+then
+  echo "${LOCKFILE}: exists already"
   exit 1
 fi
-echo "returnvaule=${retMain}"
-exit ${retMain}
 
-
+prepare
+loop
+cleanup

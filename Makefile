@@ -19,4 +19,4 @@
 test:
 	cd testing && ./fctest
 clean:
-	cd testing && ./cleanup.sh
+	cd testing && ./fctest
