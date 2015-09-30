@@ -2,7 +2,7 @@ Source: fadecut
 Section: sound
 Priority: extra
 Maintainer: Marco Balmer <marco@balmer.name>
-Build-Depends: debhelper (>= 9), vorbis-tools, lame, sox, libsox-fmt-mp3, streamripper, id3v2
+Build-Depends: debhelper (>= 9), vorbis-tools, opus-tools, lame, sox, libsox-fmt-mp3, streamripper, id3v2
 Standards-Version: 3.9.5
 Homepage: http://github.com/micressor/fadecut
 Vcs-Git: git://github.com/micressor/fadecut.git
@@ -10,7 +10,7 @@ Vcs-Browser: https://github.com/micressor/fadecut/tree/debian
 
 Package: fadecut
 Architecture: all
-Depends: ${misc:Depends}, vorbis-tools|lame, sox, libsox-fmt-mp3, streamripper, bash (>=3.2-4), id3v2
+Depends: ${misc:Depends}, opus-tools, vorbis-tools|lame, sox, libsox-fmt-mp3, streamripper, bash (>=3.2-4), id3v2
 Description: toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
  fadecut is a script to rip audio files from a livestream and to process them
  automatically. Beginning and ending fo the audio files will be cut and faded
