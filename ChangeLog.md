@@ -1,3 +1,9 @@
+# fadecut 0.1.5-BETA
+
+- Add support for .opus encoding
+- Fix wrong usage of $BIN_SOX
+- Fix wrong script usage of $BIN_ID3V2
+
 # fadecut 0.1.4
 
 -   Merged pull request from https://github.com/TobleMiner Added custom

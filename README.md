@@ -46,6 +46,8 @@ werden dann ebenfalls nicht mehr weiter verarbeitet.
 
 * streamripper - download online streams into audio files
 
+* opus-tools - several Opus tools
+
 * vorbis-tools - several Ogg Vorbis tools
 
 optional, for mp3 encoding:
@@ -55,7 +57,7 @@ optional, for mp3 encoding:
 # Ubuntu
 
 	apt-get install bash coreutils findutils nice sed sox libsox-fmt-mp3 \
-	  streamripper vorbis-tools id3v2
+	  streamripper opus-tools vorbis-tools id3v2
 
 for mp3 encoding:
 
@@ -65,7 +67,7 @@ for mp3 encoding:
 
 Lame (mp3 encoding) is official not available in debian.
 
-	apt-get vorbis-tools sox libsox-fmt-mp3 streamripper id3v2
+	apt-get opus-tools vorbis-tools sox libsox-fmt-mp3 streamripper id3v2
 
 ## Building Debian packages from source
 
