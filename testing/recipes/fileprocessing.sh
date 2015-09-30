@@ -42,7 +42,7 @@ if [ $Ret -eq 1 ]; then return 0 # if all ok, return with errorlevel 0
 fi
 # ... todo ...
 # cleanup
-rm -rf error new orig
+rm -rf error new orig *.mp3
 popd
 return 1
 }
