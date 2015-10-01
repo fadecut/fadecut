@@ -16,7 +16,37 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-test:
-	cd testing && ./fctest
+TESTDIR=testing
+TMPDIR=/tmp
+HOME_FADECUT=${HOME}/.fadecut
+
+all:
+	@echo fadecut is a bash script. There is nothing to build.
+
+test: prepare
+	if [ -d "$(TESTDIR)" ]; then \
+	  cd $(TESTDIR); \
+	  ./fctest; \
+	fi
+
 clean:
-	cd testing && ./fctest
+	find $(TESTDIR)/testdir/ -name "*.mp3" -delete
+	find $(TESTDIR)/testdir/ -name "*.ogg" -delete
+	find $(TESTDIR)/testdir/ -name "*.opus" -delete
+
+	if [ -f "$(TMPDIR)/fadecut_${LOGNAME}.tar" ]; then \
+	  cd /; \
+	  tar xfv $(TMPDIR)/fadecut_${LOGNAME}.tar; \
+	  rm $(TMPDIR)/fadecut_${LOGNAME}.tar; \
+	  echo fadecut-home is restored; \
+	fi
+
+prepare:
+	if [ -d "$(HOME_FADECUT)" ]; \
+	then \
+	  if tar cfv $(TMPDIR)/fadecut_${LOGNAME}.tar $(HOME_FADECUT); \
+	  then \
+	    rm -rf $(HOME_FADECUT); \
+	    echo Auto-testing is prepared; \
+	  fi \
+	fi

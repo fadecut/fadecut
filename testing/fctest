@@ -21,49 +21,9 @@
 
 # Functions
 
-function cleanup()
-{
-echo Cleanup...
-cd -
-
-if [ -d $HOME_FADECUT ] && [ -r /tmp/fadecut_${LOGNAME}.tar ];
-then
-  rm -rf ${HOME_FADECUT}
-  cd /
-  echo "Restoring home"
-  tar xf /tmp/fadecut_${LOGNAME}.tar || retMain=3
-fi
-rm $LOCKFILE
-echo "returnvaule=${retMain}"
-exit ${retMain}
-}
-
 trap cleanup SIGHUP SIGINT SIGTERM
 
-function prepare()
-{
-
-touch ${LOCKFILE} || exit 3
-
-if [ -d $HOME_FADECUT ];
-then					# if there is already an existing
-  if tar cf /tmp/fadecut_${LOGNAME}.tar ${HOME_FADECUT};
-  then
-    rm -rf ${HOME_FADECUT}
-    echo "Home backed up and removed"
-  else
-    return 3
-  fi
-else
-  echo "no fadecut homedir, nothing to safe"
-  return 3
-fi
-
-mkdir ${HOME_FADECUT}
-return 0
-} # prepare
-
-function loop()
+function main()
 {
 # loop ./recipts/*
 cd ${RECIPES}
@@ -82,16 +42,5 @@ done
 }
 
 # Main
-
-retMain=0
 set -o pipefail
-
-if [ -e ${LOCKFILE} ];
-then
-  echo "${LOCKFILE}: exists already"
-  exit 1
-fi
-
-prepare
-loop
-cleanup
+main
