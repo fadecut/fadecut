@@ -18,10 +18,12 @@
 
 TESTDIR=testing
 TMPDIR=/tmp
+MANDIR=man
 HOME_FADECUT=${HOME}/.fadecut
 
 all:
-	@echo fadecut is a bash script. There is nothing to build.
+	@echo Building manpage from fadecut.1.md
+	pandoc -s -t man $(MANDIR)/fadecut.1.md -o $(MANDIR)/fadecut.1
 
 test: prepare
 	if [ -d "$(TESTDIR)" ]; then \
@@ -39,6 +41,11 @@ clean:
 	  tar xfv $(TMPDIR)/fadecut_${LOGNAME}.tar; \
 	  rm $(TMPDIR)/fadecut_${LOGNAME}.tar; \
 	  echo fadecut-home is restored; \
+	fi
+
+	if [ -f "$(MANDIR)/fadecut.1" ]; then \
+	  echo remove $(MANDIR)/fadecut.1; \
+	  rm $(MANDIR)/fadecut.1; \
 	fi
 
 prepare:
