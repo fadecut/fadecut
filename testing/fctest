@@ -21,7 +21,7 @@
 
 # Functions
 
-trap cleanup SIGHUP SIGINT SIGTERM
+trap "echo Aborting!; exit 1" SIGHUP SIGINT SIGTERM
 
 function main()
 {
