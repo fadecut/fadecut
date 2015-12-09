@@ -365,7 +365,7 @@ do
     logging -n "no files to process, idle for $IdleSeconds seconds"
     if [ $STREAMRIPPER_START == "0" ];
     then 
-      shutdown_fadecut ${PostExit}
+      shutdown_fadecut $PostExit
     else
       if [ $IdleSeconds -ge $RESTART_STREAMRIPPER_INTERVAL ];
       then

@@ -1,6 +1,5 @@
 # TODO's for release 0.2.0
 
-* Change ${vars} to $vars
 * Testframework:
 	* Take testing upstream code directly from git,
 	* add more tests.
