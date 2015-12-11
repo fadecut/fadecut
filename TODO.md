@@ -1,28 +1,8 @@
 # TODO's for release 0.2.0
 
-* Change ${vars} to $vars
-* Testframework:
-	* Take testing upstream code directly from git,
-	* add more tests.
-	* Testframework executed by dpkg-buildpackage.
-* stats, processed songs per hour
-* logging(): no warning output's, if no -v (verbose) is selected
-* complete fileprocessing test in testframework
-* how to handle case of tags? camel, higher or lowercase? decide and code it
-
-## How to handle filenames like this
-
-* Gloria Estefan - 1 - 2 - 3.mp3
-* gloria_estefan_-_1_-_2_-_3.mp3
-* PLATINUM - SIGNALS(GAUDINO & ROONEY EDIT).mp3
-* platinum_-_signals(gaudino_&_rooney_edit).mp3
-
-(for example put an underscore before paranthesis)
-
 ## check license of songs and document if needed in copyrights
 
 Here you have:
-
 	apt-get install yofrankie
 	/usr/share/yofrankie-bge/audio
 	we took:
@@ -38,8 +18,6 @@ Here you have:
 
 # Later
 
-* change to getopt(1) to be able to parse --long-options
-* add bpm tags (use of debian packet bpm-tools)
 * cross correlation with well known ad files
 * maybe we could use ffmpeg instead of sox/lame 
 * wishlist: put a file in $fadecuthome with a list of artist/titles
@@ -59,7 +37,7 @@ Here you have:
 	error -6 [SR_ERROR_CANT_RESOLVE_HOSTNAME]
 	bye..
 	shutting down
-* find tag on which we write something like 'prcoessed by fadecut vx.y.z' incl date, version, time, encoder and its version, streamripper and version
+* find tag on which we write something like 'processed by fadecut vx.y.z' incl date, version, time, encoder and its version, streamripper and version
 * define constant with version of fadecut
 * lyrics in tags
 * song/album title

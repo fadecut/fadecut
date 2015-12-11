@@ -1,4 +1,4 @@
-# fadecut 0.1.5-BETA
+# fadecut 0.1.5-UNRELEASED
 
 - Add support for .opus encoding
 - Fix wrong usage of $BIN_SOX
