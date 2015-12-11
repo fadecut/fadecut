@@ -30,7 +30,7 @@ all:
 	@echo Building manpage from fadecut.1.md
 	pandoc -s -t man man/fadecut.1.md -o man/fadecut.1
 
-test: prepare
+test:
 	if [ -d "$(TESTINGDIR)" ]; then \
 	  cd $(TESTINGDIR); \
 	  ./fctest; \
@@ -41,27 +41,9 @@ clean:
 	find $(TESTINGDIR)/testdir/ -name "*.ogg" -delete
 	find $(TESTINGDIR)/testdir/ -name "*.opus" -delete
 
-	if [ -f "$(TMPDIR)/fadecut_${LOGNAME}.tar" ]; then \
-	  cd /; \
-	  tar xfv $(TMPDIR)/fadecut_${LOGNAME}.tar; \
-	  rm $(TMPDIR)/fadecut_${LOGNAME}.tar; \
-	  echo fadecut-home is restored; \
-	fi
-
 	if [ -f "man/fadecut.1" ]; then \
 	  echo remove man/fadecut.1; \
 	  rm man/fadecut.1; \
-	fi
-
-prepare:
-	mkdir -p $(TMPDIR)
-	if [ -d "$(HOME_FADECUT)" ]; \
-	then \
-	  if tar cfv $(TMPDIR)/fadecut_${LOGNAME}.tar $(HOME_FADECUT); \
-	  then \
-	    rm -rf $(HOME_FADECUT); \
-	    echo Auto-testing is prepared; \
-	  fi \
 	fi
 
 install-bin:
