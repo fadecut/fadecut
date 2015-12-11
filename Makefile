@@ -16,30 +16,25 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-PN		= fadecut
-
-PREFIX		?= /usr
-BINDIR		= $(PREFIX)/bin
-DOCDIR		= $(PREFIX)/share/doc/$(PN)
-MAN1DIR		= $(PREFIX)/share/man/man1
-TESTINGDIR	= testing
-TMPDIR		= tmp
-HOME_FADECUT	= ${HOME}/.fadecut
+TESTDIR=testing
+TMPDIR=/tmp
+MANDIR=man
+HOME_FADECUT=${HOME}/.fadecut
 
 all:
 	@echo Building manpage from fadecut.1.md
-	pandoc -s -t man man/fadecut.1.md -o man/fadecut.1
+	pandoc -s -t man $(MANDIR)/fadecut.1.md -o $(MANDIR)/fadecut.1
 
 test: prepare
-	if [ -d "$(TESTINGDIR)" ]; then \
-	  cd $(TESTINGDIR); \
+	if [ -d "$(TESTDIR)" ]; then \
+	  cd $(TESTDIR); \
 	  ./fctest; \
 	fi
 
 clean:
-	find $(TESTINGDIR)/testdir/ -name "*.mp3" -delete
-	find $(TESTINGDIR)/testdir/ -name "*.ogg" -delete
-	find $(TESTINGDIR)/testdir/ -name "*.opus" -delete
+	find $(TESTDIR)/testdir/ -name "*.mp3" -delete
+	find $(TESTDIR)/testdir/ -name "*.ogg" -delete
+	find $(TESTDIR)/testdir/ -name "*.opus" -delete
 
 	if [ -f "$(TMPDIR)/fadecut_${LOGNAME}.tar" ]; then \
 	  cd /; \
@@ -48,13 +43,12 @@ clean:
 	  echo fadecut-home is restored; \
 	fi
 
-	if [ -f "man/fadecut.1" ]; then \
-	  echo remove man/fadecut.1; \
-	  rm man/fadecut.1; \
+	if [ -f "$(MANDIR)/fadecut.1" ]; then \
+	  echo remove $(MANDIR)/fadecut.1; \
+	  rm $(MANDIR)/fadecut.1; \
 	fi
 
 prepare:
-	mkdir -p $(TMPDIR)
 	if [ -d "$(HOME_FADECUT)" ]; \
 	then \
 	  if tar cfv $(TMPDIR)/fadecut_${LOGNAME}.tar $(HOME_FADECUT); \
@@ -63,22 +57,3 @@ prepare:
 	    echo Auto-testing is prepared; \
 	  fi \
 	fi
-
-install-bin:
-	@echo 'installing main script...'
-	install -Dm755 $(PN) "$(DESTDIR)$(BINDIR)/$(PN)"
-
-install-man:
-	@echo 'installing manpages...'
-	install -Dm644 man/$(PN).1 "$(DESTDIR)$(MAN1DIR)/$(PN).1"
-
-install-doc:
-	@echo 'installing documentation...'
-	install -Dm644 README.md "$(DESTDIR)$(DOCDIR)/README.md"
-	install -Dm644 NOTES.md "$(DESTDIR)$(DOCDIR)/NOTES.md"
-	install -Dm644 TODO.md "$(DESTDIR)$(DOCDIR)/TODO.md"
-	gzip -9 "$(DESTDIR)$(DOCDIR)/README.md"
-	gzip -9 "$(DESTDIR)$(DOCDIR)/NOTES.md"
-	gzip -9 "$(DESTDIR)$(DOCDIR)/TODO.md"
-
-install: all install-bin install-man install-doc
