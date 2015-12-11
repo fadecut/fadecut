@@ -23,16 +23,17 @@ TestFolder="$1"
 cd "$TestFolder"/testdir
 cp "$TestFolder"/testfiles/test_source/*.mp3 .
 mkdir -p "$HOME_FADECUT"/profiles/
-echo \
-"STREAM_URL=\"http://fctest_fileproc_opus\"
-ENCODING=\"opus\"
-GENRE=\"fadecut testgenre\"
-COMMENT=\"fadecut test fileprocessing opus\"
+cat << EOF >${HOME_FADECUT}/profiles/fctest_fileproc_opus
+STREAM_URL="http://fctest_fileproc_opus"
+ENCODING="opus"
+GENRE="fadecut testgenre"
+COMMENT="fadecut test fileprocessing opus"
 # all values in seconds:
 FADE_IN=1
 FADE_OUT=4
 TRIM_BEGIN=0
-TRIM_END=0" > "$HOME_FADECUT"/profiles/fctest_fileproc_opus
+TRIM_END=0
+EOF
 # start test
 $BIN_FADECUT -p fctest_fileproc_opus
 Ret=$?
@@ -42,6 +43,7 @@ Ret=$?
 if [ $Ret -eq 1 ];
 then
   rm -rf $TestFolder/testdir/{error,new,orig}
+  rm ${HOME_FADECUT}/profiles/fctest_fileproc_opus
   return 0 # if all ok, return with errorlevel 0
 fi
 
