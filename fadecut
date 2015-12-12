@@ -107,16 +107,17 @@ cat << EOF
 usage: $0 -p <profilename> [other options]
 
 OPTIONS:
-  -p    Profile <profilename>
-  -r    Stream (and rip), start streamripper
   -c    create profile <profilename>
-  -e    edit profile <profilename>
-  -i    optional input directory
-  -o    optional output directory
-  -k    keep original file
   -d    Debug: -d 0|1|2|3 (level 0 is standard, -d without number is like 1)
+  -e    edit profile <profilename>
   -h	Show this message
+  -i    optional input directory
+  -k    keep original file
+  -l    list all existing profiles
+  -o    optional output directory
+  -p    Profile <profilename>
   -q	Quiet
+  -r    Stream (and rip), start streamripper
   -v	Verbose
 
 EOF
@@ -464,6 +465,32 @@ do
 done
 cd "$PWD"
 }
+
+list_profiles()
+#
+# Description:  list all existing profiles
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
+{
+
+if ls -1 $PROFILEDIR/profiles/* >/dev/null 2>&1
+then
+  for F in $PROFILEDIR/profiles/*
+  do
+    echo "$(basename $F)	$(grep GENRE $F)	$(grep URL $F)"
+  done
+else
+  logging -e "no profiles found in $PROFILEDIR"
+  logging -e "create your first profile with 'fadecut -e first-profile'"
+fi
+
+return 0
+
+}
+
 
 load_profile()
 #
@@ -930,7 +957,7 @@ trap control_c SIGINT
 #
 # please keep letters in alphabetic order
 #
-while getopts ":c:d:e:hi:ko:p:qrv" OPTION
+while getopts ":c:d:e:hi:klo:p:qrv" OPTION
 do
   case $OPTION in
     c)
@@ -959,6 +986,10 @@ do
       ;;
     k)
       KEEPORIG=1				# keep original files
+      ;;
+    l)
+      list_profiles
+      exit 0
       ;;
     o)
       OUTPUTDIR=$OPTARG
