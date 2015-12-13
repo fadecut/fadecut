@@ -52,6 +52,8 @@ your profile or fadecutrc
 
 -e Edit an existing profile <profilename>
 
+-l list all existing profiles
+
 -i optional input <directory>
 
 -o optional output <directory>
