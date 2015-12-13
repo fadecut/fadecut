@@ -62,7 +62,7 @@ VERBOSE=0					# verbosity level
 LOOP_INTERVAL=10				# loop interval in seconds
 RESTART_STREAMRIPPER_INTERVAL=900		# restart interval streamripper
 STREAMRIPPER_START=0 				# start streamripper [0/1]
-USER_AGENT="Streamripper/1.x"		# streamripper useragent
+USER_AGENT="Streamripper/1.x"			# streamripper useragent
 STREAMRIPPER_OPTS="-o always -T"		# streamripper options
 
 E_NOARGS=65					# standard errorlevel definition
@@ -215,7 +215,7 @@ then
   $BIN_STREAMRIPPER $STREAM_URL -d . \
                       --codeset-filesys=utf8 \
                       --codeset-id3=ISO-8859-1 \
-					  -u $USER_AGENT \
+                      -u $USER_AGENT \
                       -s $STREAMRIPPER_OPTS \
                       > $LOGDIR/fadecutstream-$PID.log 2>&1 & 
   PidStreamripper=$!
@@ -291,7 +291,7 @@ case $ExitCode in
 	  logging -w "Fadecut stopped partionally unsuccuessfull"
 	;;
 esac
-logging -a "Returnvalue=$ExitCode"
+logging -d "Returnvalue=$ExitCode"
 
 exit $ExitCode
 }
@@ -1053,10 +1053,17 @@ do
   # if streamripper is working then show info about it
   if [ $STREAMRIPPER_START == "1" ] && [ -f $LOGDIR/fadecutstream-$PID.log ];
   then
-    StreamInfo=$(tail -1 $LOGDIR/fadecutstream-$PID.log | sed -e 's/^M/\n/g' | tail -1 | sed -e 's/ \[.*$//g')
-    if [ "$StreamInfo" != "$StreamInfo2" ] ; then
-      logging -r "$StreamInfo"
-      StreamInfo2="$StreamInfo"
+    StreamStatus=$(tail $LOGDIR/fadecutstream-$PID.log | grep error)
+    if [ -z "$StreamStatus" ] ; then
+      StreamInfo=$(tail -1 $LOGDIR/fadecutstream-$PID.log | sed -e 's/^M/\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+      if [ "$StreamInfo" != "$StreamInfo2" ] ; then
+        logging -r "$StreamInfo"
+        StreamInfo2="$StreamInfo"
+      fi
+    else
+      logging -e "Streamripper exited with $StreamStatus"
+      rm $LOGDIR/fadecutstream-$PID.log
+      exit 1
     fi
   fi
   sleep $LOOP_INTERVAL
