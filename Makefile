@@ -23,7 +23,6 @@ BINDIR		= $(PREFIX)/bin
 DOCDIR		= $(PREFIX)/share/doc/$(PN)
 MAN1DIR		= $(PREFIX)/share/man/man1
 TESTINGDIR	= testing
-TMPDIR		= tmp
 HOME_FADECUT	= ${HOME}/.fadecut
 
 all:
