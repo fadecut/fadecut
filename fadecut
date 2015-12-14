@@ -877,6 +877,8 @@ if [ -z $BIN_SOX ]; then RequirementsMsg=sox
 fi
 if [ -z $BIN_ID3V2 ]; then RequirementsMsg=id3v2
 fi
+if [ -z $BIN_MEDIAINFO ]; then RequirementsMsg=mediainfo
+fi
 
 if [ "$ENCODING" == "ogg" ];
 then
