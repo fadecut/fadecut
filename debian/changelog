@@ -1,12 +1,13 @@
-fadecut (0.1.5-1) UNRELEASED; urgency=low
+fadecut (0.1.5-2) UNRELEASED; urgency=low
 
   * New 0.1.5 upstream release
   * Standards bumped to 3.9.6
   * Add pandoc to build-depends
   * Add opus-tools to depends
   * Add gzip to build-depends
+  * Add mediainfo to depends
 
- -- Marco Balmer <marco@balmer.name>  Fri, 11 Dec 2015 08:51:33 +0100
+ -- Marco Balmer <marco@balmer.name>  Mon, 14 Dec 2015 07:33:20 +0100
 
 fadecut (0.1.4-1) unstable; urgency=low
 
