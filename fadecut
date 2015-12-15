@@ -396,6 +396,10 @@ do
   ARTIST=`$BIN_ID3V2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`$BIN_ID3V2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
 
+  if [ "$KEEPORIG" -eq "1" ]; then
+    copy_file "$F" "$ORIGDIR"
+  fi
+
   # do some checks, check if file already exists and set status
   # status will be written to statslog
   # depending on status the processing will continue or will skipped to next file
@@ -420,17 +424,12 @@ do
     Fstatus="dontlike"
   fi
   
+  # Processing part of loop_fadecut()
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus" "$Fnew"
 
   # skip processing of current file if it is "double" or "don't like"
   if [[ $Fstatus != "processing" ]] ; then
     continue
-  fi
-
-  # Processing part of loop_fadecut()
-
-  if [ "$KEEPORIG" -eq "1" ]; then
-    copy_file "$F" "$ORIGDIR"
   fi
 
   splitting "$F" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
