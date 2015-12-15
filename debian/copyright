@@ -2,7 +2,7 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: fadecut
 Upstream-Contact: Marco Balmer <marco@balmer.name>
  Martin Gafner <martin@gafner.name>
-Source: git://github.com/micressor/fadecut.git
+Source: https://github.com/fadecut/fadecut.git
 
 Files: *
 Copyright: 2011 Martin Gafner
