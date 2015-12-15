@@ -18,7 +18,7 @@
 	cd ~/
 	git clone https://github.com/fadecut/fadecut.git
 
-## Greate tar archive from source
+## Create tar archive from source
 
 	cd fadecut
 	git checkout debian
