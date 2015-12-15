@@ -65,7 +65,8 @@ other Xiph.Org codecs including Theora, Speex and FLAC.
 * [Sounds 2](http://replay.waybackmachine.org/20081004221732/http://www.xiph.org/vorbis/listen/41_30secOgg-b64M.wav)
 
 ### This file is part of fadecut 
-https://github.com/micressor/fadecut                                            
+
+https://github.com/fadecut/fadecut
                                                                                 
 fadecut is free software: you can redistribute it and/or modify                 
 it under the terms of the GNU General Public License as published by            

@@ -1,8 +1,8 @@
-# Overview / Synopsis
+# Introduction
 
 toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
 
-## long description (english)
+## English
 
 fadecut is a script to rip audio files from a livestream and to process them 
 automatically. Beginning and ending fo the audio files will be cut and faded 
@@ -19,7 +19,7 @@ An audio file which has already been processed is detected and will not be
 processed again. Not desired songs can be stored in a separate directory. This 
 files are not processed anymore too.
 
-## long description (german)
+## German
 
 Mit fadecut können Audio Dateien aus einem Livestream gerippt und automatisch 
 verarbeitet werden. Anfang und Ende der Audiofiles werden geschnitten sowie ein-
@@ -36,7 +36,9 @@ Ein bereits verarbeiteter Song wird erkannt und nicht neu verarbeitet. Nicht
 erwünschte Songs können in einem separaten Verzeichnis abgelegt werden. Diese 
 werden dann ebenfalls nicht mehr weiter verarbeitet.
 
-# Requirements
+# Installation
+
+## Prerequisites
 
 * bash - The GNU Bourne Again SHell
 
@@ -54,20 +56,26 @@ optional, for mp3 encoding:
 
 * lame, An MP3 encoding library (frontend)
 
-# Ubuntu
+## Instructions
 
-	apt-get install bash coreutils findutils nice sed sox libsox-fmt-mp3 \
-	  streamripper opus-tools vorbis-tools id3v2
+### Ubuntu
 
-for mp3 encoding:
+	apt-get install fadecut
 
-	apt-get install lame
+### Debian
 
-# Debian
+	apt-get install fadecut
 
-Have a look at [README.Debian.md](https://github.com/fadecut/fadecut/blob/master/README.Debian.md).
+### From source
 
-# Usage 
+	cd ~/
+	git clone https://github.com/fadecut/fadecut.git
+	cd fadecut
+	sudo make install
+
+Have a look at [README.Debian.md](https://github.com/fadecut/fadecut/blob/master/README.Debian.md) for building debian packages.
+
+## Usage
 
 Create a profile file
 
@@ -87,25 +95,12 @@ Let's stream, rip and automatically fade & cut now
 
 	man fadecut
 
-# Useful links
+## Useful links
 
 * Fadecut at [ubuntuusers.de](http://wiki.ubuntuusers.de/fadecut)
-* [Notes.md](https://github.com/micressor/fadecut/blob/master/NOTES.md)
-* [TODO list](https://github.com/micressor/fadecut/blob/master/TODO.md)
+* [Notes.md](https://github.com/fadecut/fadecut/blob/master/NOTES.md)
+* [TODO list](https://github.com/fadecut/fadecut/blob/master/TODO.md)
 
-### This file is part of fadecut
+# License
 
-https://github.com/micressor/fadecut
-
-fadecut is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-fadecut is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
+fadecut is free software, available under the [GNU General Public License, Version 3](http://www.gnu.org/licenses/gpl.html).
