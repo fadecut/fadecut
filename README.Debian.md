@@ -31,5 +31,5 @@
 
 ## Build debian package
 
-	debuild -us -uc
+	debuild -us -uc --lintian-opts -i -v -I --pedantic
 	dpkg -i ../fadecut_*.deb
