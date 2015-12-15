@@ -65,19 +65,7 @@ for mp3 encoding:
 
 # Debian
 
-Lame (mp3 encoding) is official not available in debian.
-
-	apt-get opus-tools vorbis-tools sox libsox-fmt-mp3 streamripper id3v2
-
-## Building Debian packages from source
-
-	cd /tmp
-	git clone https://github.com/micressor/fadecut
-	cd fadecut
-	git checkout debian
-	git archive --format=tar --prefix=fadecut-0.X.X/ 0.X.X | gzip > ../fadecut_0.X.X.orig.tar.gz
-	dpkg-buildpackage -us -uc
-	dpkg -i ../fadecut_*.deb
+Have a look at [README.Debian.md](https://github.com/fadecut/fadecut/blob/master/README.Debian.md).
 
 # Usage 
 
