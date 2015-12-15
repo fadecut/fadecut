@@ -54,18 +54,24 @@ optional, for mp3 encoding:
 
 * lame, An MP3 encoding library (frontend)
 
-# Ubuntu
+# Install
 
-	apt-get install bash coreutils findutils nice sed sox libsox-fmt-mp3 \
-	  streamripper opus-tools vorbis-tools id3v2
+## Ubuntu
 
-for mp3 encoding:
+	apt-get install fadecut
 
-	apt-get install lame
+## Debian
 
-# Debian
+	apt-get install fadecut
 
-Have a look at [README.Debian.md](https://github.com/fadecut/fadecut/blob/master/README.Debian.md).
+## From source
+
+	cd ~/
+	git clone https://github.com/fadecut/fadecut.git
+	cd fadecut
+	sudo make install
+
+Have a look at [README.Debian.md](https://github.com/fadecut/fadecut/blob/master/README.Debian.md) for building debian packages.
 
 # Usage 
 
@@ -95,7 +101,7 @@ Let's stream, rip and automatically fade & cut now
 
 ### This file is part of fadecut
 
-https://github.com/micressor/fadecut
+https://github.com/fadecut
 
 fadecut is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
