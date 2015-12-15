@@ -989,7 +989,7 @@ do
       exit 1
       ;;
     i)
-      WORKDIR=$OPTARG
+      WORKDIR=$(readlink -f $OPTARG)
       if [ ! -d "$WORKDIR" ];
       then
         logging -e "$WORKDIR: Input directory does not exist"
@@ -1005,7 +1005,7 @@ do
       exit 0
       ;;
     o)
-      OUTPUTDIR=$OPTARG
+      OUTPUTDIR=$(readlink -f $OPTARG)
       if [ ! -d "$OUTPUTDIR" ];
       then
         logging -e "$OUTPUTDIR: Output directory does not exist"
