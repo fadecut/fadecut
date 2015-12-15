@@ -146,5 +146,5 @@ with every start of fadecut.
 
 # RESOURCES
 
-fadecut git website: https://github.com/micressor/fadecut
+fadecut git website: https://github.com/fadecut/fadecut
 
