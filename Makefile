@@ -58,8 +58,8 @@ install-doc:
 	install -Dm644 README.md "$(DESTDIR)$(DOCDIR)/README.md"
 	install -Dm644 NOTES.md "$(DESTDIR)$(DOCDIR)/NOTES.md"
 	install -Dm644 TODO.md "$(DESTDIR)$(DOCDIR)/TODO.md"
-	gzip -9 "$(DESTDIR)$(DOCDIR)/README.md"
-	gzip -9 "$(DESTDIR)$(DOCDIR)/NOTES.md"
-	gzip -9 "$(DESTDIR)$(DOCDIR)/TODO.md"
+	gzip -n9 "$(DESTDIR)$(DOCDIR)/README.md"
+	gzip -n9 "$(DESTDIR)$(DOCDIR)/NOTES.md"
+	gzip -n9 "$(DESTDIR)$(DOCDIR)/TODO.md"
 
 install: all install-bin install-man install-doc
