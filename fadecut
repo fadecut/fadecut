@@ -281,7 +281,7 @@ fi
 logging -n "Shutting down fadecut..."
 ExitCode=$1
 shutdown_streamripper
-showStats
+
 if [ -f "$LOGDIR/fadecutstream-$PID.log" ] ; then
   rm $LOGDIR/fadecutstream-$PID.log
 fi
