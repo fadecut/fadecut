@@ -1,4 +1,4 @@
-# How to build a fadecut debian package
+# How to build fadecut for debian
 
 ## Prepare build environment
 
@@ -13,14 +13,14 @@
 	export DEBEMAIL DEBFULLNAME
 	EOF
 
-## Get source from github
+## Get fadecut source from github
 
 	cd ~/
 	git clone https://github.com/fadecut/fadecut.git
+	cd fadecut
 
 ## Build an upstream release
 
-	cd fadecut
 	git checkout debian
 	git archive --format=tar --prefix=fadecut-0.1.5/ master | gzip > ../fadecut_0.1.5.orig.tar.gz
 	debuild -us -uc --lintian-opts -i -v -I --pedantic
@@ -33,11 +33,10 @@ If you get this error, please install depending packages:
 
 ## Build a prior release
 
-	cd fadecut
 	git checkout debian/0.1.4-1
 	git archive --format=tar --prefix=fadecut-0.1.4/ 0.1.4 | gzip > ../fadecut_0.1.4.orig.tar.gz
 	debuild -us -uc --lintian-opts -i -v -I --pedantic
 
-## install new fadecut package
+## Install new fadecut package
 
 	dpkg -i ../fadecut_*.deb
