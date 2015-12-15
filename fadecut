@@ -708,7 +708,7 @@ if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 Fsrc="$*"
-Bitrate=$($BIN_MEDIAINFO | grep 'Bit rate   ' | awk '{ print $4 }')
+Bitrate=$($BIN_MEDIAINFO "$Fsrc" | grep 'Bit rate   ' | awk '{ print $4 }')
 if [ -z "$Bitrate" ] ; then
   Bitrate=128
 fi
@@ -778,7 +778,7 @@ if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 Fsrc="$*"
-Bitrate=$($BIN_MEDIAINFO | grep 'Bit rate   ' | awk '{ print $4 }')
+Bitrate=$($BIN_MEDIAINFO "$Fsrc" | grep 'Bit rate   ' | awk '{ print $4 }')
 if [ -z "$Bitrate" ] ; then
   Bitrate=128
 fi
