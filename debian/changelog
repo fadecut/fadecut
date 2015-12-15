@@ -5,7 +5,7 @@ fadecut (0.1.5-4) UNRELEASED; urgency=low
   * Add pandoc to build-depends
   * Add opus-tools to depends
   * Add gzip to build-depends
-  * Add mediainfo to depends
+  * Add mediainfo to depends and build-depends
   * Change watch-file url
   * Replace with new github url
 
