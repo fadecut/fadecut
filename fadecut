@@ -1077,6 +1077,6 @@ do
       rm $LOGDIR/fadecutstream-$PID.log
       exit 1
     fi
-  fi
   sleep $LOOP_INTERVAL
+  fi
 done
