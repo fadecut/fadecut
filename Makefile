@@ -30,10 +30,11 @@ all:
 	pandoc -s -t man man/fadecut.1.md -o man/fadecut.1
 
 test:
-	if [ -d "$(TESTINGDIR)" ]; then \
-	  cd $(TESTINGDIR); \
-	  ./fctest; \
-	fi
+	for Recipe in $(TESTINGDIR)/recipes/*.sh; do \
+	  echo Testing $$Recipe; \
+	  ./$$Recipe `pwd` || exit $?; \
+	done
+	@echo All checks successfully done!
 
 clean:
 	find $(TESTINGDIR)/testdir/ -name "*.mp3" -delete

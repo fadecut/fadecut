@@ -121,7 +121,16 @@ OPTIONS:
   -r    Stream (and rip), start streamripper
   -v	Verbose
 
-example: $(basename $0) -p swisspop -r
+examples:
+
+  if you want to rip audio from a radio station:
+  $(basename $0) -p swisspop -r
+
+  if you just want to process some files out of a directory:
+  $(basename $0) -p swisspop -i <input-directory>
+
+  (Warning: files will be deleted from <input-directory>!
+            use option -k to keep them in ./orig)
 
 EOF
 return 0
@@ -281,7 +290,7 @@ fi
 logging -n "Shutting down fadecut..."
 ExitCode=$1
 shutdown_streamripper
-showStats
+
 if [ -f "$LOGDIR/fadecutstream-$PID.log" ] ; then
   rm $LOGDIR/fadecutstream-$PID.log
 fi
@@ -396,6 +405,10 @@ do
   ARTIST=`$BIN_ID3V2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`$BIN_ID3V2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
 
+  if [ "$KEEPORIG" -eq "1" ]; then
+    copy_file "$F" "$ORIGDIR"
+  fi
+
   # do some checks, check if file already exists and set status
   # status will be written to statslog
   # depending on status the processing will continue or will skipped to next file
@@ -420,17 +433,12 @@ do
     Fstatus="dontlike"
   fi
   
+  # Processing part of loop_fadecut()
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "$Fstatus" "$Fnew"
 
   # skip processing of current file if it is "double" or "don't like"
   if [[ $Fstatus != "processing" ]] ; then
     continue
-  fi
-
-  # Processing part of loop_fadecut()
-
-  if [ "$KEEPORIG" -eq "1" ]; then
-    copy_file "$F" "$ORIGDIR"
   fi
 
   splitting "$F" "$ARTIST" "$TITLE" "$GENRE" "$COMMENT"
@@ -708,7 +716,7 @@ if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 Fsrc="$*"
-Bitrate=$($BIN_MEDIAINFO | grep 'Bit rate   ' | awk '{ print $4 }')
+Bitrate=$($BIN_MEDIAINFO "$Fsrc" | grep 'Bit rate   ' | awk '{ print $4 }')
 if [ -z "$Bitrate" ] ; then
   Bitrate=128
 fi
@@ -778,7 +786,7 @@ if [ $DEBUG -ge 1 ]; then set -x
 fi
 
 Fsrc="$*"
-Bitrate=$($BIN_MEDIAINFO | grep 'Bit rate   ' | awk '{ print $4 }')
+Bitrate=$($BIN_MEDIAINFO "$Fsrc" | grep 'Bit rate   ' | awk '{ print $4 }')
 if [ -z "$Bitrate" ] ; then
   Bitrate=128
 fi
@@ -989,7 +997,7 @@ do
       exit 1
       ;;
     i)
-      WORKDIR=$OPTARG
+      WORKDIR=$(readlink -f $OPTARG)
       if [ ! -d "$WORKDIR" ];
       then
         logging -e "$WORKDIR: Input directory does not exist"
@@ -1005,7 +1013,7 @@ do
       exit 0
       ;;
     o)
-      OUTPUTDIR=$OPTARG
+      OUTPUTDIR=$(readlink -f $OPTARG)
       if [ ! -d "$OUTPUTDIR" ];
       then
         logging -e "$OUTPUTDIR: Output directory does not exist"
@@ -1078,6 +1086,6 @@ do
       rm $LOGDIR/fadecutstream-$PID.log
       exit 1
     fi
-  fi
   sleep $LOOP_INTERVAL
+  fi
 done
