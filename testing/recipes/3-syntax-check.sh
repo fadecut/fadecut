@@ -16,17 +16,5 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-main()
-{
-#set -x
-echo "template"
-#$BIN_FADECUT -h
-#Ret=$?
-#If [ $Ret -ne 0 ]; return 1
-#fi
-#return 0
-}
-
-if ! main; then exit 1
-fi
+bash -n ./fadecut || exit 1
 exit 0

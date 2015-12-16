@@ -16,31 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-# --- Constants ---------------------------------------------------------------
-. ./config || exit 1
-
-# Functions
-
-trap "echo Aborting!; exit 1" SIGHUP SIGINT SIGTERM
-
-function main()
-{
-# loop ./recipts/*
-cd ${RECIPES}
-for Recipe in *.sh
-do
-  echo ./$Recipe $TESTFOLDER
-  ./$Recipe $TESTFOLDER
-  if [ $? -ge 1 ]; 
-  then
-    echo "$Recipe: Failed!"
-    retMain=1
-  else
-    echo "$Recipe: Sucess!"
-  fi
-done
-}
-
-# Main
-set -o pipefail
-main
+./fadecut | grep -q OPTIONS
+Ret=$?
+if [ $Ret -eq 0 ]; then exit 0
+fi
+exit 1
