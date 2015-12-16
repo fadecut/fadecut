@@ -121,7 +121,7 @@ OPTIONS:
   -r    Stream (and rip), start streamripper
   -v	Verbose
 
-examples: 
+examples:
 
   if you want to rip audio from a radio station:
   $(basename $0) -p swisspop -r
@@ -129,8 +129,8 @@ examples:
   if you just want to process some files out of a directory:
   $(basename $0) -p swisspop -i <input-directory>
 
-  (Warning: files will be deleted from <input-directory>! 
-            use option -k to keep them in ./orig) 
+  (Warning: files will be deleted from <input-directory>!
+            use option -k to keep them in ./orig)
 
 EOF
 return 0
