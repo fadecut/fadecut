@@ -972,6 +972,10 @@ return 0
 # trap keyboard interrupt (control-c)
 trap control_c SIGINT
 
+# CheckRequirements before do anything
+if ! checkRequirements; then shutdown_fadecut 1
+fi
+
 # When you need an argument that needs a value, you put the ":" right after 
 # the argument in the optstring. If your var is just a flag, withou any 
 # additional argument, just leave the var, without the ":" following it.
@@ -1024,8 +1028,6 @@ do
     p)
       PROFILE=$OPTARG
       load_profile
-      if ! checkRequirements; then shutdown_fadecut 1
-      fi
       ;;
     q)
       DEBUG=0
