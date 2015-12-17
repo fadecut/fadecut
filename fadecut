@@ -58,7 +58,7 @@ TMPDIR=/tmp					# here to put temporary files
 ENQUEUE=0					# enqueue to rhythmbox or vlc
 KEEPORIG=0					# don't keep original files
 DEBUG=0						# debug level 0-3
-VERBOSE=0					# verbosity level
+VERBOSE=1					# verbosity level
 LOOP_INTERVAL=10				# loop interval in seconds
 RESTART_STREAMRIPPER_INTERVAL=900		# restart interval streamripper
 STREAMRIPPER_START=0 				# start streamripper [0/1]
@@ -155,20 +155,18 @@ logging()
 
  case $1 in
    -e)     prefix="Error:   " stderr=1 verbose=0;;
-   -i)     prefix="Info:    " stderr=0 verbose=0;;
+   -i)     prefix="Info:    " stderr=0 verbose=1;;
    -n)     prefix="Notice:  " stderr=0 verbose=1;;
    -s)     prefix="Success: " stderr=0 verbose=0;;
    -w)     prefix="Warning: " stderr=1 verbose=1;;
    -d)     prefix="Debug:   " stderr=1 verbose=2;;
-   -a)     prefix="         " stderr=1 verbose=0;;
+   -a)     prefix="         " stderr=0 verbose=1;; 
    -r)     prefix="Stream:  " stderr=0 verbose=0;;
  esac
  shift
 
-# marco: We need to document this better!
-# tinu: good enough now? :-)
 # if VERBOSE mode is set, then show all messages, which we want to show in verbose mode
-if [ $verbose -ge 1 ] && [ $VERBOSE -ge 1 ] ; then 
+if [ $VERBOSE -eq 1 ] ; then 
  if [ "$stderr" -eq 1 ]; then
    echo "$logtime $prefix" $1 >&2
  else
@@ -297,7 +295,7 @@ fi
 
 case $ExitCode in
 	0)
-	  logging -s "Fadecut stopped!"
+	  logging -s "Fadecut exiting..."
 	;;
 	1)
 	  logging -w "Fadecut stopped partionally unsuccuessfull"
@@ -394,8 +392,7 @@ do
 
   # Checking part of loop_fadecut()
   # check next file 
-  logging -i "Processing:"
-  logging -a "$F"
+  logging -i "Processing: $F"
   
   Fstatus="processing"
   Fnew=$(filerename $F)
@@ -458,8 +455,7 @@ do
   fi
   
   if [ "$RetLoop" -eq "0" ]; then
-    logging -s "Ready for listening:"
-    logging -a "$Fdst"
+    logging -s "Ready for listening: $Fdst"
     rm "$TMPDIR"/"$F"
     rm "$F"
   else
@@ -655,8 +651,6 @@ fi
 if [ -d "$ERRORDIR" ]; then
   StatsErrorDir=`ls -1 "$ERRORDIR"  | wc -l`
 fi
-  logging -i "showStats:"
-  logging -a "Output:$StatsNewDir Orig:$StatsOrigDir Done:$StatsDoneDir Dontlike:$StatsDontlikeDir Error:$StatsErrorDir"
 
 if [ -f "$PROFILEDIR"/statslog.csv ]; then
   double=$(grep ";double-" "$PROFILEDIR"/statslog.csv | \
@@ -669,8 +663,8 @@ if [ -f "$PROFILEDIR"/statslog.csv ]; then
               cut -d \; -f 4 | \
               sort -u | \
               wc -l)
-  logging -a "Double:$double Processed:$processed"
 fi
+  logging -a "Output:$StatsNewDir Orig:$StatsOrigDir Done:$StatsDoneDir Dontlike:$StatsDontlikeDir Error:$StatsErrorDir Double:$double Processed:$processed"
 }
 
 writeStats()
@@ -734,7 +728,7 @@ nice -15 $BIN_SOX -V1 "$TMPDIR"/"$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 	-c "comment=$COMMENT" -o "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 # Disable pipefail (default)
 set +o pipefail
-if [ $VERBOSE -ge 1 ];
+if [ $VERBOSE -ge 2 ];
 then
   ogginfo "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 fi
@@ -767,7 +761,7 @@ nice -15 $BIN_SOX -V1 "$TMPDIR"/"$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 	--comment "comment=$COMMENT" "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 # Disable pipefail (default)
 set +o pipefail
-if [ $VERBOSE -ge 1 ];
+if [ $VERBOSE -ge 2 ];
 then
   opusinfo "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 fi
@@ -1030,6 +1024,7 @@ do
       load_profile
       ;;
     q)
+      # you have to put -q as first option on commandline if you really want to start quiet
       DEBUG=0
       VERBOSE=0
       # add LOGGING variable and change logging function to be able to turn 
@@ -1039,7 +1034,7 @@ do
       STREAMRIPPER_START=1 
       ;;
     v)
-      VERBOSE=1
+      VERBOSE=$(($VERBOSE+1))
       ;;
     \?)
       logging -e "Invalid option: -$OPTARG" >&2
@@ -1091,3 +1086,4 @@ do
   sleep $LOOP_INTERVAL
   fi
 done
+
