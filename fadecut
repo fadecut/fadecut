@@ -160,13 +160,13 @@ logging()
    -s)     prefix="Success: " stderr=0 verbose=0;;
    -w)     prefix="Warning: " stderr=1 verbose=1;;
    -d)     prefix="Debug:   " stderr=1 verbose=2;;
-   -a)     prefix="         " stderr=0 verbose=1;; 
+   -a)     prefix="         " stderr=0 verbose=1;;
    -r)     prefix="Stream:  " stderr=0 verbose=0;;
  esac
  shift
 
 # if VERBOSE mode is set, then show all messages, which we want to show in verbose mode
-if [ $VERBOSE -eq 1 ] ; then 
+if [ $VERBOSE -ge 1 ] && [ $verbose -lt 2 ] ; then 
  if [ "$stderr" -eq 1 ]; then
    echo "$logtime $prefix" $1 >&2
  else
@@ -179,6 +179,10 @@ elif [ $verbose -eq 0 ] ; then
  else
    echo "$logtime $prefix" $1
  fi
+fi
+# show debug messages
+if [ $DEBUG -ge 1 ] && [ $verbose -eq 2 ] ; then
+   echo "$logtime $prefix" $1 >&2
 fi
 }
 
@@ -248,7 +252,7 @@ shutdown_streamripper()
 # Output     :  logging
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 TmpPid=$(pidof streamripper)
@@ -282,7 +286,7 @@ shutdown_fadecut()
 # Output     :  logging
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 logging -n "Shutting down fadecut..."
@@ -508,24 +512,16 @@ load_profile()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 2 ]; then set -x
-fi
-
-createDirs
-logging -i "Loading profile file(s):"
-
-if [ -r "$PROFILEDIR/fadecutrc" ]; then
-  logging -a "$PROFILEDIR/fadecutrc"
-  . "$PROFILEDIR/fadecutrc"
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 if [ ! -r "$PROFILEDIR/profiles/$PROFILE" ]; then
   logging -e "Can't not load profile $PROFILEDIR/profiles/$PROFILE"
   exit 1
+else
+  logging -i "Loading profile: $PROFILEDIR/profiles/$PROFILE"
+  . "$PROFILEDIR/profiles/$PROFILE"
 fi
-
-logging -a "$PROFILEDIR/profiles/$PROFILE"
-. "$PROFILEDIR/profiles/$PROFILE"
 
 check_profile
 }
@@ -539,10 +535,8 @@ create_profile()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 2 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
-
-createDirs
 
 NEW=$1
 
@@ -582,7 +576,7 @@ check_profile()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 2 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 RetCheckProfile=0
@@ -683,7 +677,7 @@ writeStats()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 date=`date +%d.%m.%Y`
@@ -706,7 +700,7 @@ oggEncoding()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 Fsrc="$*"
@@ -743,7 +737,7 @@ opusEncoding()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 Fsrc="$*"
@@ -776,7 +770,7 @@ mp3Encoding()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 Fsrc="$*"
@@ -929,7 +923,7 @@ copy_file()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 if [ ! -d "$2" ]; then
@@ -950,7 +944,7 @@ move_file()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 if [ ! -d "$2" ]; then
@@ -961,14 +955,42 @@ mv "$1" "$2"
 return 0
 }
 
+set_options()
+#
+# Description:  set variables according to commandline settings
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
+{
+if [ ! -z "$GETOPT_DEBUG" ] ; then
+  DEBUG=$GETOPT_DEBUG
+fi
+if [ ! -z "$GETOPT_VERBOSE" ] ; then
+  VERBOSE=$GETOPT_VERBOSE
+fi
+if [ ! -z "$GETOPT_KEEPORIG" ] ; then
+  KEEPORIG=$GETOPT_KEEPORIG
+fi
+if [ ! -z "$GETOPT_WORKDIR" ]; then
+  WORKDIR=$GETOPT_WORKDIR
+fi
+if [ ! -z "$GETOPT_OUTPUTDIR" ]; then
+  OUTPUTDIR=$GETOPT_OUTPUTDIR
+fi
+if [ ! -z "$GETOPT_STREAMRIPPER_START" ]; then
+  STREAMRIPPER_START=$GETOPT_STREAMRIPPER_START
+fi
+}
+
 # Main  ------------------------------------------------------------------------
 
 # trap keyboard interrupt (control-c)
 trap control_c SIGINT
 
-# CheckRequirements before do anything
-if ! checkRequirements; then shutdown_fadecut 1
-fi
+# create profile directory if it does not already exist
+createDirs
 
 # When you need an argument that needs a value, you put the ":" right after 
 # the argument in the optstring. If your var is just a flag, withou any 
@@ -984,7 +1006,7 @@ do
       exit 0
       ;;
     d)
-      DEBUG=$OPTARG
+      GETOPT_DEBUG=$OPTARG
       ;;
     e)
       edit_profile $OPTARG
@@ -995,46 +1017,31 @@ do
       exit 1
       ;;
     i)
-      WORKDIR=$(readlink -f $OPTARG)
-      if [ ! -d "$WORKDIR" ];
-      then
-        logging -e "$WORKDIR: Input directory does not exist"
-        shutdown_fadecut 3
-      fi
-      logging -n "Using for input: $WORKDIR"
+      GETOPT_WORKDIR=$(readlink -f $OPTARG)
       ;;
     k)
-      KEEPORIG=1				# keep original files
+      GETOPT_KEEPORIG=1				# keep original files
       ;;
     l)
       list_profiles
       exit 0
       ;;
     o)
-      OUTPUTDIR=$(readlink -f $OPTARG)
-      if [ ! -d "$OUTPUTDIR" ];
-      then
-        logging -e "$OUTPUTDIR: Output directory does not exist"
-        shutdown_fadecut 3
-      fi
-      logging -n "Using for output: $OUTPUTDIR"
+      GETOPT_OUTPUTDIR=$(readlink -f $OPTARG)
       ;;
     p)
       PROFILE=$OPTARG
-      load_profile
       ;;
     q)
-      # you have to put -q as first option on commandline if you really want to start quiet
-      DEBUG=0
-      VERBOSE=0
+      GETOPT_VERBOSE=0
       # add LOGGING variable and change logging function to be able to turn 
       # all output off
       ;;
     r)
-      STREAMRIPPER_START=1 
+      GETOPT_STREAMRIPPER_START=1 
       ;;
     v)
-      VERBOSE=$(($VERBOSE+1))
+      GETOPT_VERBOSE=1
       ;;
     \?)
       logging -e "Invalid option: -$OPTARG" >&2
@@ -1048,13 +1055,51 @@ do
   esac
 done
 
+# CheckRequirements before do anything
+if ! checkRequirements; then shutdown_fadecut 1
+fi
+
+# set_options first, to be quiet or verbose
+set_options
+
+# load master profile
+if [ -r "$PROFILEDIR/fadecutrc" ]; then
+  logging -i "Loading master profile: $PROFILEDIR/fadecutrc"
+  . "$PROFILEDIR/fadecutrc"
+fi
+
+# set_options again, to override predefined settings from master profile with commandline settings
+set_options
+
+# load profile first, so we are able to define profile specific settings
 if [ -z $PROFILE ] ; then
   usage
   exit 1
+else
+  load_profile
 fi
 
-if [ "$OUTPUTDIR" = "$WORKDIR" ];
-then
+# set_options again, to override predefined settings from profiles with commandline settings
+set_options
+
+# set working directory AFTER loading profile to be able to override settings with commandline parameters
+if [ ! -d "$WORKDIR" ]; then
+  logging -e "$WORKDIR: Input directory does not exist"
+  shutdown_fadecut 3
+else
+  logging -n "Using for input: $WORKDIR"
+fi
+
+# set output directory AFTER loading profile to be able to override settings with commandline parameters
+if [ ! -d "$OUTPUTDIR" ]; then
+  logging -e "$OUTPUTDIR: Output directory does not exist"
+  shutdown_fadecut 3
+else
+  logging -n "Using for output: $OUTPUTDIR"
+fi
+
+# check if directory settings are ok
+if [ "$OUTPUTDIR" = "$WORKDIR" ]; then
   logging -e "Output and input directory can not be equal!"
   usage
   exit 1
