@@ -5,6 +5,8 @@
 - Fix wrong script usage of $BIN_ID3V2
 - Cleanup & fix test environment
 - Add autotesting for .opus encoding
+- better handling of getting options to ensure adequate output according 
+  to -v (verbose) and -q (quiet) commandline options
 
 # fadecut 0.1.4
 
