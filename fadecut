@@ -154,19 +154,25 @@ logging()
  stderr=-1
 
  case $1 in
-   -e)     prefix="Error:   " stderr=1 verbose=0;;
-   -i)     prefix="Info:    " stderr=0 verbose=1;;
-   -n)     prefix="Notice:  " stderr=0 verbose=1;;
-   -s)     prefix="Success: " stderr=0 verbose=0;;
-   -w)     prefix="Warning: " stderr=1 verbose=1;;
-   -d)     prefix="Debug:   " stderr=1 verbose=2;;
-   -a)     prefix="         " stderr=0 verbose=1;;
-   -r)     prefix="Stream:  " stderr=0 verbose=0;;
+   -e)     prefix="Error:   " stderr=1 verbose=0;; #show always
+   -s)     prefix="Success: " stderr=0 verbose=0;; #show always
+   -r)     prefix="Stream:  " stderr=0 verbose=0;; #show always
+   -i)     prefix="Info:    " stderr=0 verbose=1;; #show in VERBOSE>=1 mode
+   -a)     prefix="         " stderr=0 verbose=1;; #show in VERBOSE>=1 mode
+   -n)     prefix="Notice:  " stderr=0 verbose=2;; #show in VERBOSE>1 mode
+   -w)     prefix="Warning: " stderr=1 verbose=2;; #show in VERBOSE>1 mode
+   -d)     prefix="Debug:   " stderr=1 verbose=3;; #show only in DEBUG mode
  esac
  shift
 
 # if VERBOSE mode is set, then show all messages, which we want to show in verbose mode
 if [ $VERBOSE -ge 1 ] && [ $verbose -lt 2 ] ; then 
+ if [ "$stderr" -eq 1 ]; then
+   echo "$logtime $prefix" $1 >&2
+ else
+   echo "$logtime $prefix" $1
+ fi
+elif [ $VERBOSE -gt 1 ] && [ $verbose -lt 3 ] ; then 
  if [ "$stderr" -eq 1 ]; then
    echo "$logtime $prefix" $1 >&2
  else
@@ -181,7 +187,7 @@ elif [ $verbose -eq 0 ] ; then
  fi
 fi
 # show debug messages
-if [ $DEBUG -ge 1 ] && [ $verbose -eq 2 ] ; then
+if [ $DEBUG -ge 1 ] && [ $verbose -eq 3 ] ; then
    echo "$logtime $prefix" $1 >&2
 fi
 }
