@@ -1124,7 +1124,7 @@ do
   then
     StreamStatus=$(tail $LOGDIR/fadecutstream-$PID.log | grep error)
     if [ -z "$StreamStatus" ] ; then
-      StreamInfo=$(tail -1 $LOGDIR/fadecutstream-$PID.log | sed -e 's/^M/\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+      StreamInfo=$(tail -1 $LOGDIR/fadecutstream-$PID.log | sed -e 's/ \[.*$//g')
       if [ "$StreamInfo" != "$StreamInfo2" ] ; then
         logging -r "$StreamInfo"
         StreamInfo2="$StreamInfo"
