@@ -1,6 +1,7 @@
 # TODO's for release 0.2.0
 
 ## check license of songs and document if needed in copyrights
+(issue #48)
 
 Here you have:
 	apt-get install yofrankie
