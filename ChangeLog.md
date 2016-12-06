@@ -8,6 +8,7 @@
 - better handling of getting options to ensure adequate output according 
   to -v (verbose) and -q (quiet) commandline options
 - Fixed issue "error after upgrade to Debian testing" #32. Thanks to @LaPriWa.
+- Fixed issue "does not check for installed lame encoder" #33
 
 # fadecut 0.1.4
 

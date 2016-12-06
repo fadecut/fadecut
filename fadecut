@@ -1061,10 +1061,6 @@ do
   esac
 done
 
-# CheckRequirements before do anything
-if ! checkRequirements; then shutdown_fadecut 1
-fi
-
 # set_options first, to be quiet or verbose
 set_options
 
@@ -1109,6 +1105,10 @@ if [ "$OUTPUTDIR" = "$WORKDIR" ]; then
   logging -e "Output and input directory can not be equal!"
   usage
   exit 1
+fi
+
+# CheckRequirements before starting the action
+if ! checkRequirements; then shutdown_fadecut 1
 fi
 
 StreamInfo=""
