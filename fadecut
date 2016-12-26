@@ -62,6 +62,7 @@ VERBOSE=1					# verbosity level
 LOOP_INTERVAL=10				# loop interval in seconds
 RESTART_STREAMRIPPER_INTERVAL=900		# restart interval streamripper
 STREAMRIPPER_START=0 				# start streamripper [0/1]
+ADD_TIMESTAMP=0					# add Timestamp to the Filename
 USER_AGENT="Streamripper/1.x"			# streamripper useragent
 STREAMRIPPER_OPTS="-o always -T"		# streamripper options
 
@@ -119,6 +120,7 @@ OPTIONS:
   -p    Profile <profilename>
   -q	Quiet
   -r    Stream (and rip), start streamripper
+  -t    add Timestamp to the Filename
   -v	Verbose
 
 examples:
@@ -854,6 +856,9 @@ Fnold="$*"
 # Change destination filename according to selected $ENCODING
 local tmp=$(echo $Fnold | sed -e "s/\.mp3/\.$ENCODING/g")
 Fnnew=$(echo $tmp | sed -e 's/ /_/g' -e 's/\(.*\)/\L\1/')
+if [ $ADD_TIMESTAMP -gt 0 ]; then
+  Fnnew="$(date) $Fnnew"
+fi
 echo $Fnnew
 
 return 0
@@ -988,6 +993,9 @@ fi
 if [ ! -z "$GETOPT_STREAMRIPPER_START" ]; then
   STREAMRIPPER_START=$GETOPT_STREAMRIPPER_START
 fi
+if [ ! -z "$GETOPT_ADD_TIMESTAMP" ]; then
+  ADD_TIMESTAMP=$GETOPT_ADD_TIMESTAMP
+fi
 }
 
 # Main  ------------------------------------------------------------------------
@@ -1004,7 +1012,7 @@ createDirs
 #
 # please keep letters in alphabetic order
 #
-while getopts ":c:d:e:hi:klo:p:qrv" OPTION
+while getopts ":c:d:e:hi:klo:p:qrtv" OPTION
 do
   case $OPTION in
     c)
@@ -1045,6 +1053,9 @@ do
       ;;
     r)
       GETOPT_STREAMRIPPER_START=1 
+      ;;
+    t)
+      GETOPT_ADD_TIMESTAMP=1
       ;;
     v)
       GETOPT_VERBOSE=1
