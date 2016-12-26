@@ -70,6 +70,8 @@ your profile or fadecutrc
 
 -r Stream (and rip), start streamripper
 
+-t add Timestamp to the Filename
+
 -v Verbose
 
 # VARIABLES
