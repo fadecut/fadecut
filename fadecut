@@ -58,10 +58,11 @@ TMPDIR=/tmp					# here to put temporary files
 ENQUEUE=0					# enqueue to rhythmbox or vlc
 KEEPORIG=0					# don't keep original files
 DEBUG=0						# debug level 0-3
-VERBOSE=0					# verbosity level
+VERBOSE=1					# verbosity level
 LOOP_INTERVAL=10				# loop interval in seconds
 RESTART_STREAMRIPPER_INTERVAL=900		# restart interval streamripper
 STREAMRIPPER_START=0 				# start streamripper [0/1]
+ADD_TIMESTAMP=0					# add Timestamp to the Filename
 USER_AGENT="Streamripper/1.x"			# streamripper useragent
 STREAMRIPPER_OPTS="-o always -T"		# streamripper options
 
@@ -119,6 +120,7 @@ OPTIONS:
   -p    Profile <profilename>
   -q	Quiet
   -r    Stream (and rip), start streamripper
+  -t    add Timestamp to the Filename
   -v	Verbose
 
 examples:
@@ -154,21 +156,25 @@ logging()
  stderr=-1
 
  case $1 in
-   -e)     prefix="Error:   " stderr=1 verbose=0;;
-   -i)     prefix="Info:    " stderr=0 verbose=0;;
-   -n)     prefix="Notice:  " stderr=0 verbose=1;;
-   -s)     prefix="Success: " stderr=0 verbose=0;;
-   -w)     prefix="Warning: " stderr=1 verbose=1;;
-   -d)     prefix="Debug:   " stderr=1 verbose=2;;
-   -a)     prefix="         " stderr=1 verbose=0;;
-   -r)     prefix="Stream:  " stderr=0 verbose=0;;
+   -e)     prefix="Error:   " stderr=1 verbose=0;; #show always
+   -s)     prefix="Success: " stderr=0 verbose=0;; #show always
+   -r)     prefix="Stream:  " stderr=0 verbose=0;; #show always
+   -i)     prefix="Info:    " stderr=0 verbose=1;; #show in VERBOSE>=1 mode
+   -a)     prefix="         " stderr=0 verbose=1;; #show in VERBOSE>=1 mode
+   -n)     prefix="Notice:  " stderr=0 verbose=2;; #show in VERBOSE>1 mode
+   -w)     prefix="Warning: " stderr=1 verbose=2;; #show in VERBOSE>1 mode
+   -d)     prefix="Debug:   " stderr=1 verbose=3;; #show only in DEBUG mode
  esac
  shift
 
-# marco: We need to document this better!
-# tinu: good enough now? :-)
 # if VERBOSE mode is set, then show all messages, which we want to show in verbose mode
-if [ $verbose -ge 1 ] && [ $VERBOSE -ge 1 ] ; then 
+if [ $VERBOSE -ge 1 ] && [ $verbose -lt 2 ] ; then 
+ if [ "$stderr" -eq 1 ]; then
+   echo "$logtime $prefix" $1 >&2
+ else
+   echo "$logtime $prefix" $1
+ fi
+elif [ $VERBOSE -gt 1 ] && [ $verbose -lt 3 ] ; then 
  if [ "$stderr" -eq 1 ]; then
    echo "$logtime $prefix" $1 >&2
  else
@@ -181,6 +187,10 @@ elif [ $verbose -eq 0 ] ; then
  else
    echo "$logtime $prefix" $1
  fi
+fi
+# show debug messages
+if [ $DEBUG -ge 1 ] && [ $verbose -eq 3 ] ; then
+   echo "$logtime $prefix" $1 >&2
 fi
 }
 
@@ -250,7 +260,7 @@ shutdown_streamripper()
 # Output     :  logging
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 TmpPid=$(pidof streamripper)
@@ -284,7 +294,7 @@ shutdown_fadecut()
 # Output     :  logging
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 logging -n "Shutting down fadecut..."
@@ -297,7 +307,7 @@ fi
 
 case $ExitCode in
 	0)
-	  logging -s "Fadecut stopped!"
+	  logging -s "Fadecut exiting..."
 	;;
 	1)
 	  logging -w "Fadecut stopped partionally unsuccuessfull"
@@ -394,8 +404,7 @@ do
 
   # Checking part of loop_fadecut()
   # check next file 
-  logging -i "Processing:"
-  logging -a "$F"
+  logging -i "Processing: $F"
   
   Fstatus="processing"
   Fnew=$(filerename $F)
@@ -458,8 +467,7 @@ do
   fi
   
   if [ "$RetLoop" -eq "0" ]; then
-    logging -s "Ready for listening:"
-    logging -a "$Fdst"
+    logging -s "Ready for listening: $Fdst"
     rm "$TMPDIR"/"$F"
     rm "$F"
   else
@@ -512,24 +520,16 @@ load_profile()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 2 ]; then set -x
-fi
-
-createDirs
-logging -i "Loading profile file(s):"
-
-if [ -r "$PROFILEDIR/fadecutrc" ]; then
-  logging -a "$PROFILEDIR/fadecutrc"
-  . "$PROFILEDIR/fadecutrc"
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 if [ ! -r "$PROFILEDIR/profiles/$PROFILE" ]; then
   logging -e "Can't not load profile $PROFILEDIR/profiles/$PROFILE"
   exit 1
+else
+  logging -i "Loading profile: $PROFILEDIR/profiles/$PROFILE"
+  . "$PROFILEDIR/profiles/$PROFILE"
 fi
-
-logging -a "$PROFILEDIR/profiles/$PROFILE"
-. "$PROFILEDIR/profiles/$PROFILE"
 
 check_profile
 }
@@ -543,10 +543,8 @@ create_profile()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 2 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
-
-createDirs
 
 NEW=$1
 
@@ -586,7 +584,7 @@ check_profile()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 2 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 RetCheckProfile=0
@@ -655,8 +653,6 @@ fi
 if [ -d "$ERRORDIR" ]; then
   StatsErrorDir=`ls -1 "$ERRORDIR"  | wc -l`
 fi
-  logging -i "showStats:"
-  logging -a "Output:$StatsNewDir Orig:$StatsOrigDir Done:$StatsDoneDir Dontlike:$StatsDontlikeDir Error:$StatsErrorDir"
 
 if [ -f "$PROFILEDIR"/statslog.csv ]; then
   double=$(grep ";double-" "$PROFILEDIR"/statslog.csv | \
@@ -669,8 +665,8 @@ if [ -f "$PROFILEDIR"/statslog.csv ]; then
               cut -d \; -f 4 | \
               sort -u | \
               wc -l)
-  logging -a "Double:$double Processed:$processed"
 fi
+  logging -a "Output:$StatsNewDir Orig:$StatsOrigDir Done:$StatsDoneDir Dontlike:$StatsDontlikeDir Error:$StatsErrorDir Double:$double Processed:$processed"
 }
 
 writeStats()
@@ -689,7 +685,7 @@ writeStats()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 3 ]; then set -x
 fi
 
 date=`date +%d.%m.%Y`
@@ -712,7 +708,7 @@ oggEncoding()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 Fsrc="$*"
@@ -734,7 +730,7 @@ nice -15 $BIN_SOX -V1 "$TMPDIR"/"$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 	-c "comment=$COMMENT" -o "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 # Disable pipefail (default)
 set +o pipefail
-if [ $VERBOSE -ge 1 ];
+if [ $VERBOSE -ge 2 ];
 then
   ogginfo "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 fi
@@ -749,7 +745,7 @@ opusEncoding()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 Fsrc="$*"
@@ -767,7 +763,7 @@ nice -15 $BIN_SOX -V1 "$TMPDIR"/"$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
 	--comment "comment=$COMMENT" "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 # Disable pipefail (default)
 set +o pipefail
-if [ $VERBOSE -ge 1 ];
+if [ $VERBOSE -ge 2 ];
 then
   opusinfo "$OUTPUTDIR"/"$Fdst" || RetLoop=3
 fi
@@ -782,7 +778,7 @@ mp3Encoding()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 Fsrc="$*"
@@ -860,6 +856,9 @@ Fnold="$*"
 # Change destination filename according to selected $ENCODING
 local tmp=$(echo $Fnold | sed -e "s/\.mp3/\.$ENCODING/g")
 Fnnew=$(echo $tmp | sed -e 's/ /_/g' -e 's/\(.*\)/\L\1/')
+if [ $ADD_TIMESTAMP -gt 0 ]; then
+  Fnnew="$(date) $Fnnew"
+fi
 echo $Fnnew
 
 return 0
@@ -935,7 +934,7 @@ copy_file()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 if [ ! -d "$2" ]; then
@@ -956,7 +955,7 @@ move_file()
 # Output     :  none
 #
 {
-if [ $DEBUG -ge 1 ]; then set -x
+if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 if [ ! -d "$2" ]; then
@@ -967,10 +966,45 @@ mv "$1" "$2"
 return 0
 }
 
+set_options()
+#
+# Description:  set variables according to commandline settings
+# 
+# Parameter  :  none
+#
+# Output     :  none
+#
+{
+if [ ! -z "$GETOPT_DEBUG" ] ; then
+  DEBUG=$GETOPT_DEBUG
+fi
+if [ ! -z "$GETOPT_VERBOSE" ] ; then
+  VERBOSE=$GETOPT_VERBOSE
+fi
+if [ ! -z "$GETOPT_KEEPORIG" ] ; then
+  KEEPORIG=$GETOPT_KEEPORIG
+fi
+if [ ! -z "$GETOPT_WORKDIR" ]; then
+  WORKDIR=$GETOPT_WORKDIR
+fi
+if [ ! -z "$GETOPT_OUTPUTDIR" ]; then
+  OUTPUTDIR=$GETOPT_OUTPUTDIR
+fi
+if [ ! -z "$GETOPT_STREAMRIPPER_START" ]; then
+  STREAMRIPPER_START=$GETOPT_STREAMRIPPER_START
+fi
+if [ ! -z "$GETOPT_ADD_TIMESTAMP" ]; then
+  ADD_TIMESTAMP=$GETOPT_ADD_TIMESTAMP
+fi
+}
+
 # Main  ------------------------------------------------------------------------
 
 # trap keyboard interrupt (control-c)
 trap control_c SIGINT
+
+# create profile directory if it does not already exist
+createDirs
 
 # When you need an argument that needs a value, you put the ":" right after 
 # the argument in the optstring. If your var is just a flag, withou any 
@@ -978,7 +1012,7 @@ trap control_c SIGINT
 #
 # please keep letters in alphabetic order
 #
-while getopts ":c:d:e:hi:klo:p:qrv" OPTION
+while getopts ":c:d:e:hi:klo:p:qrtv" OPTION
 do
   case $OPTION in
     c)
@@ -986,7 +1020,7 @@ do
       exit 0
       ;;
     d)
-      DEBUG=$OPTARG
+      GETOPT_DEBUG=$OPTARG
       ;;
     e)
       edit_profile $OPTARG
@@ -997,47 +1031,34 @@ do
       exit 1
       ;;
     i)
-      WORKDIR=$(readlink -f $OPTARG)
-      if [ ! -d "$WORKDIR" ];
-      then
-        logging -e "$WORKDIR: Input directory does not exist"
-        shutdown_fadecut 3
-      fi
-      logging -n "Using for input: $WORKDIR"
+      GETOPT_WORKDIR=$(readlink -f $OPTARG)
       ;;
     k)
-      KEEPORIG=1				# keep original files
+      GETOPT_KEEPORIG=1				# keep original files
       ;;
     l)
       list_profiles
       exit 0
       ;;
     o)
-      OUTPUTDIR=$(readlink -f $OPTARG)
-      if [ ! -d "$OUTPUTDIR" ];
-      then
-        logging -e "$OUTPUTDIR: Output directory does not exist"
-        shutdown_fadecut 3
-      fi
-      logging -n "Using for output: $OUTPUTDIR"
+      GETOPT_OUTPUTDIR=$(readlink -f $OPTARG)
       ;;
     p)
       PROFILE=$OPTARG
-      load_profile
-      if ! checkRequirements; then shutdown_fadecut 1
-      fi
       ;;
     q)
-      DEBUG=0
-      VERBOSE=0
+      GETOPT_VERBOSE=0
       # add LOGGING variable and change logging function to be able to turn 
       # all output off
       ;;
     r)
-      STREAMRIPPER_START=1 
+      GETOPT_STREAMRIPPER_START=1 
+      ;;
+    t)
+      GETOPT_ADD_TIMESTAMP=1
       ;;
     v)
-      VERBOSE=1
+      GETOPT_VERBOSE=1
       ;;
     \?)
       logging -e "Invalid option: -$OPTARG" >&2
@@ -1051,16 +1072,54 @@ do
   esac
 done
 
+# set_options first, to be quiet or verbose
+set_options
+
+# load master profile
+if [ -r "$PROFILEDIR/fadecutrc" ]; then
+  logging -i "Loading master profile: $PROFILEDIR/fadecutrc"
+  . "$PROFILEDIR/fadecutrc"
+fi
+
+# set_options again, to override predefined settings from master profile with commandline settings
+set_options
+
+# load profile first, so we are able to define profile specific settings
 if [ -z $PROFILE ] ; then
+  usage
+  exit 1
+else
+  load_profile
+fi
+
+# set_options again, to override predefined settings from profiles with commandline settings
+set_options
+
+# set working directory AFTER loading profile to be able to override settings with commandline parameters
+if [ ! -d "$WORKDIR" ]; then
+  logging -e "$WORKDIR: Input directory does not exist"
+  shutdown_fadecut 3
+else
+  logging -n "Using for input: $WORKDIR"
+fi
+
+# set output directory AFTER loading profile to be able to override settings with commandline parameters
+if [ ! -d "$OUTPUTDIR" ]; then
+  logging -e "$OUTPUTDIR: Output directory does not exist"
+  shutdown_fadecut 3
+else
+  logging -n "Using for output: $OUTPUTDIR"
+fi
+
+# check if directory settings are ok
+if [ "$OUTPUTDIR" = "$WORKDIR" ]; then
+  logging -e "Output and input directory can not be equal!"
   usage
   exit 1
 fi
 
-if [ "$OUTPUTDIR" = "$WORKDIR" ];
-then
-  logging -e "Output and input directory can not be equal!"
-  usage
-  exit 1
+# CheckRequirements before starting the action
+if ! checkRequirements; then shutdown_fadecut 1
 fi
 
 StreamInfo=""
@@ -1076,7 +1135,7 @@ do
   then
     StreamStatus=$(tail $LOGDIR/fadecutstream-$PID.log | grep error)
     if [ -z "$StreamStatus" ] ; then
-      StreamInfo=$(tail -1 $LOGDIR/fadecutstream-$PID.log | sed -e 's/^M/\n/g' | tail -1 | sed -e 's/ \[.*$//g')
+      StreamInfo=$(tail -1 $LOGDIR/fadecutstream-$PID.log | sed -e 's/ \[.*$//g')
       if [ "$StreamInfo" != "$StreamInfo2" ] ; then
         logging -r "$StreamInfo"
         StreamInfo2="$StreamInfo"
@@ -1089,3 +1148,4 @@ do
   sleep $LOOP_INTERVAL
   fi
 done
+

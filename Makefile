@@ -31,7 +31,7 @@ all:
 
 test:
 	for Recipe in $(TESTINGDIR)/recipes/*.sh; do \
-	  echo Testing $$Recipe; \
+	  echo -n "Testing $$Recipe: "; \
 	  ./$$Recipe `pwd` || exit $?; \
 	done
 	@echo All checks successfully done!
