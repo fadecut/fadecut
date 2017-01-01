@@ -3,7 +3,7 @@ Section: sound
 Priority: extra
 Maintainer: Marco Balmer <marco@balmer.name>
 Build-Depends: debhelper (>= 9), vorbis-tools, opus-tools, lame, sox, libsox-fmt-mp3, streamripper, id3v2, pandoc (>=1.12), gzip (>=1.6), mediainfo (>=0.7.80)
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 Homepage: http://github.com/fadecut/fadecut
 Vcs-Git: https://github.com/fadecut/fadecut.git
 Vcs-Browser: https://github.com/fadecut/fadecut/tree/debian

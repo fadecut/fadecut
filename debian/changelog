@@ -1,7 +1,7 @@
 fadecut (0.2.0-1) unstable; urgency=low
 
   * New 0.2.0 upstream release
-  * Standards bumped to 3.9.6
+  * Standards bumped to 3.9.8
   * Add pandoc to build-depends
   * Add opus-tools to depends
   * Add gzip to build-depends
@@ -9,7 +9,7 @@ fadecut (0.2.0-1) unstable; urgency=low
   * Change watch-file url
   * Replace with new github url
 
- -- Marco Balmer <marco@balmer.name>  Tue, 15 Dec 2015 14:32:44 +0100
+ -- Marco Balmer <user@563d5ca957c5>  Sun, 01 Jan 2017 15:33:26 +0000
 
 fadecut (0.1.4-1) unstable; urgency=low
 
