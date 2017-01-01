@@ -1,5 +1,12 @@
 # How to build fadecut for debian (in a docker environment)
 
+# prepare environment
+
+	cat << EOF >>~/.bashrc
+	DEBEMAIL=your@email.ch
+	DEBFULLNAME="Firstname Lastname"
+	export DEBEMAIL DEBFULLNAME
+
 ## Install docker
 
 	apt-get -t jessie-backports install docker.io
