@@ -9,7 +9,7 @@ fadecut (0.2.0-1) unstable; urgency=low
   * Change watch-file url
   * Replace with new github url
 
- -- Marco Balmer <user@563d5ca957c5>  Sun, 01 Jan 2017 15:33:26 +0000
+ -- Marco Balmer <marco@balmer.name>  Sun, 01 Jan 2017 15:41:51 +0000
 
 fadecut (0.1.4-1) unstable; urgency=low
 
