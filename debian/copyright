@@ -4,9 +4,17 @@ Upstream-Contact: Marco Balmer <marco@balmer.name>
  Martin Gafner <martin@gafner.name>
 Source: https://github.com/fadecut/fadecut.git
 
+Files: ./testing/testfiles/sourcefiles/frankie_dielava_com_end.flac
+ ./testing/testfiles/sourcefiles/frankieloop2_main.flac
+ ./testing/testfiles/sourcefiles/FrankieDeath_com_begin.flac
+Copyright: 2008, Blender Foundation, www.blender.org
+License: GPL
+
 Files: *
 Copyright: 2011 Martin Gafner
   2011 Marco Balmer
+License: GPL
+
 License: GPL
  fadecut is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
