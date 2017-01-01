@@ -16,9 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with fadecut.  If not, see <http://www.gnu.org/licenses/>.
 
-TestFolder="$1/testing"
-cd "$TestFolder"/testdir
-cp "$TestFolder"/testfiles/test_source/*.mp3 .
+DirTesting="$1/testing"
+DirTest="${DirTesting}/testdir"
+mkdir -p "$DirTest/new"
+cd "$DirTesting"/testdir
+cp "$DirTesting"/testfiles/test_source/*.mp3 .
 mkdir -p ~/.fadecut/profiles
 cat << EOF >~/.fadecut/profiles/fctest_fileproc_ogg
 STREAM_URL="http://fctest_fileproc_ogg"
@@ -39,7 +41,7 @@ Ret=$?
 # and that is that what we expect in this variation.
 if [ $Ret -eq 1 ];
 then
-  rm -rf $TestFolder/testdir/{error,new,orig}
+  rm -rf $DirTesting/testdir/{error,new,orig}
   rm ~/.fadecut/profiles/fctest_fileproc_ogg
   exit 0 # if all ok, exit with 0
 fi
