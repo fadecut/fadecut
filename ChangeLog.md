@@ -1,12 +1,5 @@
-# fadecut 0.2.0
+# fadecut 0.1.5-UNRELEASED
 
-- Migrate documentation in markdown `.md` files.
-- Generate manpage file from markdown file.
-- Logo for fadecut added
-- Statistics are not anymore shown at the end if invalid option is given. Closing issue #24
-- expand given path for input and output directory to get no bad states. related to issue #28.
-- Fixed issues #29 and #30
-- Pull request #49: Add (-t) timestamp switch on each written file. Thanks to @fapo85
 - Add support for .opus encoding
 - Fix wrong usage of $BIN_SOX
 - Fix wrong script usage of $BIN_ID3V2
@@ -16,7 +9,6 @@
   to -v (verbose) and -q (quiet) commandline options
 - Fixed issue "error after upgrade to Debian testing" #32. Thanks to @LaPriWa.
 - Fixed issue "does not check for installed lame encoder" #33
-- Have a look [here](https://github.com/fadecut/fadecut/milestone/1?closed=1)
 
 # fadecut 0.1.4
 
