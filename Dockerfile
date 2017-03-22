@@ -15,29 +15,30 @@ RUN addgroup --gid 1000 user \
 
 # build environment
 RUN apt-get update && apt-get install -y \
-        ca-certificates \
-	dh-make \
-	fakeroot \
-	devscripts \
-	debian-policy \
-	gnu-standards \
-        gnupg2 \
-        gnupg-agent \
-	developers-reference \
 	build-essential \
-	openssh-client \
-        less \
-        locales-all \
-	libdpkg-perl \
-	git-buildpackage \
-	quilt \
-	lintian \
-	piuparts \
-	man \
-	vim
+	git
+#        ca-certificates \
+#	dh-make \
+#	fakeroot \
+#	devscripts \
+#	debian-policy \
+#	gnu-standards \
+#        gnupg2 \
+#        gnupg-agent \
+#	developers-reference \
+#	openssh-client \
+#        less \
+#        locales-all \
+#	libdpkg-perl \
+#	git-buildpackage \
+#	quilt \
+#	lintian \
+#	piuparts \
+#	man
 
 # special for build the package
 RUN apt-get update && apt-get install -y \
+	vim \
 	vorbis-tools \
 	opus-tools \
 	lame \
