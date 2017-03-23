@@ -7,9 +7,9 @@ fadecut (0.2.0-1) unstable; urgency=low
   * Add gzip to build-depends
   * Add mediainfo to depends and build-depends
   * Change watch-file url
-  * Replace with new github url
+  * Replace with new Vcs-Git to github url
 
- -- Marco Balmer <marco@balmer.name>  Sun, 01 Jan 2017 15:41:51 +0000
+ -- Marco Balmer <marco@balmer.name>  Thu, 23 Mar 2017 08:02:14 +0100
 
 fadecut (0.1.4-1) unstable; urgency=low
 
