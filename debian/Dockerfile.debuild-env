@@ -19,39 +19,40 @@ RUN apt-get update && apt-get install -y \
 
 # build environment
 RUN apt-get update && apt-get install -y \
-	build-essential \
-	git \
-        ca-certificates \
-	dh-make \
-	fakeroot \
-	devscripts \
-	debian-policy \
-	gnu-standards \
-        gnupg2 \
-        gnupg-agent \
-	developers-reference \
-	openssh-client \
-        less \
-        locales-all \
-	libdpkg-perl \
-	git-buildpackage \
-	quilt \
-	lintian \
-	piuparts \
-	man
+    build-essential \
+    cme \
+    git \
+    ca-certificates \
+    dh-make \
+    fakeroot \
+    devscripts \
+    debian-policy \
+    gnu-standards \
+    gnupg2 \
+    gnupg-agent \
+    developers-reference \
+    openssh-client \
+    less \
+    locales-all \
+    libdpkg-perl \
+    git-buildpackage \
+    quilt \
+    lintian \
+    piuparts \
+    man
 
 # special for build the package
 RUN apt-get update && apt-get install -y \
-	vim \
-	vorbis-tools \
-	opus-tools \
-	lame \
-	sox \
-	libsox-fmt-mp3 \
-	streamripper \
-	id3v2 \
-	pandoc \
-	mediainfo
+    vim \
+    vorbis-tools \
+    opus-tools \
+    lame \
+    sox \
+    libsox-fmt-mp3 \
+    streamripper \
+    id3v2 \
+    pandoc \
+    mediainfo
 
 USER user
 ENV HOME /home/user
