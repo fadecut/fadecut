@@ -22,7 +22,7 @@ If you want to use docker with your non-root user:
 
 Now you can build the docker image with debian testing:
 
-	docker build -t debian-testing .
+	docker build -t debuild-fadecut .
 
 Get fadecut source from github:
 
@@ -35,13 +35,16 @@ Get fadecut source from github:
 
 Login into docker image and map your fadecut source dir into the image:
 
-	docker run -v /home/hostuser/:/home/user -ti debian-testing
+	docker run -v /home/hostuser/:/home/user -ti debuild-fadecut
 
 From now you have a shell like this `user@xyz:~/$` until you type `exit`:
 
 	user@xyz:~/$ cd ~/src/fadecut
 	git archive --format=tar --prefix=fadecut-0.2.0/ master | gzip > ../fadecut_0.2.0.orig.tar.gz
+	cme fix dpkg
 	debuild -us -uc --lintian-opts -i -v -I --pedantic
+
+Find the fadecut debian package at ../ directory.
 
 ## Build a prior release
 
