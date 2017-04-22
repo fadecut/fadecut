@@ -8,6 +8,8 @@ fadecut (0.2.0-1) unstable; urgency=low
   * Add mediainfo to depends and build-depends
   * Change watch-file url
   * Replace with new Vcs-Git to github url
+  * Integrate changes from NMU two years ago (to be consistend d/changelog)
+  * Bump compat level 10 and debhelper >=10
 
  -- Marco Balmer <marco@balmer.name>  Sat, 22 Apr 2017 11:50:15 +0000
 
