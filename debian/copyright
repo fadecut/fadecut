@@ -1,7 +1,7 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: fadecut
 Upstream-Contact: Marco Balmer <marco@balmer.name>
- Martin Gafner <martin@gafner.name>
+                  Martin Gafner <martin@gafner.name>
 Source: https://github.com/fadecut/fadecut.git
 
 Files: ./testing/testfiles/sourcefiles/frankie_dielava_com_end.flac
