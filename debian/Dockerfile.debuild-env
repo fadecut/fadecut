@@ -1,10 +1,10 @@
 # Run fadecut build environment in a docker container
 
 # Build this docker image:
-# docker build -t fadecut .
+# docker build -t debuild-fadecut -f ./Dockerfile.debuild-env .
 
 # Run this docker image:
-# docker run -v /home/YOURUSER/:/home/user/ -ti fadecut
+# docker run -v /home/YOURUSER/:/home/user/ -ti debuild-fadecut
 
 FROM debian:testing
 MAINTAINER Marco Balmer <marco@balmer.name>
@@ -12,6 +12,10 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN addgroup --gid 1000 user \
         && useradd -d /home/user -g user user
+
+# apt environment
+RUN apt-get update && apt-get install -y \
+    apt-utils
 
 # build environment
 RUN apt-get update && apt-get install -y \
@@ -48,11 +52,6 @@ RUN apt-get update && apt-get install -y \
 	id3v2 \
 	pandoc \
 	mediainfo
-
-#RUN cd /root && \
-#    git clone https://github.com/fadecut/fadecut
-
-#RUN cd /root/fadecut && make && make test && make install && make clean
 
 USER user
 ENV HOME /home/user
