@@ -35,7 +35,7 @@ Get fadecut source from github:
 
 Login into docker image and map your fadecut source dir into the image:
 
-	docker run -v /home/hostuser/:/home/user -ti debuild-fadecut
+	docker run -v ${HOME}:/home/user -ti debuild-fadecut
 
 From now you have a shell like this `user@xyz:~/$` until you type `exit`:
 
