@@ -66,13 +66,6 @@ optional, for mp3 encoding:
 
 	apt-get install fadecut
 
-### Dockerfile
-
-	apt-get install docker.io
-	docker build -t fadecut .
-	docker run -v /home/YOURUSER/:/home/user/ -ti fadecut
-	user@d76f02d351f5:~$ fadecut
-
 ### From source
 
 	cd ~/
