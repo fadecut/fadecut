@@ -22,6 +22,7 @@ Package: fadecut
 Architecture: all
 Depends: ${misc:Depends},
          sox,
+         vorbis-tools | lame,
          opus-tools,
          libsox-fmt-mp3,
          streamripper,
