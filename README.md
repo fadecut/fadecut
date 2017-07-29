@@ -95,6 +95,8 @@ Let's stream, rip and automatically fade & cut now
 
 	man fadecut
 
+see complete documentation in the [man page](https://github.com/fadecut/fadecut/blob/master/man/fadecut.1.md)
+
 ## Useful links
 
 * Fadecut at [ubuntuusers.de](http://wiki.ubuntuusers.de/fadecut)
