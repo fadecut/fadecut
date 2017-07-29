@@ -1,6 +1,7 @@
 # fadecut 0.2.1
 
 - added documentation about fadecutrc, profiles and statslog into the man page, closing issue #54 and thanks to @dances-with-clouds for the bugreport 
+- preserve timestamps of downloaded files, closing issue #55 with thanks to @dances-with-clouds
 
 # fadecut 0.2.0
 
