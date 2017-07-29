@@ -1,3 +1,7 @@
+# fadecut 0.2.1
+
+- added documentation about fadecutrc, profiles and statslog into the man page, closing issue #54 and thanks to @dances-with-clouds for the bugreport 
+
 # fadecut 0.2.0
 
 - Migrate documentation in markdown `.md` files.
