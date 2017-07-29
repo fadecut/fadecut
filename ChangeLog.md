@@ -2,6 +2,7 @@
 
 - added documentation about fadecutrc, profiles and statslog into the man page, closing issue #54 and thanks to @dances-with-clouds for the bugreport 
 - preserve timestamps of downloaded files, closing issue #55 with thanks to @dances-with-clouds
+- output directory will be automatically created, closing issue #51
 
 # fadecut 0.2.0
 

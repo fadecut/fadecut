@@ -1122,14 +1122,6 @@ else
   logging -n "Using for input: $WORKDIR"
 fi
 
-# set output directory AFTER loading profile to be able to override settings with commandline parameters
-if [ ! -d "$OUTPUTDIR" ]; then
-  logging -e "$OUTPUTDIR: Output directory does not exist"
-  shutdown_fadecut 3
-else
-  logging -n "Using for output: $OUTPUTDIR"
-fi
-
 # check if directory settings are ok
 if [ "$OUTPUTDIR" = "$WORKDIR" ]; then
   logging -e "Output and input directory can not be equal!"
