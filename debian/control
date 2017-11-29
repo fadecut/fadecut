@@ -31,11 +31,11 @@ Depends: ${misc:Depends},
 Description: toolset to rip audiostreams, cut, fade in/out and tag the resulting audiofiles
  fadecut is a script to rip audio files from a livestream and to process them
  automatically. Beginning and ending fo the audio files will be cut and faded
- in/out. So logos and advertising of radio stations will be automatically 
+ in/out. So logos and advertising of radio stations will be automatically
  removed.
  .
  In streaming mode fadecut is ripping audio files using streamripper. The
- downloaded audio files are cutted using silence detection and then faded in 
+ downloaded audio files are cutted using silence detection and then faded in
  and out. Subsequently, the files are encoded to either ogg or mp3 and tagged
  with tags (title, artist, genre and comment provided).
  .
