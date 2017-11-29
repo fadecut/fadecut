@@ -136,15 +136,131 @@ id3v2(1), oggenc(1), opusenc(1), sox(1), streamripper(1), lame(1)
 
 # FILES
 
-The main fadecut configuration file, executed with every start of
-fadecut
-
 *\~/.fadecut/fadecutrc* is the main fadecut configuration file, executed
 with every start of fadecut.
 
+Content of fadecutrc
+ 	# which files to work on
+	FILES=*.mp3
+
+	# target format [ogg/mp3]
+	ENCODING=mp3
+
+	# --- Defaults for the profiles ---
+
+	# trim n seconds at beginning
+	TRIM_BEGIN=0
+
+	# trim n seconds at end of song
+	TRIM_END=0
+
+	# seconds to fade in
+	FADE_IN=0
+
+	# seconds to fade out
+	FADE_OUT=0
+
+	# --- Directories ---
+
+	# main directory of fadecut
+	PWD=$(pwd)
+
+	# where to write logfiles
+	LOGDIR=/tmp
+
+	# profiledir
+	PROFILEDIR="$HOME/.fadecut"
+
+	# workdir
+	WORKDIR="$PWD"
+
+	# where to put fadecut'ted files
+	OUTPUTDIR="$PWD/new"
+
+	# where to put original files
+	ORIGDIR="$PWD/orig"
+
+	# here the user puts finished files, which are 
+	# tested and listened
+	DONEDIR="$PWD/done"
+
+	# here are songs we don't like
+	DONTLIKEDIR="$PWD/dontlike"
+
+	# files had an error
+	ERRORDIR="$PWD/error"
+
+	# here to put temporary files
+	TMPDIR=/tmp
+
+	# --- Other options ---
+	# enqueue to rhythmbox or vlc
+	ENQUEUE=0
+
+	# keep or don't keep original files
+	KEEPORIG=1
+
+	# debug level 0-3
+	DEBUG=0
+
+	# verbosity level
+	VERBOSE=1
+
+	# loop interval in seconds
+	LOOP_INTERVAL=10
+
+	# restart interval streamripper
+	RESTART_STREAMRIPPER_INTERVAL=900
+
+	# start streamripper [0/1]
+	STREAMRIPPER_START=0
+
+	# streamripper useragent
+	USER_AGENT="Streamripper/1.x"
+
+	# streamripper options
+	STREAMRIPPER_OPTS="-o always -T"
+
+
 *\~/.fadecut/statslog.csv* is the statistics file.
 
+	Contains a table of processed files
+
+	Format:
+	Date dd.mm.yyyy;Time hh:mm:ss;Artist;Songtitle;Genre;profile;fadecut-task;filename
+
+	Example:
+	09.05.2014;10:14:54;Androcell;Hindu Kush;Lounge;alounge;processing;androcell_-_hindu_kush.ogg
+
 *\~/.fadecut/profiles* is the folder where all profiles are located.
+
+To create a profile file
+
+        fadecut -c myradiostation
+
+Settings in the profile file
+
+        # url to the radio stream:
+        STREAM_URL="http://streamurl"
+
+	# mp3-genre which will be written to the downloaded mp3-files
+        GENRE="Pop"
+
+	# comment which will be written to the downloaded mp3-files
+        COMMENT="Radio station comment"
+
+	# how many seconds to fade in the song	
+        FADE_IN=1
+
+	# how many seconds to fade out the song	
+        FADE_OUT=4
+
+	# how many seconds to cut from the beginning of the song
+	TRIM_BEGIN=0
+
+	# how many seconds to cut at the end of the song
+	TRIM_END=0
+
 
 # RESOURCES
 

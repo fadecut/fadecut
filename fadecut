@@ -405,12 +405,19 @@ do
   # Checking part of loop_fadecut()
   # check next file 
   logging -i "Processing: $F"
-  
+
+  # preserve timestamp
+  TIMESTAMP=$(date -R -r "$F")  
+
   Fstatus="processing"
-  Fnew=$(filerename $F)
+  Fnew=$(filerename "$F")
   # Converting id3v1->id3v2 tags, if necessary. Must be before `id3v2 -l`
   # command.
   $BIN_ID3V2 -C "$F" > /dev/null 2>&1
+
+  # restore original timestamp
+  touch -d "$TIMESTAMP" "$F"
+
   ARTIST=`$BIN_ID3V2 -l "$F" | sed -e '/TPE1/!d' -e 's/^.*: //g'`
   TITLE=`$BIN_ID3V2 -l "$F" | sed -e '/TIT2/!d' -e 's/^.*: //g'`
 
@@ -716,7 +723,7 @@ Bitrate=$($BIN_MEDIAINFO "$Fsrc" | grep 'Bit rate   ' | awk '{ print $4 }')
 if [ -z "$Bitrate" ] ; then
   Bitrate=128
 fi
-Fdst=$(filerename $Fsrc)
+Fdst=$(filerename "$Fsrc")
 if [ ! -d "$OUTPUTDIR" ]; then
   mkdir -p "$OUTPUTDIR"
 fi
@@ -728,6 +735,10 @@ nice -15 $BIN_SOX -V1 "$TMPDIR"/"$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   oggenc - --quiet -b $Bitrate -t "$TITLE"  -a  "$ARTIST" -G "$GENRE" \
 	-c "comment=$COMMENT" -o "$OUTPUTDIR"/"$Fdst" || RetLoop=3
+
+# restore original download timestamp
+touch -d "$TIMESTAMP" "$OUTPUTDIR/$Fdst"
+
 # Disable pipefail (default)
 set +o pipefail
 if [ $VERBOSE -ge 2 ];
@@ -749,7 +760,7 @@ if [ $DEBUG -ge 2 ]; then set -x
 fi
 
 Fsrc="$*"
-Fdst=$(filerename $Fsrc)
+Fdst=$(filerename "$Fsrc")
 if [ ! -d "$OUTPUTDIR" ]; then
   mkdir -p "$OUTPUTDIR"
 fi
@@ -761,6 +772,10 @@ nice -15 $BIN_SOX -V1 "$TMPDIR"/"$F" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   opusenc - --quiet --title "$TITLE"  --artist "$ARTIST" --genre "$GENRE" \
 	--comment "comment=$COMMENT" "$OUTPUTDIR"/"$Fdst" || RetLoop=3
+
+# restore original download timestamp
+touch -d "$TIMESTAMP" "$OUTPUTDIR/$Fdst"
+
 # Disable pipefail (default)
 set +o pipefail
 if [ $VERBOSE -ge 2 ];
@@ -786,7 +801,7 @@ Bitrate=$($BIN_MEDIAINFO "$Fsrc" | grep 'Bit rate   ' | awk '{ print $4 }')
 if [ -z "$Bitrate" ] ; then
   Bitrate=128
 fi
-Fdst=$(filerename $Fsrc)
+Fdst=$(filerename "$Fsrc")
 if [ ! -d "$OUTPUTDIR" ]; then
   mkdir -p "$OUTPUTDIR"
 fi
@@ -798,6 +813,10 @@ nice -15 $BIN_SOX -V1 "$TMPDIR"/"$Fsrc" -t wav - trim $TRIM_BEGIN $TRIMLENGTH \
   fade t $FADE_IN $FADE_OUT_START $FADE_OUT | \
   lame --quiet -b $Bitrate --add-id3v2 --ta "$ARTIST" --tt "$TITLE" \
   --tg "$GENRE" --tc "$COMMENT" - "$OUTPUTDIR"/"$Fdst" || RetLoop=3
+
+# restore original download timestamp
+touch -d "$TIMESTAMP" "$OUTPUTDIR/$Fdst"
+
 # Disable pipefail (default)
 set +o pipefail
 # delete tag written by lame (TLEN is always the same and always wrong)
@@ -833,7 +852,7 @@ mv "$TMPDIR"/"$Ftmp" "$TMPDIR"/"$F"
 if [ $Fcount -ge 2 ] ; then
   logging -i "sox found silence and splitted..."
   rm "$TMPDIR"/"$F"00*
-  Fnew=$(filerename $F)
+  Fnew=$(filerename "$F")
   writeStats "$ARTIST" "$TITLE" "$GENRE" "$PROFILE" "soxsplit into $Fcount files" "$Fnew"
 fi
 
@@ -854,7 +873,7 @@ fi
 
 Fnold="$*"
 # Change destination filename according to selected $ENCODING
-local tmp=$(echo $Fnold | sed -e "s/\.mp3/\.$ENCODING/g")
+local tmp=$(echo "$Fnold" | sed -e "s/\.mp3/\.$ENCODING/g")
 Fnnew=$(echo $tmp | sed -e 's/ /_/g' -e 's/\(.*\)/\L\1/')
 if [ $ADD_TIMESTAMP -gt 0 ]; then
   Fnnew="$(date) $Fnnew"
@@ -940,7 +959,7 @@ fi
 if [ ! -d "$2" ]; then
   mkdir -p "$2"
 fi
-cp "$1" "$2"
+cp -p "$1" "$2"
 
 return 0
 }
@@ -1101,14 +1120,6 @@ if [ ! -d "$WORKDIR" ]; then
   shutdown_fadecut 3
 else
   logging -n "Using for input: $WORKDIR"
-fi
-
-# set output directory AFTER loading profile to be able to override settings with commandline parameters
-if [ ! -d "$OUTPUTDIR" ]; then
-  logging -e "$OUTPUTDIR: Output directory does not exist"
-  shutdown_fadecut 3
-else
-  logging -n "Using for output: $OUTPUTDIR"
 fi
 
 # check if directory settings are ok
