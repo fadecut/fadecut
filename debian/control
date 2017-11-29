@@ -1,7 +1,7 @@
 Source: fadecut
 Maintainer: Marco Balmer <marco@balmer.name>
 Section: sound
-Priority: extra
+Priority: optional
 Build-Depends: debhelper (>= 10),
                vorbis-tools,
                opus-tools,
@@ -13,7 +13,7 @@ Build-Depends: debhelper (>= 10),
                pandoc (>= 1.12),
                gzip (>= 1.6),
                mediainfo (>= 0.7.80)
-Standards-Version: 3.9.8
+Standards-Version: 4.1.1
 Vcs-Browser: https://github.com/fadecut/fadecut/tree/debian
 Vcs-Git: https://github.com/fadecut/fadecut.git
 Homepage: http://github.com/fadecut/fadecut
