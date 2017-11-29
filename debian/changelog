@@ -1,7 +1,7 @@
-fadecut (0.2.0-1) unstable; urgency=low
+fadecut (0.2.1-1) unstable; urgency=low
 
-  * New 0.2.0 upstream release
-  * Standards bumped to 3.9.8
+  * New 0.2.1 upstream release
+  * Standards bumped to 4.1.1
   * Add pandoc to build-depends
   * Add opus-tools to depends
   * Add gzip to build-depends
