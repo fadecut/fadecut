@@ -11,7 +11,7 @@ fadecut (0.2.1-1) unstable; urgency=low
   * Integrate changes from NMU two years ago (to be consistend d/changelog)
   * Bump compat level 10 and debhelper >=10
 
- -- Marco Balmer <marco@balmer.name>  Sat, 22 Apr 2017 11:50:15 +0000
+ -- Marco Balmer <marco@balmer.name>  Wed, 29 Nov 2017 18:13:59 +0000
 
 fadecut (0.1.4-1.1) unstable; urgency=medium
 
