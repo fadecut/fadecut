@@ -15,7 +15,7 @@ Build-Depends: debhelper (>= 10),
                mediainfo (>= 0.7.80)
 Standards-Version: 4.1.1
 Vcs-Browser: https://github.com/fadecut/fadecut/tree/debian
-Vcs-Git: https://github.com/fadecut/fadecut.git
+Vcs-Git: https://github.com/fadecut/fadecut.git -b debian
 Homepage: http://github.com/fadecut/fadecut
 
 Package: fadecut

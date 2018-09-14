@@ -1,3 +1,9 @@
+fadecut (0.2.1-2) UNRELEASED; urgency=medium
+
+  * Add debian branch in Vcs-Git field/
+
+ -- Jelmer Vernooĳ <jelmer@debian.org>  Fri, 14 Sep 2018 01:07:50 +0100
+
 fadecut (0.2.1-1) unstable; urgency=low
 
   * New 0.2.1 upstream release
